@@ -1,7 +1,5 @@
 package it.afm.artworkstracker
 
-import android.bluetooth.le.AdvertiseCallback
-import android.bluetooth.le.AdvertiseSettings
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.nsd.NsdManager
@@ -18,8 +16,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,21 +23,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
+import it.afm.artworkstracker.utils.Measurement
+import it.afm.artworkstracker.utils.RestrictedContainer
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.altbeacon.beacon.*
-import org.altbeacon.beacon.service.ArmaRssiFilter
 import org.altbeacon.beacon.service.RunningAverageRssiFilter
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.net.InetAddress
-
+import java.time.LocalDateTime
+import java.util.UUID
+import kotlin.concurrent.fixedRateTimer
 
 class MainActivity : ComponentActivity(), RangeNotifier {
     private var ip: InetAddress? = null
     private var port: Int? = null
 
+    // TODO: create an appropriate class to handle this beauty
+    private val beaconsMap = mutableMapOf<UUID, Pair<Boolean, RestrictedContainer<Measurement>>>()
+
+    // TODO: (for future implementation) artwork information should be manual (snackbar) + setting to make it auto
+
+    // TODO: make all beacon-aware classes (containers) concurrent
+
+    // TODO: create data-structure to handle already visited beacon
+
+    // TODO: create periodic function to remove out-of-range beacons from the current ones
+
+
+    override fun didRangeBeaconsInRegion(beacons: Collection<Beacon>, region: Region) {
+        for (beacon in beacons) {
+            if (beacon.distance < MIN_CONSIDERABLE_DISTANCE) {
+                val uuid = beacon.id1.toUuid()
+
+                if (!beaconsMap.containsKey(uuid))
+                    beaconsMap[uuid] = Pair(false, RestrictedContainer(MAX_CONSIDERED_MEASUREMENTS))
+
+                beaconsMap[uuid]!!.second.push(Measurement(beacon.distance, LocalDateTime.now()))
+            }
+        }
+    }
 
     private val locationRequestLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -51,20 +71,6 @@ class MainActivity : ComponentActivity(), RangeNotifier {
             Toast.makeText(this, "Permissions not granted", Toast.LENGTH_LONG).show()
             finish()
         }
-    }
-
-    private val rangingObserver = Observer<Collection<Beacon>> { beacons ->
-        var newBeacons = ""
-
-        for (beacon in beacons) {
-            val distance = BigDecimal(beacon.distance).setScale(2, RoundingMode.CEILING)
-            Log.i("MainActivity", "${beacon.manufacturer} - ${beacon.distance}m")
-            val beaconStr = "${beacon.manufacturer} - ${distance}m\n"
-            newBeacons += beaconStr
-        }
-
-//        if (newBeacons.isNotEmpty())
-//            beaconsMap.value = beaconsMap.value + newBeacons
     }
 
     private lateinit var nsdManager: NsdManager
@@ -82,7 +88,6 @@ class MainActivity : ComponentActivity(), RangeNotifier {
     }
 
     private val discoveryListener = object : NsdManager.DiscoveryListener {
-
         // Called as soon as service discovery begins.
         override fun onDiscoveryStarted(regType: String) {
             Log.d("MainActivity", "Service discovery started")
@@ -127,7 +132,7 @@ class MainActivity : ComponentActivity(), RangeNotifier {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CompleteView(this::transmitAsABeacon, this::transmitAsADevice, this::discoverServices)
+                    CompleteView(this::transmitAsADevice, this::discoverServices)
                 }
             }
         }
@@ -168,43 +173,10 @@ class MainActivity : ComponentActivity(), RangeNotifier {
         nsdManager.stopServiceDiscovery(discoveryListener)
     }
 
-    private fun transmitAsABeacon() {
-        val beacon = Beacon.Builder()
-            .setIdentifiers(mutableListOf(
-                Identifier.fromInt(1),
-                Identifier.fromInt(2),
-                Identifier.fromInt(3)
-            ))
-            .setDataFields(mutableListOf(10L))
-            .setTxPower(-59)
-            .setManufacturer(2)
-            .build()
-
-        val beaconParser = BeaconParser().setBeaconLayout(BeaconParser.ALTBEACON_LAYOUT)
-
-        val beaconTransmitter = BeaconTransmitter(applicationContext, beaconParser)
-
-        beaconTransmitter.startAdvertising(beacon, object : AdvertiseCallback() {
-            override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Advertising started successfully",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
-            override fun onStartFailure(errorCode: Int) {
-                Toast.makeText(this@MainActivity, "Advertising error = $errorCode", Toast.LENGTH_LONG).show()
-            }
-        })
-
-        Handler(Looper.myLooper()!!).postDelayed(
-            {
-                beaconTransmitter.stopAdvertising()
-                Toast.makeText(this@MainActivity, "Advertising terminated", Toast.LENGTH_LONG).show()
-            },
-            60000
-        )
+    private fun showBeaconToast(uuid: UUID) {
+        runOnUiThread {
+            Toast.makeText(this@MainActivity, "You are really close to beacon $uuid", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun transmitAsADevice() {
@@ -223,40 +195,47 @@ class MainActivity : ComponentActivity(), RangeNotifier {
         BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter::class.java)
         RunningAverageRssiFilter.setSampleExpirationMilliseconds(5000L)
 
-//        BeaconManager.setRssiFilterImplClass(ArmaRssiFilter::class.java)
-
         beaconManager.addRangeNotifier(this)
 
         beaconManager.startRangingBeacons(region)
 
         Toast.makeText(this@MainActivity, "Start ranging", Toast.LENGTH_LONG).show()
 
+        val proximityBeaconDetector = fixedRateTimer("proximityBeaconDetection", false, 6000L, 3000L) {
+            for (beaconInRange in beaconsMap) {
+                if (!beaconInRange.value.first) {
+                    val measurements = beaconInRange.value.second.getAllValues()
+                    var sum = 0.0
+
+                    if (measurements.size == MAX_CONSIDERED_MEASUREMENTS) {
+                        for (measurement in measurements) sum += measurement.measure
+                        val mean = sum / MAX_CONSIDERED_MEASUREMENTS.toDouble()
+
+                        Log.i("MainActivity", "Making mean on beacon ${beaconInRange.key} ($mean) (raw = ${beaconInRange.value.second.getAllValues()}))")
+
+                        if (mean < MIN_BEACON_DISTANCE) {
+                            showBeaconToast(beaconInRange.key)
+                            beaconsMap[beaconInRange.key] = beaconInRange.value.copy(true, beaconInRange.value.second)
+                        }
+                    }
+                }
+            }
+        }
+
         Handler(Looper.myLooper()!!).postDelayed(
             {
                 beaconManager.stopRangingBeacons(region)
                 Toast.makeText(this@MainActivity, "Ranging terminated", Toast.LENGTH_LONG).show()
+                proximityBeaconDetector.cancel()
             },
             60000
         )
     }
 
-    override fun didRangeBeaconsInRegion(beacons: Collection<Beacon>, region: Region) {
-        val beacon2 = beacons.find { beacon -> beacon.id1.toString().startsWith("efdffba") }
-        val beacon1 = beacons.find { beacon -> !beacon.id1.toString().startsWith("efdffba") }
-
-        if (beacon2 != null) {
-            if (beacon2.distance < 3.0)
-                beaconTwo.value = "02 - ${beacon2.distance}m"
-            else
-                beaconTwo.value = "02 - > 3m"
-        }
-
-        if (beacon1 != null) {
-            if (beacon1.distance < 3.0)
-                beaconOne.value = "76 - ${beacon1.distance}m"
-            else
-                beaconOne.value = "76 - > 3m"
-        }
+    companion object {
+        const val MIN_CONSIDERABLE_DISTANCE = 3.0
+        const val MAX_CONSIDERED_MEASUREMENTS = 5
+        const val MIN_BEACON_DISTANCE = 0.5
     }
 }
 
@@ -264,9 +243,9 @@ val beaconOne = MutableStateFlow("")
 val beaconTwo = MutableStateFlow("")
 
 @Composable
-fun CompleteView(beaconFun: () -> Unit, deviceFun: () -> Unit, servicesFun: () -> Unit) {
+fun CompleteView(deviceFun: () -> Unit, servicesFun: () -> Unit) {
     Column {
-        Buttons(beaconFun = beaconFun, deviceFun = deviceFun, servicesFun = servicesFun)
+        Buttons(deviceFun = deviceFun, servicesFun = servicesFun)
 
         val textOne by beaconOne.collectAsState()
         val textTwo by beaconTwo.collectAsState()
@@ -277,7 +256,7 @@ fun CompleteView(beaconFun: () -> Unit, deviceFun: () -> Unit, servicesFun: () -
 }
 
 @Composable
-fun Buttons(beaconFun: () -> Unit, deviceFun: () -> Unit, servicesFun: () -> Unit) {
+fun Buttons(deviceFun: () -> Unit, servicesFun: () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.aligned(Alignment.CenterHorizontally)
     ) {
@@ -291,15 +270,6 @@ fun Buttons(beaconFun: () -> Unit, deviceFun: () -> Unit, servicesFun: () -> Uni
             )
         }
 
-        ExtendedFloatingActionButton(
-            onClick = beaconFun
-        ) {
-            Text(text = "Beacon")
-            Icon(
-                painter = painterResource(id = R.drawable.beacon),
-                contentDescription = "Beacon icon"
-            )
-        }
         ExtendedFloatingActionButton(
             onClick = servicesFun
         ) {
@@ -317,6 +287,6 @@ fun Buttons(beaconFun: () -> Unit, deviceFun: () -> Unit, servicesFun: () -> Uni
 @Composable
 fun DefaultPreview() {
     ArtworksTrackerTheme {
-        CompleteView({}, {}, {})
+        CompleteView({}, {})
     }
 }
