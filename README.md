@@ -7,6 +7,28 @@
   - Drawn in the map
 - [Other useful things](https://developer.android.com/guide/topics/ui/accessibility)
 
+## Project structure (per feature)
+- data (data layer)
+  - dataSource (interfaces of DB, API, ...)
+    - local (optional) (DB DAO, ...)
+      - entities (DB tables)
+      - DAOs (interfaces to access DB table)
+      - DB implementation (concrete implementation of Room DB)
+    - remote (optional)
+      - API interface (HTTP endpoints)
+      - DTOs (classes that maps the JSON responses into DTOs)
+  - repository (concrete implementation of the "repository" interface)
+- domain (domain layer)
+  - model (entities of the domain -> "decoupling" from entities of data layer)
+  - repository (interface of the repository class)
+  - useCases (classes that model != useCases) (each useCase should refer to a specific user action)
+- presentation (presentation layer)
+  - components (contains all the composable functions)
+  - ViewModel 
+  - {Feature}Screen ("container" for all the composables)
+  - {Feature}Event (sealed class which contains all the events that the user can do)
+  - {...}State (UI states)
+
 ## Features
 ### Settings
   - Language selection (?)
