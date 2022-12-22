@@ -1,4 +1,10 @@
 package it.afm.artworkstracker.featureArtwork.domain.model
 
-class Artwork {
-}
+import java.util.UUID
+
+data class Artwork(
+    val author: String,
+    val title: String,
+    val description: String,
+    val id: UUID
+)
