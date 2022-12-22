@@ -39,27 +39,12 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.concurrent.fixedRateTimer
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(), RangeNotifier {
+class MainActivity : ComponentActivity() {
     private var ip: InetAddress? = null
     private var port: Int? = null
-    private val beaconsMap = ConcurrentHashMap<UUID, BeaconMeasurements>()
-    private val beaconVisited = ConcurrentLinkedQueue<UUID>()
 
     // TODO: (for future implementation) artwork information should be manual (snackbar) + setting to make it auto
 
-
-    override fun didRangeBeaconsInRegion(beacons: Collection<Beacon>, region: Region) {
-        for (beacon in beacons) {
-            if (beacon.distance < MIN_CONSIDERABLE_DISTANCE) {
-                val uuid = beacon.id1.toUuid()
-
-                if (!beaconsMap.containsKey(uuid))
-                    beaconsMap[uuid] = BeaconMeasurements()
-
-                beaconsMap[uuid]!!.push(beacon.distance)
-            }
-        }
-    }
 
     private val locationRequestLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -130,7 +115,7 @@ class MainActivity : ComponentActivity(), RangeNotifier {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CompleteView(this::transmitAsADevice, this::discoverServices)
+
                 }
             }
         }
@@ -170,125 +155,6 @@ class MainActivity : ComponentActivity(), RangeNotifier {
 
         nsdManager.stopServiceDiscovery(discoveryListener)
     }
-
-    private fun showBeaconToast(uuid: UUID) {
-        runOnUiThread {
-            Toast.makeText(this@MainActivity, "You are really close to beacon $uuid", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun transmitAsADevice() {
-        val beaconManager = BeaconManager.getInstanceForApplication(this)
-        val region = Region("all-beacon-region", null, null, null)
-
-        val regionViewModel = beaconManager.getRegionViewModel(region)
-//        regionViewModel.rangedBeacons.observe(this, rangingObserver)
-
-        beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.ALTBEACON_LAYOUT))
-        beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout("m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24"))
-
-        beaconManager.foregroundScanPeriod = 1100L
-        beaconManager.foregroundBetweenScanPeriod = 0L
-
-        BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter::class.java)
-        RunningAverageRssiFilter.setSampleExpirationMilliseconds(5000L)
-
-        beaconManager.addRangeNotifier(this)
-
-        beaconManager.startRangingBeacons(region)
-
-        Toast.makeText(this@MainActivity, "Start ranging", Toast.LENGTH_LONG).show()
-
-        val proximityBeaconDetector = fixedRateTimer("proximityBeaconDetection", false, 6000L, 3000L) {
-            for (beaconInRange in beaconsMap) {
-                if (beaconVisited.contains(beaconInRange.key)) {
-                    val measurements = beaconInRange.value.getMeasures()
-                    var sum = 0.0
-
-                    if (measurements.size == MAX_CONSIDERED_MEASUREMENTS) {
-                        for (measurement in measurements) sum += measurement
-                        val mean = sum / MAX_CONSIDERED_MEASUREMENTS.toDouble()
-
-                        Log.i("MainActivity", "Making mean on beacon ${beaconInRange.key} ($mean) (raw = ${beaconInRange.value.getMeasures()}))")
-
-                        if (mean < MIN_BEACON_DISTANCE) {
-                            showBeaconToast(beaconInRange.key)
-                            beaconVisited.add(beaconInRange.key)
-                        }
-                    }
-                }
-            }
-        }
-
-        // delay 10s , period 5s delete beacons which last measure timestamp is greater than 10s
-        val beaconCleaner = fixedRateTimer("beaconCleaner", false, 10000L, 5000L ) {
-//            for(beacon in beaconsMap) {
-//                val timestamp = beacon.value.getLastTimestamp()
-//                if(LocalDateTime.now().isAfter(timestamp.plusSeconds(10L))){
-//                    beaconsMap.remove(beacon.key)
-//                }
-//            }
-        }
-
-        Handler(Looper.myLooper()!!).postDelayed(
-            {
-                beaconManager.stopRangingBeacons(region)
-                Toast.makeText(this@MainActivity, "Ranging terminated", Toast.LENGTH_LONG).show()
-                proximityBeaconDetector.cancel()
-                beaconCleaner.cancel()
-            },
-            60000
-        )
-    }
-
-    companion object {
-        const val MIN_CONSIDERABLE_DISTANCE = 3.0
-        const val MAX_CONSIDERED_MEASUREMENTS = 5
-        const val MIN_BEACON_DISTANCE = 0.5
-    }
-}
-
-val beaconOne = MutableStateFlow("")
-val beaconTwo = MutableStateFlow("")
-
-@Composable
-fun CompleteView(deviceFun: () -> Unit, servicesFun: () -> Unit) {
-    Column {
-        Buttons(deviceFun = deviceFun, servicesFun = servicesFun)
-
-        val textOne by beaconOne.collectAsState()
-        val textTwo by beaconTwo.collectAsState()
-
-        Text(text = textOne)
-        Text(text = textTwo)
-    }
-}
-
-@Composable
-fun Buttons(deviceFun: () -> Unit, servicesFun: () -> Unit) {
-    Row(
-        horizontalArrangement = Arrangement.aligned(Alignment.CenterHorizontally)
-    ) {
-        ExtendedFloatingActionButton(
-            onClick = deviceFun
-        ) {
-            Text(text = "Device")
-            Icon(
-                painter = painterResource(id = R.drawable.device),
-                contentDescription = "Device icon"
-            )
-        }
-
-        ExtendedFloatingActionButton(
-            onClick = servicesFun
-        ) {
-            Text(text = "Services")
-            Icon(
-                painter = painterResource(id = R.drawable.beacon),
-                contentDescription = "Services icon"
-            )
-        }
-    }
 }
 
 
@@ -296,6 +162,5 @@ fun Buttons(deviceFun: () -> Unit, servicesFun: () -> Unit) {
 @Composable
 fun DefaultPreview() {
     ArtworksTrackerTheme {
-        CompleteView({}, {})
     }
 }

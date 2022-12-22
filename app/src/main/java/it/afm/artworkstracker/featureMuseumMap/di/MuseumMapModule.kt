@@ -9,6 +9,7 @@ import it.afm.artworkstracker.featureMuseumMap.data.dataSource.BeaconDataSourceI
 import it.afm.artworkstracker.featureMuseumMap.data.dataSource.BeaconsDataSource
 import it.afm.artworkstracker.featureMuseumMap.data.repository.BeaconsRepositoryImpl
 import it.afm.artworkstracker.featureMuseumMap.domain.repository.BeaconsRepository
+import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetCloserBeaconsUseCase
 import javax.inject.Singleton
 
 @Module
@@ -25,5 +26,11 @@ object MuseumMapModule {
     @Singleton
     fun provideBeaconsRepository(beaconsDataSource: BeaconsDataSource): BeaconsRepository {
         return BeaconsRepositoryImpl(beaconsDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetCloserBeaconsUseCase(beaconsRepository: BeaconsRepository): GetCloserBeaconsUseCase {
+        return GetCloserBeaconsUseCase(beaconsRepository)
     }
 }
