@@ -1,21 +1,20 @@
-package it.afm.artworkstracker.utils
+package it.afm.artworkstracker.featureMuseumMap.domain.util
 
-import java.time.LocalDateTime
 import java.util.concurrent.ArrayBlockingQueue
 
-class BeaconMeasurementContainer {
+class BeaconMeasurements {
     private val realContainer = ArrayBlockingQueue<Measurement>(size)
 
     fun push(item: Double) {
         if (realContainer.size >= size) realContainer.remove()
-        realContainer.add(Measurement(item, LocalDateTime.now()))
+        realContainer.add(Measurement(item, System.currentTimeMillis()))
     }
 
-    fun getAllValues(): List<Double> {
+    fun getMeasures(): List<Double> {
         return realContainer.map { item -> item.measure }.toList()
     }
 
-    fun getLastTimeStamp(): LocalDateTime {
+    fun getLastTimestamp(): Long {
         return realContainer.last().timestamp
     }
 

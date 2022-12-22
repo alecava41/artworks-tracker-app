@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
-import it.afm.artworkstracker.utils.BeaconMeasurementContainer
+import it.afm.artworkstracker.featureMuseumMap.domain.util.BeaconMeasurements
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.altbeacon.beacon.*
 import org.altbeacon.beacon.service.RunningAverageRssiFilter
@@ -42,7 +42,7 @@ import kotlin.concurrent.fixedRateTimer
 class MainActivity : ComponentActivity(), RangeNotifier {
     private var ip: InetAddress? = null
     private var port: Int? = null
-    private val beaconsMap = ConcurrentHashMap<UUID, BeaconMeasurementContainer>()
+    private val beaconsMap = ConcurrentHashMap<UUID, BeaconMeasurements>()
     private val beaconVisited = ConcurrentLinkedQueue<UUID>()
 
     // TODO: (for future implementation) artwork information should be manual (snackbar) + setting to make it auto
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity(), RangeNotifier {
                 val uuid = beacon.id1.toUuid()
 
                 if (!beaconsMap.containsKey(uuid))
-                    beaconsMap[uuid] = BeaconMeasurementContainer()
+                    beaconsMap[uuid] = BeaconMeasurements()
 
                 beaconsMap[uuid]!!.push(beacon.distance)
             }
@@ -202,14 +202,14 @@ class MainActivity : ComponentActivity(), RangeNotifier {
         val proximityBeaconDetector = fixedRateTimer("proximityBeaconDetection", false, 6000L, 3000L) {
             for (beaconInRange in beaconsMap) {
                 if (beaconVisited.contains(beaconInRange.key)) {
-                    val measurements = beaconInRange.value.getAllValues()
+                    val measurements = beaconInRange.value.getMeasures()
                     var sum = 0.0
 
                     if (measurements.size == MAX_CONSIDERED_MEASUREMENTS) {
                         for (measurement in measurements) sum += measurement
                         val mean = sum / MAX_CONSIDERED_MEASUREMENTS.toDouble()
 
-                        Log.i("MainActivity", "Making mean on beacon ${beaconInRange.key} ($mean) (raw = ${beaconInRange.value.getAllValues()}))")
+                        Log.i("MainActivity", "Making mean on beacon ${beaconInRange.key} ($mean) (raw = ${beaconInRange.value.getMeasures()}))")
 
                         if (mean < MIN_BEACON_DISTANCE) {
                             showBeaconToast(beaconInRange.key)
@@ -220,14 +220,14 @@ class MainActivity : ComponentActivity(), RangeNotifier {
             }
         }
 
-        // delay 10s , period 5s delete beacons which last measure timespamp is greater than 10s
+        // delay 10s , period 5s delete beacons which last measure timestamp is greater than 10s
         val beaconCleaner = fixedRateTimer("beaconCleaner", false, 10000L, 5000L ) {
-            for(beacon in beaconsMap) {
-                val timestamp = beacon.value.getLastTimeStamp()
-                if(LocalDateTime.now().isAfter(timestamp.plusSeconds(10L))){
-                    beaconsMap.remove(beacon.key)
-                }
-            }
+//            for(beacon in beaconsMap) {
+//                val timestamp = beacon.value.getLastTimestamp()
+//                if(LocalDateTime.now().isAfter(timestamp.plusSeconds(10L))){
+//                    beaconsMap.remove(beacon.key)
+//                }
+//            }
         }
 
         Handler(Looper.myLooper()!!).postDelayed(
