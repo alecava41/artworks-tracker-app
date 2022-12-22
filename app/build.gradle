@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.dagger.hilt.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -58,6 +60,10 @@ dependencies {
     // Bluetooth beacon dependencies
     implementation 'org.altbeacon:android-beacon-library:2.19.4'
 
+    // Dagger - Hilt
+    implementation "com.google.dagger:hilt-android:2.44.2"
+    kapt "com.google.dagger:hilt-compiler:2.44"
+
     // Test dependencies
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
@@ -65,4 +71,9 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.3.2"
     debugImplementation "androidx.compose.ui:ui-tooling:1.3.2"
     debugImplementation "androidx.compose.ui:ui-test-manifest:1.3.2"
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
 }

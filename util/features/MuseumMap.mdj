@@ -155,13 +155,47 @@
 											"height": 13,
 											"text": "+getCloserBeacons(): Flow<List<Beacon>>",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAGFOQFok8EO88Y=",
+											"_parent": {
+												"$ref": "AAAAAAGFNYrmFu4d2xc="
+											},
+											"model": {
+												"$ref": "AAAAAAGFOQFod8ELgTA="
+											},
+											"font": "Arial;13;0",
+											"left": 453,
+											"top": 460,
+											"width": 251.8369140625,
+											"height": 13,
+											"text": "+startListeningForBeacons()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAGFOQGU8cHbmzw=",
+											"_parent": {
+												"$ref": "AAAAAAGFNYrmFu4d2xc="
+											},
+											"model": {
+												"$ref": "AAAAAAGFOQGU5sHYZHE="
+											},
+											"font": "Arial;13;0",
+											"left": 453,
+											"top": 475,
+											"width": 251.8369140625,
+											"height": 13,
+											"text": "+stopListeningForBeacons()",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 448,
 									"top": 440,
 									"width": 261.8369140625,
-									"height": 23
+									"height": 53
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -201,7 +235,7 @@
 							"left": 448,
 							"top": 392,
 							"width": 261.8369140625,
-							"height": 72,
+							"height": 102,
 							"stereotypeDisplay": "icon",
 							"nameCompartment": {
 								"$ref": "AAAAAAGFNYrmFe4X1yk="
@@ -248,8 +282,7 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 16,
-											"top": -160,
+											"top": -96,
 											"height": 13
 										},
 										{
@@ -259,8 +292,8 @@
 												"$ref": "AAAAAAGFNZDxxO5O/kw="
 											},
 											"font": "Arial;13;1",
-											"left": 509,
-											"top": 519,
+											"left": 501,
+											"top": 551,
 											"width": 153.16259765625,
 											"height": 13,
 											"text": "BeaconsDataSourceImpl"
@@ -273,8 +306,7 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 16,
-											"top": -160,
+											"top": -96,
 											"width": 73.67724609375,
 											"height": 13,
 											"text": "(from Model)"
@@ -287,15 +319,14 @@
 											},
 											"visible": false,
 											"font": "Arial;13;0",
-											"left": 16,
-											"top": -160,
+											"top": -96,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
-									"left": 504,
-									"top": 512,
+									"left": 496,
+									"top": 544,
 									"width": 163.16259765625,
 									"height": 25,
 									"stereotypeLabel": {
@@ -321,8 +352,8 @@
 										"$ref": "AAAAAAGFNZDxw+5Ld0s="
 									},
 									"font": "Arial;13;0",
-									"left": 504,
-									"top": 537,
+									"left": 496,
+									"top": 569,
 									"width": 163.16259765625,
 									"height": 10
 								},
@@ -336,8 +367,8 @@
 										"$ref": "AAAAAAGFNZDxw+5Ld0s="
 									},
 									"font": "Arial;13;0",
-									"left": 504,
-									"top": 547,
+									"left": 496,
+									"top": 579,
 									"width": 163.16259765625,
 									"height": 10
 								},
@@ -352,8 +383,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 8,
-									"top": -80,
+									"top": -48,
 									"width": 10,
 									"height": 10
 								},
@@ -368,16 +398,15 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 8,
-									"top": -80,
+									"top": -48,
 									"width": 10,
 									"height": 10
 								}
 							],
 							"font": "Arial;13;0",
 							"containerChangeable": true,
-							"left": 504,
-							"top": 512,
+							"left": 496,
+							"top": 544,
 							"width": 163.16259765625,
 							"height": 45,
 							"nameCompartment": {
@@ -417,8 +446,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 713,
-									"top": 473,
+									"left": 769,
+									"top": 505,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -438,8 +467,8 @@
 									},
 									"visible": null,
 									"font": "Arial;13;0",
-									"left": 698,
-									"top": 473,
+									"left": 754,
+									"top": 505,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -459,8 +488,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 742,
-									"top": 474,
+									"left": 799,
+									"top": 506,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -477,7 +506,7 @@
 							"tail": {
 								"$ref": "AAAAAAGFNZDxxO5NRAs="
 							},
-							"points": "581:512;581:480;728:480;728:403;589.91845703125:403",
+							"points": "576:544;576:512;784:512;784:403;589.91845703125:403",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGFNZEZmu54an4="
@@ -497,7 +526,7 @@
 							},
 							"font": "Arial;13;0",
 							"left": 736,
-							"top": 528,
+							"top": 544,
 							"width": 79.26171875,
 							"height": 40,
 							"text": "AltBeacon library"
@@ -515,7 +544,7 @@
 							"tail": {
 								"$ref": "AAAAAAGFNZG2lO6M3CY="
 							},
-							"points": "736:544;666:544"
+							"points": "736:560;658:560"
 						},
 						{
 							"_type": "UMLInterfaceView",
@@ -1220,12 +1249,12 @@
 										"$ref": "AAAAAAGFNa6LHrTyj2o="
 									},
 									"font": "Arial;13;0",
-									"left": 439,
+									"left": 455,
 									"top": 352,
 									"width": 70.82080078125,
 									"height": 13,
-									"alpha": 0.13432142401896802,
-									"distance": 74.67261881037788,
+									"alpha": 0.11065720897877504,
+									"distance": 90.55385138137417,
 									"hostEdge": {
 										"$ref": "AAAAAAGFNa6LHrT2cWs="
 									},
@@ -2064,6 +2093,22 @@
 									"direction": "return"
 								}
 							]
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAGFOQFod8ELgTA=",
+							"_parent": {
+								"$ref": "AAAAAAGFNYrmEu4UyeY="
+							},
+							"name": "startListeningForBeacons"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAGFOQGU5sHYZHE=",
+							"_parent": {
+								"$ref": "AAAAAAGFNYrmEu4UyeY="
+							},
+							"name": "stopListeningForBeacons"
 						}
 					]
 				},

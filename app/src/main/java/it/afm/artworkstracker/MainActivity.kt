@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
+import dagger.hilt.android.AndroidEntryPoint
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 import it.afm.artworkstracker.utils.BeaconMeasurementContainer
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.concurrent.fixedRateTimer
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity(), RangeNotifier {
     private var ip: InetAddress? = null
     private var port: Int? = null
