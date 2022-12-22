@@ -1,0 +1,14 @@
+{
+  "id": 1,
+  "name": "Room 1",
+  "shape": "...",
+  "artworks": [
+    {
+      "id": 1,
+      "posX": 10,
+      "posY": 10,
+      "starred": true,
+      "type": "Painting"
+    }
+  ]
+}
