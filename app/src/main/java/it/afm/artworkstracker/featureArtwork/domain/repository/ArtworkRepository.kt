@@ -4,5 +4,7 @@ import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
 import java.util.UUID
 
 interface ArtworkRepository {
-    suspend fun getArtwork(id: UUID): Artwork
+    suspend fun getArtworkFromId(id: UUID): Artwork // do we put (Artwork?) ?
+    suspend fun deleteAllArtworks()
+    suspend fun insertArtwork(artwork: Artwork)
 }

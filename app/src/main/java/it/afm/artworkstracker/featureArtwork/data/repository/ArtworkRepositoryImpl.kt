@@ -11,22 +11,30 @@ class ArtworkRepositoryImpl(
     private val api: MuseumApi,
     private val dao: ArtworkDao
 ) : ArtworkRepository {
-    override suspend fun getArtwork(id: UUID): Artwork {
+    override suspend fun getArtworkFromId(id: UUID): Artwork {
         lateinit var nearestArtwork: Artwork
         val searchArtwork = dao.getArtworkFromId(id)
-        if(searchArtwork == null){
+        if (searchArtwork == null) {
             try {
                 nearestArtwork = api.getArtwork(relativePath = "").toArtwork()
-                dao.insertArtwork(nearestArtwork)
+                dao.insertArtwork(nearestArtwork) // do we use overrided fun or dao.insertArtwork(nearestArtwork) ?
             }//catch(e: HttpException){ // retrofit type
 
             //}
-        catch (e: IOException){
+            catch (e: IOException) {
 
             }
         } else {
             nearestArtwork = searchArtwork.toArtwork()
         }
         return nearestArtwork
+    }
+
+    override suspend fun deleteAllArtworks() {
+        dao.deleteAllArtworks()
+    }
+
+    override suspend fun insertArtwork(artwork: Artwork) {
+        dao.insertArtwork(artwork)
     }
 }
