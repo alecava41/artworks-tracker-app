@@ -1,6 +1,6 @@
 package it.afm.artworkstracker.core.dto
 
-import it.afm.artworkstracker.featureArtwork.domain.model.ArtworkInfo
+import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkInfo
 import java.util.UUID
 
 data class ArtworkInfoDto(

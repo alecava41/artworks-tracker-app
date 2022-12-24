@@ -12,7 +12,7 @@ import java.util.UUID
 interface ArtworkDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertArtwork(artwork: Artwork)
+    suspend fun insertArtwork(artworkEntity: ArtworkEntity)
 
     @Query("DELETE FROM ArtworkEntity")
     suspend fun deleteAllArtworks()

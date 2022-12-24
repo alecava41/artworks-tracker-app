@@ -4,6 +4,9 @@ import it.afm.artworkstracker.core.dto.ArtworkDto
 import it.afm.artworkstracker.core.dto.RoomDto
 
 interface MuseumApi {
-    fun getRoom(relativePath: String): RoomDto
-    fun getArtwork(relativePath: String): ArtworkDto
+    // TODO: add missing Retrofit annotations
+    suspend fun getRoom(relativePath: String): RoomDto?
+
+    // TODO: add missing Retrofit annotations
+    suspend fun getArtwork(relativePath: String): ArtworkDto?
 }

@@ -1,4 +1,4 @@
-package it.afm.artworkstracker.featureArtwork.domain.model
+package it.afm.artworkstracker.featureMuseumMap.domain.model
 
 import java.util.UUID
 

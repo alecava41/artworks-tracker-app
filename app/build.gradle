@@ -68,7 +68,10 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:2.44"
 
     // Room dependencies
-    implementation 'androidx.room:room-ktx:2.4.2'
+    implementation 'androidx.room:room-ktx:2.4.3'
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
     // Test dependencies
     testImplementation 'junit:junit:4.13.2'

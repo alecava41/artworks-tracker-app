@@ -1,9 +1,12 @@
 package it.afm.artworkstracker.featureArtwork.data.repository
 
+import android.util.Log
 import it.afm.artworkstracker.core.MuseumApi
 import it.afm.artworkstracker.featureArtwork.data.dataSource.local.ArtworkDao
+import it.afm.artworkstracker.featureArtwork.data.dataSource.local.entity.ArtworkEntity
 import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
 import it.afm.artworkstracker.featureArtwork.domain.repository.ArtworkRepository
+import retrofit2.HttpException
 import java.io.IOException
 import java.util.UUID
 
@@ -11,30 +14,34 @@ class ArtworkRepositoryImpl(
     private val api: MuseumApi,
     private val dao: ArtworkDao
 ) : ArtworkRepository {
-    override suspend fun getArtworkFromId(id: UUID): Artwork {
-        lateinit var nearestArtwork: Artwork
-        val searchArtwork = dao.getArtworkFromId(id)
+
+    override suspend fun getArtworkFromId(id: UUID): Artwork? {
+        var searchArtwork = dao.getArtworkFromId(id)
         if (searchArtwork == null) {
             try {
-                nearestArtwork = api.getArtwork(relativePath = "").toArtwork()
-                dao.insertArtwork(nearestArtwork) // do we use overrided fun or dao.insertArtwork(nearestArtwork) ?
-            }//catch(e: HttpException){ // retrofit type
+                searchArtwork = api.getArtwork(relativePath = "")?.toArtworkEntity()
 
-            //}
-            catch (e: IOException) {
-
+                if (searchArtwork != null)
+                    dao.insertArtwork(searchArtwork)
+            } catch(e: HttpException){ // retrofit type
+                Log.e(TAG, e.message())
             }
-        } else {
-            nearestArtwork = searchArtwork.toArtwork()
+            catch (e: IOException) {
+                Log.e(TAG, e.message ?: "IOException")
+            }
         }
-        return nearestArtwork
+        return searchArtwork?.toArtwork()
     }
 
     override suspend fun deleteAllArtworks() {
         dao.deleteAllArtworks()
     }
 
-    override suspend fun insertArtwork(artwork: Artwork) {
-        dao.insertArtwork(artwork)
+    override suspend fun insertArtwork(artworkEntity: ArtworkEntity) {
+        dao.insertArtwork(artworkEntity)
+    }
+
+    companion object {
+        const val TAG = "ArtworkRepositoryImpl"
     }
 }

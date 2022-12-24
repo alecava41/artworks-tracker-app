@@ -1,6 +1,7 @@
 package it.afm.artworkstracker.featureMuseumMap.data.dataSource
 
 import android.content.Context
+import android.util.Log
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,9 +34,7 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
         beaconManager.addRangeNotifier(this)
     }
 
-    override fun getCloserBeacons(): Flow<List<Beacon>> {
-        return beaconsInRangeFlow
-    }
+    override fun getCloserBeacons(): Flow<List<Beacon>> = beaconsInRangeFlow
 
     override fun startListeningForBeacons() {
         beaconManager.startRangingBeacons(region)
@@ -55,13 +54,20 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
             Beacon(it.id1.toUuid(), it.distance)
         }
 
-        if (!closerBeacons.isNullOrEmpty())
-            beaconsInRangeFlow.tryEmit(closerBeacons)
-        else
+        closerBeacons?.forEach {
+            Log.i(TAG, "Beacon ${it.id}, distance = ${it.distance}m")
+        }
+
+        if (!closerBeacons.isNullOrEmpty()) {
+            val res = beaconsInRangeFlow.tryEmit(closerBeacons)
+            Log.i(TAG, "Emitted values = $res, subscribers = ${beaconsInRangeFlow.subscriptionCount.value}")
+
+        } else
             beaconsInRangeFlow.tryEmit(emptyList())
     }
 
     companion object {
+        const val TAG = "BeaconDataSourceImpl"
         const val IBEACON_LAYOUT = "m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24"
         const val MIN_CONSIDERABLE_DISTANCE = 3.0
     }
