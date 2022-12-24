@@ -3,16 +3,19 @@ package it.afm.artworkstracker.featureMuseumMap.data.dataSource
 import android.content.Context
 import android.util.Log
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flow
 import org.altbeacon.beacon.BeaconManager
 import org.altbeacon.beacon.BeaconParser
 import org.altbeacon.beacon.RangeNotifier
 import org.altbeacon.beacon.Region
 import org.altbeacon.beacon.service.RunningAverageRssiFilter
+import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
-    private val beaconsInRangeFlow = MutableSharedFlow<List<Beacon>>()
+    private val beaconsInRange: ConcurrentLinkedQueue<Beacon> = ConcurrentLinkedQueue()
 
     private val beaconManager = BeaconManager.getInstanceForApplication(ctx)
     private val region = Region("all-beacon-region", null, null, null)
@@ -34,7 +37,12 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
         beaconManager.addRangeNotifier(this)
     }
 
-    override fun getCloserBeacons(): Flow<List<Beacon>> = beaconsInRangeFlow
+    override fun getCloserBeacons(): Flow<List<Beacon>> = flow {
+        while (true) {
+            emit(beaconsInRange.toList())
+            delay(1100L)
+        }
+    }
 
     override fun startListeningForBeacons() {
         beaconManager.startRangingBeacons(region)
@@ -48,22 +56,26 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
         beacons: MutableCollection<org.altbeacon.beacon.Beacon>?,
         region: Region?
     ) {
-        val closerBeacons = beacons?.filter {
+        beacons?.forEach {
+            Log.i(TAG, "Generic beacon ${it.id1}, distance = ${it.distance}m")
+        }
+
+        var closerBeacons = beacons?.filter {
             it.distance <= MIN_CONSIDERABLE_DISTANCE
         }?.map {
             Beacon(it.id1.toUuid(), it.distance)
         }
 
+//        closerBeacons = listOf(Beacon(UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"), 0.15))
+
         closerBeacons?.forEach {
-            Log.i(TAG, "Beacon ${it.id}, distance = ${it.distance}m")
+            Log.i(TAG, "Closer Beacon ${it.id}, distance = ${it.distance}m")
         }
 
-        if (!closerBeacons.isNullOrEmpty()) {
-            val res = beaconsInRangeFlow.tryEmit(closerBeacons)
-            Log.i(TAG, "Emitted values = $res, subscribers = ${beaconsInRangeFlow.subscriptionCount.value}")
+        beaconsInRange.clear()
 
-        } else
-            beaconsInRangeFlow.tryEmit(emptyList())
+        if (closerBeacons != null)
+            beaconsInRange.addAll(closerBeacons)
     }
 
     companion object {

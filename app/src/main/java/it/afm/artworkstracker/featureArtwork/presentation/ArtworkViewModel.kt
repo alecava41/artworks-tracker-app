@@ -3,8 +3,8 @@ package it.afm.artworkstracker.featureArtwork.presentation
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 
-@HiltViewModel
-class ArtworkViewModel : ViewModel() {
+//@HiltViewModel
+//class ArtworkViewModel : ViewModel() {
     // TODO: add UseCase (constructor) 'dependency'
 
     // TODO: add private and "public" uiState
@@ -18,4 +18,4 @@ class ArtworkViewModel : ViewModel() {
     // TODO: add ArtworkEvent (sealed class) (ImageNext, ImagePrev)
 
     // TODO: add onEvent method (pattern matching on event type) (see NoteApp)
-}
+//}

@@ -4,55 +4,35 @@ import android.util.Log
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
 import it.afm.artworkstracker.featureMuseumMap.domain.repository.BeaconsRepository
 import it.afm.artworkstracker.featureMuseumMap.domain.util.BeaconMeasurements
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.concurrent.fixedRateTimer
 
 class GetCloserBeaconsUseCase(
     private val repository: BeaconsRepository
 ) {
-    private val closestBeacon = MutableSharedFlow<Beacon>()
+    private val closestBeacon = AtomicReference<Beacon>()
     private val closerBeaconsMap = ConcurrentHashMap<Beacon, BeaconMeasurements>()
 
-    private val closerBeaconFlow = repository.getCloserBeacons()
+    private val closerBeaconsFlow = repository.getCloserBeacons().onEach { beacons ->
+        Log.i(TAG, beacons.toString())
 
-    init {
-        CoroutineScope(Dispatchers.Default).launch {
-            closerBeaconFlow.collect { beacons ->
-                Log.i(TAG, beacons.toString())
+        for (beacon in beacons) {
+            if (!closerBeaconsMap.containsKey(beacon))
+                closerBeaconsMap[beacon] = BeaconMeasurements()
 
-                for (beacon in beacons) {
-                    if (!closerBeaconsMap.containsKey(beacon))
-                        closerBeaconsMap[beacon] = BeaconMeasurements()
-
-                    closerBeaconsMap[beacon]!!.push(beacon.distance)
-                }
-            }
+            closerBeaconsMap[beacon]!!.push(beacon.distance)
         }
+    }.map {
+        closestBeacon.get()
     }
 
-    operator fun invoke(): Flow<Beacon> = closestBeacon
+    operator fun invoke(): Flow<Beacon> = closerBeaconsFlow
 
     private var proximityBeaconDetector: Timer? = null
     private var beaconsCleaner: Timer? = null
-
-//        init {
-//            closerBeaconFlow.onEach { beacons ->
-//                Log.i(TAG, beacons.toString())
-//
-//                for (beacon in beacons) {
-//                    if (!closerBeaconsMap.containsKey(beacon))
-//                        closerBeaconsMap[beacon] = BeaconMeasurements()
-//
-//                    closerBeaconsMap[beacon]!!.push(beacon.distance)
-//                }
-//            }
-//        }
 
     fun startListeningForBeacons() {
         repository.startListeningForBeacons()
@@ -80,11 +60,10 @@ class GetCloserBeaconsUseCase(
             period = BEACONS_CLEANER_PERIODICITY
         ) {
             closerBeaconsMap.forEach {
-                val elapsedSeconds =
-                    (System.currentTimeMillis() - it.value.getLastTimestamp()) / 1000
+                val elapsedSeconds = (System.currentTimeMillis() - it.value.getLastTimestamp()) / 1000
 
                 if (elapsedSeconds > MAX_BEACON_LIFE_IN_RANGE)
-                    closestBeacon.tryEmit(it.key)
+                    closerBeaconsMap.remove(it.key)
             }
         }
     }
@@ -103,7 +82,7 @@ class GetCloserBeaconsUseCase(
                 Log.i(TAG, "Beacon ${it.key}, mean = $mean")
 
                 if (mean < MIN_BEACON_DISTANCE)
-                    closestBeacon.tryEmit(it.key)
+                    closestBeacon.set(it.key)
             }
         }
     }
