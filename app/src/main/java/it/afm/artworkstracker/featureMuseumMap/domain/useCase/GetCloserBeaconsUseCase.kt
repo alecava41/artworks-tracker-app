@@ -14,16 +14,16 @@ class GetCloserBeaconsUseCase(
     private val repository: BeaconsRepository
 ) {
     private val closestBeacon = AtomicReference<Beacon>()
-    private val closerBeaconsMap = ConcurrentHashMap<Beacon, BeaconMeasurements>()
+    private val closerBeaconsMap = ConcurrentHashMap<UUID, BeaconMeasurements>()
 
     private val closerBeaconsFlow = repository.getCloserBeacons().onEach { beacons ->
         Log.i(TAG, beacons.toString())
 
         for (beacon in beacons) {
-            if (!closerBeaconsMap.containsKey(beacon))
-                closerBeaconsMap[beacon] = BeaconMeasurements()
+            if (!closerBeaconsMap.containsKey(beacon.id))
+                closerBeaconsMap[beacon.id] = BeaconMeasurements()
 
-            closerBeaconsMap[beacon]!!.push(beacon.distance)
+            closerBeaconsMap[beacon.id]!!.push(beacon.distance)
         }
     }.map {
         closestBeacon.get()
@@ -62,8 +62,10 @@ class GetCloserBeaconsUseCase(
             closerBeaconsMap.forEach {
                 val elapsedSeconds = (System.currentTimeMillis() - it.value.getLastTimestamp()) / 1000
 
-                if (elapsedSeconds > MAX_BEACON_LIFE_IN_RANGE)
+                if (elapsedSeconds > MAX_BEACON_LIFE_IN_RANGE) {
+                    Log.i(TAG, "Cleaning beacon: ${it.key}, elapsed time = $elapsedSeconds")
                     closerBeaconsMap.remove(it.key)
+                }
             }
         }
     }
@@ -79,10 +81,10 @@ class GetCloserBeaconsUseCase(
                 val measures = it.value.getMeasures()
                 val mean = measures.sum() / measures.size
 
-                Log.i(TAG, "Beacon ${it.key}, mean = $mean")
+                Log.i(TAG, "Proximity beacon: ${it.key}, mean = $mean")
 
                 if (mean < MIN_BEACON_DISTANCE)
-                    closestBeacon.set(it.key)
+                    closestBeacon.set(Beacon(it.key, mean))
             }
         }
     }

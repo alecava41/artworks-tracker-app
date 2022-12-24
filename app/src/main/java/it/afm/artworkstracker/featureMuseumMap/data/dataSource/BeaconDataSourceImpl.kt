@@ -11,7 +11,6 @@ import org.altbeacon.beacon.BeaconParser
 import org.altbeacon.beacon.RangeNotifier
 import org.altbeacon.beacon.Region
 import org.altbeacon.beacon.service.RunningAverageRssiFilter
-import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
@@ -39,7 +38,9 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
 
     override fun getCloserBeacons(): Flow<List<Beacon>> = flow {
         while (true) {
-            emit(beaconsInRange.toList())
+            if (beaconsInRange.isNotEmpty())
+                emit(beaconsInRange.toList())
+
             delay(1100L)
         }
     }
@@ -56,17 +57,11 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
         beacons: MutableCollection<org.altbeacon.beacon.Beacon>?,
         region: Region?
     ) {
-        beacons?.forEach {
-            Log.i(TAG, "Generic beacon ${it.id1}, distance = ${it.distance}m")
-        }
-
-        var closerBeacons = beacons?.filter {
+        val closerBeacons = beacons?.filter {
             it.distance <= MIN_CONSIDERABLE_DISTANCE
         }?.map {
             Beacon(it.id1.toUuid(), it.distance)
         }
-
-//        closerBeacons = listOf(Beacon(UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"), 0.15))
 
         closerBeacons?.forEach {
             Log.i(TAG, "Closer Beacon ${it.id}, distance = ${it.distance}m")
