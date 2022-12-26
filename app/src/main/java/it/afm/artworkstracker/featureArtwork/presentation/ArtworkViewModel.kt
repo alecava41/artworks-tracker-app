@@ -45,9 +45,31 @@ class ArtworkViewModel(
     fun onEvent(event: ArtworkEvent) {
         when(event){
             is ArtworkEvent.ImageNext -> {
+                _uiState.value = uiState.value.copy(
+                    artwork = uiState.value.artwork,
+                    currentImageDisplayed = uiState.value.currentImageDisplayed,
+                    isAudioEnabled = uiState.value.isAudioEnabled,
+                    currentImagesNumber = if(uiState.value.currentImagesNumber < uiState.value.maxImagesNumber) uiState.value.currentImagesNumber + 1 else 1,
+                    maxImagesNumber = uiState.value.maxImagesNumber
+                )
             }
             is ArtworkEvent.ImagePrevious -> {
-
+                _uiState.value = uiState.value.copy(
+                    artwork = uiState.value.artwork,
+                    currentImageDisplayed = uiState.value.currentImageDisplayed,
+                    isAudioEnabled = uiState.value.isAudioEnabled,
+                    currentImagesNumber = if(uiState.value.currentImagesNumber > 1) uiState.value.currentImagesNumber - 1 else uiState.value.maxImagesNumber,
+                    maxImagesNumber = uiState.value.maxImagesNumber
+                )
+            }
+            is ArtworkEvent.AudioChange -> {
+                _uiState.value = uiState.value.copy(
+                    artwork = uiState.value.artwork,
+                    currentImageDisplayed = uiState.value.currentImageDisplayed,
+                    isAudioEnabled = !uiState.value.isAudioEnabled,
+                    currentImagesNumber = uiState.value.currentImagesNumber,
+                    maxImagesNumber = uiState.value.maxImagesNumber
+                )
             }
         }
     }
