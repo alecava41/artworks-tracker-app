@@ -19,11 +19,22 @@ class GetCloserBeaconsUseCase(
     private val closerBeaconsFlow = repository.getCloserBeacons().onEach { beacons ->
         Log.i(TAG, beacons.toString())
 
-        for (beacon in beacons) {
+        beacons.forEach { beacon ->
             if (!closerBeaconsMap.containsKey(beacon.id))
                 closerBeaconsMap[beacon.id] = BeaconMeasurements()
 
             closerBeaconsMap[beacon.id]!!.push(beacon.distance)
+        }
+
+        // TODO: decide whether to do it every time new data arrives or every X seconds
+        closerBeaconsMap.forEach {
+            val measures = it.value.getMeasures()
+            val mean = measures.sum() / measures.size
+
+            Log.i(TAG, "Proximity beacon: ${it.key}, mean = $mean")
+
+            if (mean < MIN_BEACON_DISTANCE)
+                closestBeacon.set(Beacon(it.key, mean))
         }
     }.map {
         closestBeacon.get()
@@ -31,13 +42,13 @@ class GetCloserBeaconsUseCase(
 
     operator fun invoke(): Flow<Beacon> = closerBeaconsFlow
 
-    private var proximityBeaconDetector: Timer? = null
+//    private var proximityBeaconDetector: Timer? = null
     private var beaconsCleaner: Timer? = null
 
     fun startListeningForBeacons() {
         repository.startListeningForBeacons()
 
-        proximityBeaconDetector = restartProximityDetection()
+//        proximityBeaconDetector = restartProximityDetection()
         beaconsCleaner = restartBeaconsCleaning()
 
         Log.i(TAG, "Start listening for beacons!")
@@ -46,7 +57,7 @@ class GetCloserBeaconsUseCase(
     fun stopListeningForBeacons() {
         repository.stopListeningForBeacons()
 
-        proximityBeaconDetector?.cancel()
+//        proximityBeaconDetector?.cancel()
         beaconsCleaner?.cancel()
 
         Log.i(TAG, "Stop listening for beacons!")
@@ -70,24 +81,24 @@ class GetCloserBeaconsUseCase(
         }
     }
 
-    private fun restartProximityDetection(): Timer {
-        return fixedRateTimer(
-            name = "proximityBeaconDetection",
-            daemon = false,
-            initialDelay = PROXIMITY_DETECTION_INITIAL_DELAY,
-            period = PROXIMITY_DETECTION_PERIODICITY
-        ) {
-            closerBeaconsMap.forEach {
-                val measures = it.value.getMeasures()
-                val mean = measures.sum() / measures.size
-
-                Log.i(TAG, "Proximity beacon: ${it.key}, mean = $mean")
-
-                if (mean < MIN_BEACON_DISTANCE)
-                    closestBeacon.set(Beacon(it.key, mean))
-            }
-        }
-    }
+//    private fun restartProximityDetection(): Timer {
+//        return fixedRateTimer(
+//            name = "proximityBeaconDetection",
+//            daemon = false,
+//            initialDelay = PROXIMITY_DETECTION_INITIAL_DELAY,
+//            period = PROXIMITY_DETECTION_PERIODICITY
+//        ) {
+//            closerBeaconsMap.forEach {
+//                val measures = it.value.getMeasures()
+//                val mean = measures.sum() / measures.size
+//
+//                Log.i(TAG, "Proximity beacon: ${it.key}, mean = $mean")
+//
+//                if (mean < MIN_BEACON_DISTANCE)
+//                    closestBeacon.set(Beacon(it.key, mean))
+//            }
+//        }
+//    }
 
     companion object {
         const val TAG = "GetCloserBeaconsUseCase"

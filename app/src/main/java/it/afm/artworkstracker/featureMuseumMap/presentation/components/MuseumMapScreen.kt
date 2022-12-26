@@ -1,8 +1,6 @@
 package it.afm.artworkstracker.featureMuseumMap.presentation.components
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,10 +17,18 @@ fun MuseumMapScreen(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp)
+            .padding(10.dp)
     ) {
-        Text(
-            text = state.closerBeacon?.id.toString()
-        )
+        Column(
+            modifier = Modifier
+        ) {
+            Text(
+                text = state.closestBeacon?.id.toString()
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = state.room?.name.toString()
+            )
+        }
     }
 }

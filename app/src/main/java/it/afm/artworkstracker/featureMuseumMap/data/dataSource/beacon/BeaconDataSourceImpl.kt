@@ -1,4 +1,4 @@
-package it.afm.artworkstracker.featureMuseumMap.data.dataSource
+package it.afm.artworkstracker.featureMuseumMap.data.dataSource.beacon
 
 import android.content.Context
 import android.util.Log

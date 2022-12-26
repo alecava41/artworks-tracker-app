@@ -1,6 +1,6 @@
 package it.afm.artworkstracker.featureMuseumMap.data.repository
 
-import it.afm.artworkstracker.featureMuseumMap.data.dataSource.BeaconsDataSource
+import it.afm.artworkstracker.featureMuseumMap.data.dataSource.beacon.BeaconsDataSource
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
 import it.afm.artworkstracker.featureMuseumMap.domain.repository.BeaconsRepository
 import kotlinx.coroutines.flow.Flow

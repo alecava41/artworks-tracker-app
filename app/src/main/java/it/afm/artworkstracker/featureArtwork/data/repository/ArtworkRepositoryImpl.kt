@@ -1,7 +1,7 @@
 package it.afm.artworkstracker.featureArtwork.data.repository
 
 import android.util.Log
-import it.afm.artworkstracker.core.MuseumApi
+import it.afm.artworkstracker.core.data.MuseumApi
 import it.afm.artworkstracker.featureArtwork.data.dataSource.local.ArtworkDao
 import it.afm.artworkstracker.featureArtwork.data.dataSource.local.entity.ArtworkEntity
 import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
@@ -19,10 +19,11 @@ class ArtworkRepositoryImpl(
         var searchArtwork = dao.getArtworkFromId(id)
         if (searchArtwork == null) {
             try {
-                searchArtwork = api.getArtwork(relativePath = "")?.toArtworkEntity()
+                searchArtwork = api.getArtwork("")?.toArtworkEntity()
 
                 if (searchArtwork != null)
                     dao.insertArtwork(searchArtwork)
+
             } catch(e: HttpException){ // retrofit type
                 Log.e(TAG, e.message())
             }

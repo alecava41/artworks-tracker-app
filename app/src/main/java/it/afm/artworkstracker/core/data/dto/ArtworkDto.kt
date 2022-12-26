@@ -1,4 +1,4 @@
-package it.afm.artworkstracker.core.dto
+package it.afm.artworkstracker.core.data.dto
 
 import it.afm.artworkstracker.featureArtwork.data.dataSource.local.entity.ArtworkEntity
 import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
