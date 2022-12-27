@@ -63,10 +63,6 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
             Beacon(it.id1.toUuid(), it.distance)
         }
 
-        closerBeacons?.forEach {
-            Log.i(TAG, "Closer Beacon ${it.id}, distance = ${it.distance}m")
-        }
-
         beaconsInRange.clear()
 
         if (closerBeacons != null)

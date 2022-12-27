@@ -24,17 +24,33 @@ class MuseumMapViewModel @Inject constructor(
 
     init {
        getCloserBeaconsUseCase().onEach {
-           if (!baseUrl.isNullOrBlank()) {
-               val room = getRoomUseCase(it.id, baseUrl!!)
+           val currentClosestBeacon = _museumMapState.value.closestBeacon
+           val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon.id != it.id)
 
-               Log.i(TAG, "Room = $room")
+           Log.i(TAG, "New Beacon? $isNewClosestBeacon")
+           Log.i(TAG, "URL = ${baseUrl ?: "no backend"}")
 
-               if (room != null) {
-                   _museumMapState.value = museumMapState.value.copy(
-                       room = room,
-                       closestBeacon = it
-                   )
+           if (!baseUrl.isNullOrBlank() && isNewClosestBeacon) {
+               val isBeaconInCurrentRoom = _museumMapState.value.room?.artworks?.find { artwork ->
+                   artwork.beacon == it!!.id
+               } != null
+
+               if (!isBeaconInCurrentRoom) {
+                   val room = getRoomUseCase(it!!.id, baseUrl!!)
+
+                   if (room != null) {
+                       Log.i(TAG, "Room = $room")
+
+                       _museumMapState.value = museumMapState.value.copy(
+                           room = room
+                       )
+                   } else
+                       Log.e(TAG, "Room is null")
                }
+
+               _museumMapState.value = museumMapState.value.copy(
+                   closestBeacon = it
+               )
            }
        }.launchIn(viewModelScope)
     }
@@ -43,11 +59,7 @@ class MuseumMapViewModel @Inject constructor(
         when(event) {
             is MuseumMapEvent.ResumeTour -> getCloserBeaconsUseCase.startListeningForBeacons()
             is MuseumMapEvent.PauseTour -> getCloserBeaconsUseCase.stopListeningForBeacons()
-            is MuseumMapEvent.BackendServerDiscovered -> {
-                Log.i(TAG,"Backend server discovered: ${event.ip}:${event.port}")
-                // TODO: move traffic to https?
-                baseUrl = "http://${event.ip}:${event.port}"
-            }
+            is MuseumMapEvent.BackendServerDiscovered -> baseUrl = "http://${event.ip}:${event.port}"
         }
     }
 
