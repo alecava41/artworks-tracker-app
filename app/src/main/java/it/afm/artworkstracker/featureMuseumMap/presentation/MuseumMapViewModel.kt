@@ -27,9 +27,6 @@ class MuseumMapViewModel @Inject constructor(
            val currentClosestBeacon = _museumMapState.value.closestBeacon
            val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon.id != it.id)
 
-           Log.i(TAG, "New Beacon? $isNewClosestBeacon")
-           Log.i(TAG, "URL = ${baseUrl ?: "no backend"}")
-
            if (!baseUrl.isNullOrBlank() && isNewClosestBeacon) {
                val isBeaconInCurrentRoom = _museumMapState.value.room?.artworks?.find { artwork ->
                    artwork.beacon == it!!.id
