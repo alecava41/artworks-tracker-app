@@ -25,10 +25,10 @@ class ArtworkViewModel(
 
     // TODO: add init (body constructor) which should retrieve artwork's data (call GetArtworkUseCase)
     init {
-        savedStateHandle.get<UUID>("noteId")?.let { artworkId ->
+        savedStateHandle.get<UUID>("beaconId")?.let { artworkId ->
             if(artworkId != null) {
                 viewModelScope.launch {
-                    artworkUseCase(artworkId)?.also { artwork ->
+                    artworkUseCase(artworkId,"")?.also { artwork ->
                         _uiState.value = uiState.value.copy(artwork = artwork)
                     }
                 }
@@ -39,7 +39,7 @@ class ArtworkViewModel(
 
     // TODO: _uiState.value = uiState.value.copy(artwork = newArtwork) -> OK
 
-    // TODO: add ArtworkEvent (sealed class) (ImageNext, ImagePrev)
+    // TODO: add ArtworkEvent (sealed class) (ImageNext, ImagePrev, AudioChange) -> OK
 
     // TODO: add onEvent method (pattern matching on event type) (see NoteApp)
     fun onEvent(event: ArtworkEvent) {

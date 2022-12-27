@@ -15,16 +15,16 @@ class ArtworkRepositoryImpl(
     private val dao: ArtworkDao
 ) : ArtworkRepository {
 
-    override suspend fun getArtworkFromId(id: UUID): Artwork? {
+    override suspend fun getArtworkFromId(id:UUID, url: String): Artwork? {
         var searchArtwork = dao.getArtworkFromId(id)
         if (searchArtwork == null) {
             try {
-                searchArtwork = api.getArtwork("")?.toArtworkEntity()
+                searchArtwork = api.getArtwork(url)?.toArtworkEntity()
 
                 if (searchArtwork != null)
                     dao.insertArtwork(searchArtwork)
 
-            } catch(e: HttpException){ // retrofit type
+            } catch(e: HttpException){
                 Log.e(TAG, e.message())
             }
             catch (e: IOException) {
