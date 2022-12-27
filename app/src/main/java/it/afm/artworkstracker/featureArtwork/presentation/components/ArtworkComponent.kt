@@ -5,10 +5,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
@@ -19,7 +18,7 @@ import java.util.*
 @Composable
 fun ArtworkComponent(
     artwork: Artwork,
-    viewModel: ArtworkViewModel = HiltViewModel()
+    viewModel: ArtworkViewModel = hiltViewModel()
 ) {
     val pagerState = rememberPagerState(initialPage = 1)
 

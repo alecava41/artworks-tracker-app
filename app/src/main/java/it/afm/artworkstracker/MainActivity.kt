@@ -15,16 +15,19 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.AndroidEntryPoint
 import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
-import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
 import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkComponent
+import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkInfo
+import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
+import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkEnum
+import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEnum
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
-import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.RoomMap
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 import java.util.*
@@ -185,13 +188,56 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+val room = Room(
+    name = "King's bedroom",
+    perimeter = listOf(
+        Triple(PerimeterEnum.MOVE, 0, 0),
+        Triple(PerimeterEnum.LINE, 0, 125),
+        Triple(PerimeterEnum.MOVE, 0, 375),
+        Triple(PerimeterEnum.LINE, 0, 500),
+        Triple(PerimeterEnum.LINE, 500, 500),
+        Triple(PerimeterEnum.LINE, 500, 1000),
+        Triple(PerimeterEnum.LINE, 625, 1000),
+        Triple(PerimeterEnum.MOVE, 875, 1000),
+        Triple(PerimeterEnum.LINE, 1000, 1000),
+        Triple(PerimeterEnum.LINE, 1000, 0),
+    Triple(PerimeterEnum.LINE, 0, 0)
+    ),
+    artworks = listOf(
+        ArtworkInfo(
+            id = 1,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            type = ArtworkEnum.PICTURE,
+            posX = 50,
+            posY = 50
+        ),
+        ArtworkInfo(
+            id = 2,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            type = ArtworkEnum.SCULPTURE,
+            posX = 250,
+            posY = 50
+        ),
+        ArtworkInfo(
+            id = 3,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            type = ArtworkEnum.PICTURE,
+            posX = 500,
+            posY = 50
+        )
+    ),
+    id = 1
+)
 
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultMuseumMapPreview() {
-//    ArtworksTrackerTheme {
-//        Surface {
-//            RoomMap()
-//        }
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun DefaultMuseumMapPreview() {
+    ArtworksTrackerTheme {
+        Surface {
+            RoomMap(room)
+        }
+    }
+}
