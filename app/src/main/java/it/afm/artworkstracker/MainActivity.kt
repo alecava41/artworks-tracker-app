@@ -15,16 +15,19 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.AndroidEntryPoint
+import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
+import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
+import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkComponent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.RoomMap
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -105,7 +108,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MuseumMapScreen()
+                    ArtworkComponent(
+                        artwork = Artwork(
+                            author = "Igor Zawaleski",
+                            title = "Your death",
+                            description = "La Gioconda ritrae a metà figura una giovane donna con lunghi" +
+                                    "capelli scuri. È inquadrata di tre quarti, il busto è rivolto alla" +
+                                    "sua destra, il volto verso l'osservatore. Le mani sono incrociate" +
+                                    "in primo piano e con le braccia si appoggia a quello che sembra il" +
+                                    "bracciolo di una sedia.",
+                            id = UUID.randomUUID()
+                        )
+                    )
                 }
             }
         }
@@ -172,12 +186,12 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultMuseumMapPreview() {
-    ArtworksTrackerTheme {
-        Surface {
-            RoomMap()
-        }
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultMuseumMapPreview() {
+//    ArtworksTrackerTheme {
+//        Surface {
+//            RoomMap()
+//        }
+//    }
+//}

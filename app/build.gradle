@@ -61,6 +61,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
     implementation "androidx.compose.material:material-icons-extended:1.3.1"
     implementation "androidx.compose.foundation:foundation:1.3.1"
+    implementation "com.google.accompanist:accompanist-pager:0.28.0"
 
     // Bluetooth beacon dependencies
     implementation 'org.altbeacon:android-beacon-library:2.19.4'

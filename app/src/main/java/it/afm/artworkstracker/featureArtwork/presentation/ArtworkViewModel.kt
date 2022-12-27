@@ -9,9 +9,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import it.afm.artworkstracker.featureArtwork.domain.useCase.GetArtworkUseCase
 import kotlinx.coroutines.launch
 import java.util.UUID
+import javax.inject.Inject
 
-//@HiltViewModel
-class ArtworkViewModel(
+@HiltViewModel
+class ArtworkViewModel @Inject constructor(
     private val artworkUseCase: GetArtworkUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -28,7 +29,7 @@ class ArtworkViewModel(
         savedStateHandle.get<UUID>("beaconId")?.let { artworkId ->
             if(artworkId != null) {
                 viewModelScope.launch {
-                    artworkUseCase(artworkId,"")?.also { artwork ->
+                    artworkUseCase(artworkId, baseURL = "")?.also { artwork ->
                         _uiState.value = uiState.value.copy(artwork = artwork)
                     }
                 }
@@ -44,31 +45,29 @@ class ArtworkViewModel(
     // TODO: add onEvent method (pattern matching on event type) (see NoteApp)
     fun onEvent(event: ArtworkEvent) {
         when(event){
+            is ArtworkEvent.FirstSlide -> {
+                _uiState.value = uiState.value.copy(
+                    currentImagesNumber = 1
+                )
+            }
             is ArtworkEvent.ImageNext -> {
                 _uiState.value = uiState.value.copy(
-                    artwork = uiState.value.artwork,
-                    currentImageDisplayed = uiState.value.currentImageDisplayed,
-                    isAudioEnabled = uiState.value.isAudioEnabled,
-                    currentImagesNumber = if(uiState.value.currentImagesNumber < uiState.value.maxImagesNumber) uiState.value.currentImagesNumber + 1 else 1,
-                    maxImagesNumber = uiState.value.maxImagesNumber
+                    currentImagesNumber = if(uiState.value.currentImagesNumber < uiState.value.maxImagesNumber) uiState.value.currentImagesNumber + 1 else 1
                 )
             }
             is ArtworkEvent.ImagePrevious -> {
                 _uiState.value = uiState.value.copy(
-                    artwork = uiState.value.artwork,
-                    currentImageDisplayed = uiState.value.currentImageDisplayed,
-                    isAudioEnabled = uiState.value.isAudioEnabled,
-                    currentImagesNumber = if(uiState.value.currentImagesNumber > 1) uiState.value.currentImagesNumber - 1 else uiState.value.maxImagesNumber,
-                    maxImagesNumber = uiState.value.maxImagesNumber
+                    currentImagesNumber = if(uiState.value.currentImagesNumber > 1) uiState.value.currentImagesNumber - 1 else uiState.value.maxImagesNumber
                 )
             }
             is ArtworkEvent.AudioChange -> {
                 _uiState.value = uiState.value.copy(
-                    artwork = uiState.value.artwork,
-                    currentImageDisplayed = uiState.value.currentImageDisplayed,
-                    isAudioEnabled = !uiState.value.isAudioEnabled,
-                    currentImagesNumber = uiState.value.currentImagesNumber,
-                    maxImagesNumber = uiState.value.maxImagesNumber
+                    isAudioEnabled = !uiState.value.isAudioEnabled
+                )
+            }
+            is ArtworkEvent.LastSlide -> {
+                _uiState.value = uiState.value.copy(
+                    currentImagesNumber = uiState.value.maxImagesNumber
                 )
             }
         }

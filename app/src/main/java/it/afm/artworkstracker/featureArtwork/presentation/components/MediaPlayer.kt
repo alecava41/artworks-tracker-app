@@ -14,10 +14,10 @@ import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
 @Composable
 fun MediaPlayer(
     isAudioEnabled: Boolean,
-    onEvent: (ArtworkEvent) -> Unit
+    onAudioChange: () -> Unit
 ) {
     Row {
-        IconButton(onClick = { onEvent(ArtworkEvent.AudioChange) }) {
+        IconButton(onClick = onAudioChange) {
             if (!isAudioEnabled) {
                 Icon(
                     painter = painterResource(id = R.drawable.play),
