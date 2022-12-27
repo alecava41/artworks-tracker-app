@@ -1,12 +1,16 @@
 package it.afm.artworkstracker.featureMuseumMap.presentation.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 
 @Composable
 fun MuseumMapScreen(
@@ -23,11 +27,9 @@ fun MuseumMapScreen(
             modifier = Modifier
         ) {
             Text(
-                text = state.closestBeacon?.id.toString()
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = state.room?.name.toString()
+                text = state.room?.name ?: "???",
+                style = MaterialTheme.typography.titleLarge
+
             )
         }
     }

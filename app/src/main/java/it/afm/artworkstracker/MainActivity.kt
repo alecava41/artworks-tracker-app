@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
+import it.afm.artworkstracker.featureMuseumMap.presentation.components.RoomMap
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 
 @AndroidEntryPoint
@@ -30,6 +31,8 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MuseumMapViewModel by viewModels()
 
     // TODO: (future implementation) artwork information should be manual (snackbar) + setting to make it auto
+
+    // TODO (onResume) check if: bluetooth is enabled, wifi is enabled, location is enabled, permissions (?)
 
     private val locationRequestLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -171,10 +174,10 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun DefaultMuseumMapPreview() {
     ArtworksTrackerTheme {
         Surface {
-            MuseumMapScreen()
+            RoomMap()
         }
     }
 }
