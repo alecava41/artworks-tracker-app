@@ -7,17 +7,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import it.afm.artworkstracker.core.data.MuseumApi
-import it.afm.artworkstracker.featureArtwork.data.dataSource.local.ArtworkDao
 import it.afm.artworkstracker.featureArtwork.data.dataSource.local.ArtworkDatabase
 import it.afm.artworkstracker.featureArtwork.data.repository.ArtworkRepositoryImpl
 import it.afm.artworkstracker.featureArtwork.data.util.UUIDConverter
 import it.afm.artworkstracker.featureArtwork.domain.repository.ArtworkRepository
 import it.afm.artworkstracker.featureArtwork.domain.useCase.DeleteAllArtworksUseCase
 import it.afm.artworkstracker.featureArtwork.domain.useCase.GetArtworkUseCase
-import it.afm.artworkstracker.featureMuseumMap.data.repository.RoomRepositoryImpl
-import it.afm.artworkstracker.featureMuseumMap.domain.repository.BeaconsRepository
-import it.afm.artworkstracker.featureMuseumMap.domain.repository.RoomRepository
-import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetCloserBeaconsUseCase
 import javax.inject.Singleton
 
 @Module

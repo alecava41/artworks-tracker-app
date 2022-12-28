@@ -33,6 +33,7 @@ fun ArtworkComponent(
                 onAudioChange = { viewModel.onEvent(ArtworkEvent.AudioChange) })
         }
         SlideShow(
+            imageNumber = viewModel.uiState.value.currentImagesNumber,
             pagerState = pagerState,
             onFirstSlide = { viewModel.onEvent(ArtworkEvent.FirstSlide) },
             onPreviousSlide = { viewModel.onEvent(ArtworkEvent.ImagePrevious(pagerState.currentPage)) },

@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import it.afm.artworkstracker.R
-import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
 
 @Composable
 fun MediaPlayer(

@@ -1,7 +1,6 @@
 package it.afm.artworkstracker.featureArtwork.presentation.components
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,13 +17,13 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import it.afm.artworkstracker.R
-import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
 import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SlideShow(
+    imageNumber: Int,
     pagerState: PagerState,
     onFirstSlide: () -> Unit,
     onPreviousSlide: () -> Unit,
@@ -70,6 +69,9 @@ fun SlideShow(
                     contentDescription = "Slide artwork's images to left",
                     Modifier.size(100.dp)
                 )
+            }
+            scope.launch {
+                pagerState.scrollToPage(page = imageNumber)
             }
         }
     }
