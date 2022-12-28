@@ -1,8 +1,10 @@
 package it.afm.artworkstracker.featureArtwork.data.util
 
+import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import java.util.UUID
 
+@ProvidedTypeConverter
 class UUIDConverter {
     @TypeConverter
     fun fromUUIDToString(uuid: UUID): String{
