@@ -1,6 +1,7 @@
 package it.afm.artworkstracker.featureArtwork.presentation.components
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
@@ -13,10 +14,11 @@ fun ArtworkAuthor(str: String) {
     Row {
         Text(
             text = str,
-            fontSize = 14.sp,
+/*            fontSize = 14.sp,
             fontStyle = FontStyle.Italic,
-            fontFamily = FontFamily.Serif,
-            textAlign = TextAlign.Center
+            fontFamily = FontFamily.Serif,*/
+            textAlign = TextAlign.Start,
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }

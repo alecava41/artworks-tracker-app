@@ -46,7 +46,7 @@ class ArtworkViewModel @Inject constructor(
     // TODO: add onEvent method (pattern matching on event type) (see NoteApp)
     fun onEvent(event: ArtworkEvent) {
         when(event){
-            is ArtworkEvent.FirstSlide -> {
+/*            is ArtworkEvent.FirstSlide -> {
                 _uiState.value = uiState.value.copy(
                     currentImagesNumber = 0
                 )
@@ -66,7 +66,7 @@ class ArtworkViewModel @Inject constructor(
                 )
                 //Log.i("Current Image Number Public", uiState.value.currentImagesNumber.toString())
                 //Log.i("Current Image Number Private", _uiState.value.currentImagesNumber.toString())
-            }
+            }*/
             is ArtworkEvent.AudioChange -> {
                 _uiState.value = uiState.value.copy(
                     isAudioEnabled = !uiState.value.isAudioEnabled
@@ -74,13 +74,13 @@ class ArtworkViewModel @Inject constructor(
                 //Log.i("Current Image Number Public", uiState.value.currentImagesNumber.toString())
                 //Log.i("Current Image Number Private", _uiState.value.currentImagesNumber.toString())
             }
-            is ArtworkEvent.LastSlide -> {
+/*            is ArtworkEvent.LastSlide -> {
                 _uiState.value = uiState.value.copy(
                     currentImagesNumber = uiState.value.maxImagesNumber
                 )
                 //Log.i("Current Image Number Public", uiState.value.currentImagesNumber.toString())
                 //Log.i("Current Image Number Private", _uiState.value.currentImagesNumber.toString())
-            }
+            }*/
         }
     }
 }

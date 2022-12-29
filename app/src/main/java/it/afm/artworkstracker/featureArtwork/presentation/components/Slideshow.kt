@@ -1,86 +1,95 @@
 package it.afm.artworkstracker.featureArtwork.presentation.components
 
 import android.annotation.SuppressLint
+import android.util.Log
 //import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
 import it.afm.artworkstracker.R
 import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun SlideShow(
-    imageNumber: Int,
-    pagerState: PagerState,
-    onFirstSlide: () -> Unit,
-    onPreviousSlide: () -> Unit,
-    onNextSlide: () -> Unit,
-    onLastSlide: () -> Unit
-) {
-    //Log.i("current images number", imageNumber.toString())
+fun SlideShow() {
+
+    val pagerState = rememberPagerState(initialPage = 0)
     val scope = rememberCoroutineScope()
+    var currentSlide: Int
+
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        HorizontalPager(count = 3, state = pagerState) { page ->
-            Text(
+        HorizontalPager(count = 3, state = pagerState) { numberImage ->
+/*            Text(
                 text = "Page: $page",
-            )
-/*            AsyncImage(
-                model = "",
-                contentDescription = "",
-                alignment = Alignment.Center,
-                contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
             )*/
+            if (pagerState.currentPage == 0)
+                AsyncImage(
+                    model = "https://www.shutterstock.com/image-vector/black-share-icons-set-social-600w-1911782200.jpg",
+                    contentDescription = "",
+                    modifier = Modifier.size(250.dp, 200.dp),
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
+                )
+            if (pagerState.currentPage == 1)
+                AsyncImage(
+                    model = "https://www.shutterstock.com/image-vector/link-flat-icon-illustration-vector-600w-1551448580.jpg",
+                    contentDescription = "",
+                    modifier = Modifier.size(250.dp, 200.dp),
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
+                )
+            if (pagerState.currentPage == 2)
+                AsyncImage(
+                    model = "https://www.shutterstock.com/image-vector/hand-cursor-vector-icon-blue-600w-1628240461.jpg",
+                    contentDescription = "",
+                    modifier = Modifier.size(250.dp, 200.dp),
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
+                )
             scope.launch {
                 pagerState.scrollToPage(page = pagerState.currentPage)
-                // TODO need to update viewModel currentImagesNumber state with pagerState.currentPage
-                //Log.i("pager state", pagerState.currentPage.toString())
-                //Log.i("current images number", imageNumber.toString())
+                currentSlide = pagerState.currentPage
             }
         }
-        Row {
-            IconButton(onClick = onFirstSlide) {
-                Icon(
-                    painter = painterResource(id = R.drawable.double_left_arrow_slideshow),
-                    contentDescription = "Slide artwork's images to left",
-                )
-            }
-            IconButton(onClick = onPreviousSlide) {
+        Row(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)) {
+            IconButton(onClick = {
+                currentSlide = if (pagerState.currentPage > 0) pagerState.currentPage - 1 else 2
+                scope.launch { pagerState.scrollToPage(page = currentSlide) }
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.left_arrow_slideshow),
-                    contentDescription = "Slide artwork's images to right",
+                    contentDescription = "Slide artwork's images to left",
                 )
             }
-            IconButton(onClick = onNextSlide) {
+            IconButton(onClick = {
+                currentSlide = if (pagerState.currentPage < 2) pagerState.currentPage + 1 else 0
+                scope.launch { pagerState.scrollToPage(page = currentSlide) }
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.right_arrow_slideshow),
-                    contentDescription = "Slide artwork's images to left",
+                    contentDescription = "Slide artwork's images to right",
                 )
-            }
-            IconButton(onClick = onLastSlide) {
-                Icon(
-                    painter = painterResource(id = R.drawable.double_right_arrow_slideshow),
-                    contentDescription = "Slide artwork's images to left",
-                )
-            }
-            scope.launch {
-                pagerState.scrollToPage(page = imageNumber)
             }
         }
     }

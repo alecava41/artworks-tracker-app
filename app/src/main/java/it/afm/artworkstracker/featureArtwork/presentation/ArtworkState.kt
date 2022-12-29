@@ -4,8 +4,8 @@ import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
 
 data class ArtworkState(
     val artwork: Artwork? = null,
-    val currentImageDisplayed: String? = null,
+//    val currentImageDisplayed: String? = null,
     val isAudioEnabled: Boolean = false,
-    val currentImagesNumber: Int = 0,
-    val maxImagesNumber: Int = 2
+//    val currentImagesNumber: Int = 0,
+//    val maxImagesNumber: Int = 2
 )

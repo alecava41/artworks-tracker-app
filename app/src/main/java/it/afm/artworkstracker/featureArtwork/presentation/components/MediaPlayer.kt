@@ -21,7 +21,7 @@ fun MediaPlayer(
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().padding(0.dp, 0.dp, 15.dp, 0.dp)
     ) {
         IconButton(
             onClick = onAudioChange,
