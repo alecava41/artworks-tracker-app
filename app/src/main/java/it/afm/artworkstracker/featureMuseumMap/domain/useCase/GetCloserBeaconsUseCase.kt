@@ -32,8 +32,10 @@ class GetCloserBeaconsUseCase(
         if(entry != null) {
             val mean = entry.value.getMean()
 
-            if (mean < MIN_BEACON_DISTANCE)
+            if (mean < MIN_BEACON_DISTANCE) {
+                Log.i(TAG, "MIN_BEACON_DISTANCE ${entry.key}: distance = $mean")
                 closestBeacon.set(Beacon(entry.key, mean))
+            }
         }
     }.map {
         closestBeacon.get()

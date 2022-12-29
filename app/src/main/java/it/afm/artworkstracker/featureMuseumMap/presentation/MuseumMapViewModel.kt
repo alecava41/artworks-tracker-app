@@ -6,61 +6,134 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkInfo
+import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
+import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetArtworksIdsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetCloserBeaconsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetRoomUseCase
+import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
+import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
+import it.afm.artworkstracker.featureMuseumMap.domain.util.Side
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class MuseumMapViewModel @Inject constructor(
     private val getCloserBeaconsUseCase: GetCloserBeaconsUseCase,
-    private val getRoomUseCase: GetRoomUseCase
+    private val getRoomUseCase: GetRoomUseCase,
+    private val getArtworksIdsUseCase: GetArtworksIdsUseCase
 ) : ViewModel() {
 
     private var baseUrl: String? = null
-    private val _museumMapState = mutableStateOf(MuseumMapState())
+
+    private val _museumMapState = mutableStateOf(MuseumMapState(room = room))
     val museumMapState: State<MuseumMapState> = _museumMapState
 
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
+    private var knownArtworks = listOf<UUID>()
+
     init {
-       getCloserBeaconsUseCase().onEach {
-           val currentClosestBeacon = _museumMapState.value.closestBeacon
-           val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon.id != it.id)
+        getCloserBeaconsUseCase().onEach {
 
-           if (!baseUrl.isNullOrBlank() && isNewClosestBeacon) {
-               val isBeaconInCurrentRoom = _museumMapState.value.room?.artworks?.find { artwork ->
-                   artwork.beacon == it!!.id
-               } != null
+            val currentClosestBeacon = _museumMapState.value.closestBeacon
+            val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon.id != it.id)
 
-               if (!isBeaconInCurrentRoom) {
-                   val room = getRoomUseCase(it!!.id, baseUrl!!)
+            if (!baseUrl.isNullOrBlank() && isNewClosestBeacon) {
+                val isBeaconInCurrentRoom = _museumMapState.value.room?.artworks?.find { artwork ->
+                    artwork.beacon == it!!.id
+                } != null
 
-                   if (room != null) {
-                       Log.i(TAG, "Room = $room")
+                if (!isBeaconInCurrentRoom) {
+                    val room = getRoomUseCase(it!!.id, baseUrl!!)
 
-                       _museumMapState.value = museumMapState.value.copy(
-                           room = room
-                       )
-                   } else
-                       Log.e(TAG, "Room is null")
-               }
+                    Log.i("MuseumMapViewModel", "room = $room")
 
-               _museumMapState.value = museumMapState.value.copy(
-                   closestBeacon = it
-               )
-           }
-       }.launchIn(viewModelScope)
+                    if (room != null) {
+                        room.artworks.forEach { artwork ->
+                            artwork.visited = knownArtworks.contains(artwork.beacon)
+                        }
+
+                        _museumMapState.value = _museumMapState.value.copy(
+                            room = room
+                        )
+                    }
+                }
+
+//                _eventFlow.emit(
+//                    UiEvent.NewCloserBeacon(
+//                        uuid = it!!.id,
+//                        alreadyVisited = room.artworks.find { artwork -> artwork.beacon == it.id }?.visited ?: false
+//                    )
+//                )
+            }
+        }.launchIn(viewModelScope)
+
+        getArtworksIdsUseCase().onEach {
+            knownArtworks = it
+        }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: MuseumMapEvent) {
-        when(event) {
+        when (event) {
             is MuseumMapEvent.ResumeTour -> getCloserBeaconsUseCase.startListeningForBeacons()
             is MuseumMapEvent.PauseTour -> getCloserBeaconsUseCase.stopListeningForBeacons()
             is MuseumMapEvent.BackendServerDiscovered -> baseUrl = "http://${event.ip}:${event.port}"
         }
     }
-
-    companion object {
-        const val TAG = "MuseumMapViewModel"
-    }
 }
+
+val room = Room(
+    name = "King's bedroom",
+    perimeter = listOf(
+        Triple(PerimeterEntity.MOVE, 0, 0),
+        Triple(PerimeterEntity.LINE, 0, 125),
+        Triple(PerimeterEntity.MOVE, 0, 375),
+        Triple(PerimeterEntity.LINE, 0, 500),
+        Triple(PerimeterEntity.LINE, 500, 500),
+        Triple(PerimeterEntity.LINE, 500, 1000),
+        Triple(PerimeterEntity.LINE, 625, 1000),
+        Triple(PerimeterEntity.MOVE, 875, 1000),
+        Triple(PerimeterEntity.LINE, 1000, 1000),
+        Triple(PerimeterEntity.LINE, 1000, 0),
+        Triple(PerimeterEntity.LINE, 0, 0)
+    ),
+    artworks = listOf(
+        ArtworkInfo(
+            id = 1,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            visited = true,
+            type = ArtworkType.PICTURE,
+            side = Side.LEFT,
+            posX = 50,
+            posY = 50
+        ),
+        ArtworkInfo(
+            id = 2,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            visited = true,
+            type = ArtworkType.SCULPTURE,
+            side = Side.DOWN,
+            posX = 250,
+            posY = 50
+        ),
+        ArtworkInfo(
+            id = 3,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            visited = true,
+            side = Side.RIGHT,
+            type = ArtworkType.PICTURE,
+            posX = 500,
+            posY = 50
+        )
+    ),
+    id = 3
+)

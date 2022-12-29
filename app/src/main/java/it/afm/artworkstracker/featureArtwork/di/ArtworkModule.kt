@@ -6,8 +6,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import it.afm.artworkstracker.core.data.MuseumApi
-import it.afm.artworkstracker.featureArtwork.data.dataSource.local.ArtworkDatabase
+import it.afm.artworkstracker.core.data.remote.MuseumApi
+import it.afm.artworkstracker.core.data.local.ArtworkDatabase
 import it.afm.artworkstracker.featureArtwork.data.repository.ArtworkRepositoryImpl
 import it.afm.artworkstracker.featureArtwork.data.util.UUIDConverter
 import it.afm.artworkstracker.featureArtwork.domain.repository.ArtworkRepository

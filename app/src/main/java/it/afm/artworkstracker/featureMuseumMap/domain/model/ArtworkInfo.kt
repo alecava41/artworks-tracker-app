@@ -1,6 +1,7 @@
 package it.afm.artworkstracker.featureMuseumMap.domain.model
 
-import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkEnum
+import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
+import it.afm.artworkstracker.featureMuseumMap.domain.util.Side
 import java.util.UUID
 
 data class ArtworkInfo(
@@ -9,5 +10,7 @@ data class ArtworkInfo(
     val posX: Int,
     val posY: Int,
     val starred: Boolean,
-    val type: ArtworkEnum
+    var visited: Boolean,
+    val side: Side,
+    val type: ArtworkType
 )

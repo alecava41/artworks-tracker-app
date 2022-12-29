@@ -1,9 +1,9 @@
 package it.afm.artworkstracker.featureArtwork.data.repository
 
 import android.util.Log
-import it.afm.artworkstracker.core.data.MuseumApi
-import it.afm.artworkstracker.featureArtwork.data.dataSource.local.ArtworkDao
-import it.afm.artworkstracker.featureArtwork.data.dataSource.local.entity.ArtworkEntity
+import it.afm.artworkstracker.core.data.remote.MuseumApi
+import it.afm.artworkstracker.core.data.local.ArtworkDao
+import it.afm.artworkstracker.core.data.local.entity.ArtworkEntity
 import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
 import it.afm.artworkstracker.featureArtwork.domain.repository.ArtworkRepository
 import retrofit2.HttpException

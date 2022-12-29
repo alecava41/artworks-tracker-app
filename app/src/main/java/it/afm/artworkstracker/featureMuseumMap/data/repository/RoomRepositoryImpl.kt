@@ -2,7 +2,7 @@ package it.afm.artworkstracker.featureMuseumMap.data.repository
 
 
 import android.util.Log
-import it.afm.artworkstracker.core.data.MuseumApi
+import it.afm.artworkstracker.core.data.remote.MuseumApi
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 import it.afm.artworkstracker.featureMuseumMap.domain.repository.RoomRepository
 import retrofit2.HttpException

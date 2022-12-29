@@ -16,14 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
+import androidx.navigation.NavController
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ArtworkComponent(
-    artwork: Artwork,
+    navController: NavController,
     viewModel: ArtworkViewModel = hiltViewModel()
 ) {
     val vmState = viewModel.uiState.value
@@ -78,15 +78,15 @@ fun ArtworkComponent(
                                 horizontalAlignment = Alignment.Start,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                ArtworkName(str = artwork.title)
-                                ArtworkAuthor(str = artwork.author)
+                                ArtworkName(str = vmState.artwork!!.title)
+                                ArtworkAuthor(str = vmState.artwork!!.author)
                             }
                             MediaPlayer(
                                 isAudioEnabled = vmState.isAudioEnabled,
                                 onAudioChange = { viewModel.onEvent(ArtworkEvent.AudioChange) })
                         }
                         SlideShow()
-                        Description(desc = artwork.description)
+                        Description(desc = vmState.artwork!!.description)
                     }
                 }
             }

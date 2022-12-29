@@ -12,25 +12,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.animation.*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
 import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkComponent
-import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkInfo
-import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
-import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkEnum
-import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEnum
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
-import it.afm.artworkstracker.featureMuseumMap.presentation.components.RoomMap
+import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
+import it.afm.artworkstracker.util.Screen
 import java.util.*
 
 @AndroidEntryPoint
@@ -105,7 +103,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -115,33 +112,34 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
-                    ArtworkComponent(
-                        artwork = Artwork(
-                            author = "Igor Zawaleski",
-                            title = "Your death is coming closer and closer but anyway we will live",
-                            description = "La Gioconda ritrae a metà figura una giovane donna con lunghi " +
-                                    "capelli scuri. È inquadrata di tre quarti, il busto è rivolto alla " +
-                                    "sua destra, il volto verso l'osservatore. Le mani sono incrociate " +
-                                    "in primo piano e con le braccia si appoggia a quello che sembra il " +
-                                    "bracciolo di una sedia. " +
-                                    "La Gioconda, nota anche come Monna Lisa, è un dipinto a olio " +
-                                    "su tavola di pioppo realizzato da Leonardo da Vinci, databile " +
-                                    "al 1503-1506 circa e conservato nel Museo del Louvre di Parigi. " +
-                                    "La Gioconda, nota anche come Monna Lisa, è un dipinto a olio su tavola " +
-                                    "di pioppo realizzato da Leonardo da Vinci, databile al " +
-                                    "1503-1506 circa e conservato nel Museo del Louvre di Parigi." +
-                                    "La Gioconda, nota anche come Monna Lisa, è un dipinto a olio " +
-                                    "su tavola di pioppo realizzato da Leonardo da Vinci, databile " +
-                                    "al 1503-1506 circa e conservato nel Museo del Louvre di Parigi. " +
-                                    "La Gioconda, nota anche come Monna Lisa, è un dipinto a olio su tavola " +
-                                    "di pioppo realizzato da Leonardo da Vinci, databile al " +
-                                    "1503-1506 circa e conservato nel Museo del Louvre di Parigi.",
-                            id = UUID.randomUUID()
-                        )
-                    )
-
-
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.MuseumMapScreen.route
+                    ) {
+                        composable(route = Screen.MuseumMapScreen.route) {
+                            MuseumMapScreen(navController = navController)
+                        }
+                        composable(
+                            route = Screen.ArtworkScreen.route + "?artId={artId}&baseUrl={url}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "artId"
+                                ) {
+                                    type = NavType.ParcelableType(UUID::class.java)
+                                    defaultValue = UUID.randomUUID()
+                                },
+                                navArgument(
+                                    name = "url"
+                                ) {
+                                    type = NavType.StringType
+                                    defaultValue = ""
+                                }
+                            )
+                        ) {
+                            ArtworkComponent(navController = navController)
+                        }
+                    }
                 }
             }
         }
@@ -209,56 +207,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-val room = Room(
-    name = "King's bedroom",
-    perimeter = listOf(
-        Triple(PerimeterEnum.MOVE, 0, 0),
-        Triple(PerimeterEnum.LINE, 0, 125),
-        Triple(PerimeterEnum.MOVE, 0, 375),
-        Triple(PerimeterEnum.LINE, 0, 500),
-        Triple(PerimeterEnum.LINE, 500, 500),
-        Triple(PerimeterEnum.LINE, 500, 1000),
-        Triple(PerimeterEnum.LINE, 625, 1000),
-        Triple(PerimeterEnum.MOVE, 875, 1000),
-        Triple(PerimeterEnum.LINE, 1000, 1000),
-        Triple(PerimeterEnum.LINE, 1000, 0),
-        Triple(PerimeterEnum.LINE, 0, 0)
-    ),
-    artworks = listOf(
-        ArtworkInfo(
-            id = 1,
-            beacon = UUID.randomUUID(),
-            starred = true,
-            type = ArtworkEnum.PICTURE,
-            posX = 50,
-            posY = 50
-        ),
-        ArtworkInfo(
-            id = 2,
-            beacon = UUID.randomUUID(),
-            starred = true,
-            type = ArtworkEnum.SCULPTURE,
-            posX = 250,
-            posY = 50
-        ),
-        ArtworkInfo(
-            id = 3,
-            beacon = UUID.randomUUID(),
-            starred = true,
-            type = ArtworkEnum.PICTURE,
-            posX = 500,
-            posY = 50
-        )
-    ),
-    id = 1
-)
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultMuseumMapPreview() {
-    ArtworksTrackerTheme {
-        Surface {
-            RoomMap(room)
-        }
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultMuseumMapPreview() {
+//    ArtworksTrackerTheme {
+//        Surface {
+//            MuseumMapScreen()
+//        }
+//    }
+//}

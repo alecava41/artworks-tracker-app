@@ -1,6 +1,6 @@
-package it.afm.artworkstracker.core.data.dto
+package it.afm.artworkstracker.core.data.remote.dto
 
-import it.afm.artworkstracker.featureArtwork.data.dataSource.local.entity.ArtworkEntity
+import it.afm.artworkstracker.core.data.local.entity.ArtworkEntity
 import java.util.UUID
 
 data class ArtworkDto(

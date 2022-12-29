@@ -1,6 +1,6 @@
 package it.afm.artworkstracker.featureMuseumMap.domain.util
 
-enum class PerimeterEnum {
+enum class PerimeterEntity {
     LINE,
     MOVE
 }

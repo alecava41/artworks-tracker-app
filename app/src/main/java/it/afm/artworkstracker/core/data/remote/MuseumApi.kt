@@ -1,7 +1,7 @@
-package it.afm.artworkstracker.core.data
+package it.afm.artworkstracker.core.data.remote
 
-import it.afm.artworkstracker.core.data.dto.ArtworkDto
-import it.afm.artworkstracker.core.data.dto.RoomDto
+import it.afm.artworkstracker.core.data.remote.dto.ArtworkDto
+import it.afm.artworkstracker.core.data.remote.dto.RoomDto
 import retrofit2.http.GET
 import retrofit2.http.Url
 

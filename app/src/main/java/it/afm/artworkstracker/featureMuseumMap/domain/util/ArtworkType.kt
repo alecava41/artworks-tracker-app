@@ -1,6 +1,6 @@
 package it.afm.artworkstracker.featureMuseumMap.domain.util
 
-enum class ArtworkEnum {
+enum class ArtworkType {
     PICTURE,
     SCULPTURE
 }

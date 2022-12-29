@@ -1,9 +1,9 @@
-package it.afm.artworkstracker.featureArtwork.data.dataSource.local
+package it.afm.artworkstracker.core.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import it.afm.artworkstracker.featureArtwork.data.dataSource.local.entity.ArtworkEntity
+import it.afm.artworkstracker.core.data.local.entity.ArtworkEntity
 import it.afm.artworkstracker.featureArtwork.data.util.UUIDConverter
 
 @Database(
