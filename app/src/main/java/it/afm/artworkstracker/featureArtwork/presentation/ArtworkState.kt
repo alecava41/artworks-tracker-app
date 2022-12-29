@@ -6,6 +6,6 @@ data class ArtworkState(
     val artwork: Artwork? = null,
     val currentImageDisplayed: String? = null,
     val isAudioEnabled: Boolean = false,
-    val currentImagesNumber: Int = 1,
-    val maxImagesNumber: Int = 3
+    val currentImagesNumber: Int = 0,
+    val maxImagesNumber: Int = 2
 )

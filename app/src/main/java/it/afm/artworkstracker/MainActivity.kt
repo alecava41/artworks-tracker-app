@@ -52,17 +52,19 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var nsdManager: NsdManager
 
-    private val resolveListener = object: NsdManager.ResolveListener {
+    private val resolveListener = object : NsdManager.ResolveListener {
         override fun onResolveFailed(service: NsdServiceInfo, error: Int) {
             Log.e("MainActivity", "Cannot resolve service ${service.serviceName}, error = $error")
         }
 
         override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
             Log.d("MainActivity", "Found service: ip ${serviceInfo.host}, port ${serviceInfo.port}")
-            viewModel.onEvent(MuseumMapEvent.BackendServerDiscovered(
-                ip = serviceInfo.host.toString(),
-                port = serviceInfo.port.toString()
-            ))
+            viewModel.onEvent(
+                MuseumMapEvent.BackendServerDiscovered(
+                    ip = serviceInfo.host.toString(),
+                    port = serviceInfo.port.toString()
+                )
+            )
         }
     }
 
@@ -114,12 +116,24 @@ class MainActivity : ComponentActivity() {
                     ArtworkComponent(
                         artwork = Artwork(
                             author = "Igor Zawaleski",
-                            title = "Your death",
-                            description = "La Gioconda ritrae a metà figura una giovane donna con lunghi" +
-                                    "capelli scuri. È inquadrata di tre quarti, il busto è rivolto alla" +
-                                    "sua destra, il volto verso l'osservatore. Le mani sono incrociate" +
-                                    "in primo piano e con le braccia si appoggia a quello che sembra il" +
-                                    "bracciolo di una sedia.",
+                            title = "Your death is coming closer and closer but anyway we will live",
+                            description = "La Gioconda ritrae a metà figura una giovane donna con lunghi " +
+                                    "capelli scuri. È inquadrata di tre quarti, il busto è rivolto alla " +
+                                    "sua destra, il volto verso l'osservatore. Le mani sono incrociate " +
+                                    "in primo piano e con le braccia si appoggia a quello che sembra il " +
+                                    "bracciolo di una sedia. " +
+                                    "La Gioconda, nota anche come Monna Lisa, è un dipinto a olio " +
+                                    "su tavola di pioppo realizzato da Leonardo da Vinci, databile " +
+                                    "al 1503-1506 circa e conservato nel Museo del Louvre di Parigi. " +
+                                    "La Gioconda, nota anche come Monna Lisa, è un dipinto a olio su tavola " +
+                                    "di pioppo realizzato da Leonardo da Vinci, databile al " +
+                                    "1503-1506 circa e conservato nel Museo del Louvre di Parigi." +
+                                    "La Gioconda, nota anche come Monna Lisa, è un dipinto a olio " +
+                                    "su tavola di pioppo realizzato da Leonardo da Vinci, databile " +
+                                    "al 1503-1506 circa e conservato nel Museo del Louvre di Parigi. " +
+                                    "La Gioconda, nota anche come Monna Lisa, è un dipinto a olio su tavola " +
+                                    "di pioppo realizzato da Leonardo da Vinci, databile al " +
+                                    "1503-1506 circa e conservato nel Museo del Louvre di Parigi.",
                             id = UUID.randomUUID()
                         )
                     )
@@ -201,7 +215,7 @@ val room = Room(
         Triple(PerimeterEnum.MOVE, 875, 1000),
         Triple(PerimeterEnum.LINE, 1000, 1000),
         Triple(PerimeterEnum.LINE, 1000, 0),
-    Triple(PerimeterEnum.LINE, 0, 0)
+        Triple(PerimeterEnum.LINE, 0, 0)
     ),
     artworks = listOf(
         ArtworkInfo(

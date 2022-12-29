@@ -1,18 +1,18 @@
 package it.afm.artworkstracker.featureArtwork.presentation.components
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+//import android.util.Log
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -30,15 +30,28 @@ fun SlideShow(
     onNextSlide: () -> Unit,
     onLastSlide: () -> Unit
 ) {
+    //Log.i("current images number", imageNumber.toString())
     val scope = rememberCoroutineScope()
-    Column {
-        HorizontalPager(count = 4, state = pagerState) { page ->
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        HorizontalPager(count = 3, state = pagerState) { page ->
             Text(
                 text = "Page: $page",
-                modifier = Modifier.fillMaxWidth()
             )
+/*            AsyncImage(
+                model = "",
+                contentDescription = "",
+                alignment = Alignment.Center,
+                contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
+            )*/
             scope.launch {
                 pagerState.scrollToPage(page = pagerState.currentPage)
+                // TODO need to update viewModel currentImagesNumber state with pagerState.currentPage
+                //Log.i("pager state", pagerState.currentPage.toString())
+                //Log.i("current images number", imageNumber.toString())
             }
         }
         Row {
@@ -46,28 +59,24 @@ fun SlideShow(
                 Icon(
                     painter = painterResource(id = R.drawable.double_left_arrow_slideshow),
                     contentDescription = "Slide artwork's images to left",
-                    Modifier.size(100.dp)
                 )
             }
             IconButton(onClick = onPreviousSlide) {
                 Icon(
                     painter = painterResource(id = R.drawable.left_arrow_slideshow),
                     contentDescription = "Slide artwork's images to right",
-                    Modifier.size(100.dp)
                 )
             }
             IconButton(onClick = onNextSlide) {
                 Icon(
                     painter = painterResource(id = R.drawable.right_arrow_slideshow),
                     contentDescription = "Slide artwork's images to left",
-                    Modifier.size(100.dp)
                 )
             }
             IconButton(onClick = onLastSlide) {
                 Icon(
                     painter = painterResource(id = R.drawable.double_right_arrow_slideshow),
                     contentDescription = "Slide artwork's images to left",
-                    Modifier.size(100.dp)
                 )
             }
             scope.launch {
