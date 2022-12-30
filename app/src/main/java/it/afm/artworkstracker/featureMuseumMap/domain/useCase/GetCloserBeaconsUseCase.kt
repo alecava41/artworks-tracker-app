@@ -17,7 +17,6 @@ class GetCloserBeaconsUseCase(
     private val closerBeaconsMap = ConcurrentHashMap<UUID, BeaconMeasurements>()
 
     private val closerBeaconsFlow = repository.getCloserBeacons().onEach { beacons ->
-
         beacons.forEach { beacon ->
             if (!closerBeaconsMap.containsKey(beacon.id))
                 closerBeaconsMap[beacon.id] = BeaconMeasurements()

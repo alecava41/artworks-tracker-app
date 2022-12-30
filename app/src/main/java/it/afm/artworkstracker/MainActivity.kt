@@ -17,13 +17,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import dagger.hilt.android.AndroidEntryPoint
-import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkComponent
+import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkScreen
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
@@ -113,21 +115,25 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+
                     NavHost(
                         navController = navController,
                         startDestination = Screen.MuseumMapScreen.route
                     ) {
                         composable(route = Screen.MuseumMapScreen.route) {
-                            MuseumMapScreen(navController = navController)
+                            MuseumMapScreen(
+                                navController = navController,
+                                viewModel = viewModel
+                            )
                         }
                         composable(
-                            route = Screen.ArtworkScreen.route + "?artId={artId}&baseUrl={url}",
+                            route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
                             arguments = listOf(
                                 navArgument(
                                     name = "artId"
                                 ) {
-                                    type = NavType.ParcelableType(UUID::class.java)
-                                    defaultValue = UUID.randomUUID()
+                                    type = NavType.StringType
+                                    defaultValue = ""
                                 },
                                 navArgument(
                                     name = "url"
@@ -137,7 +143,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         ) {
-                            ArtworkComponent(navController = navController)
+                            ArtworkScreen(navController = navController)
                         }
                     }
                 }

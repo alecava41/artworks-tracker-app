@@ -7,14 +7,14 @@ data class ArtworkDto(
     val author: String,
     val title: String,
     val description: String,
-    val id: UUID
+    val beacon: UUID
 ) {
     fun toArtworkEntity(): ArtworkEntity {
         return ArtworkEntity(
             author = author,
             title = title,
             description = description,
-            id = id
+            id = beacon
         )
     }
 }

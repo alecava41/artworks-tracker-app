@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkInfo
+import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetArtworksIdsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetCloserBeaconsUseCase
@@ -14,6 +15,7 @@ import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetRoomUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
 import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
 import it.afm.artworkstracker.featureMuseumMap.domain.util.Side
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -25,52 +27,61 @@ import javax.inject.Inject
 class MuseumMapViewModel @Inject constructor(
     private val getCloserBeaconsUseCase: GetCloserBeaconsUseCase,
     private val getRoomUseCase: GetRoomUseCase,
-    private val getArtworksIdsUseCase: GetArtworksIdsUseCase
+    getArtworksIdsUseCase: GetArtworksIdsUseCase
 ) : ViewModel() {
 
-    private var baseUrl: String? = null
+    var baseUrl: String? = null
+        private set
 
-    private val _museumMapState = mutableStateOf(MuseumMapState(room = room))
+    private val _museumMapState = mutableStateOf(MuseumMapState())
     val museumMapState: State<MuseumMapState> = _museumMapState
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+
+    private var currentClosestBeacon: Beacon? = null
+
     private var knownArtworks = listOf<UUID>()
 
     init {
         getCloserBeaconsUseCase().onEach {
-
-            val currentClosestBeacon = _museumMapState.value.closestBeacon
-            val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon.id != it.id)
+            val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
 
             if (!baseUrl.isNullOrBlank() && isNewClosestBeacon) {
-                val isBeaconInCurrentRoom = _museumMapState.value.room?.artworks?.find { artwork ->
+                currentClosestBeacon = it
+                val isBeaconInCurrentRoom = _museumMapState.value.room.artworks.find { artwork ->
                     artwork.beacon == it!!.id
                 } != null
 
                 if (!isBeaconInCurrentRoom) {
                     val room = getRoomUseCase(it!!.id, baseUrl!!)
 
-                    Log.i("MuseumMapViewModel", "room = $room")
-
-                    if (room != null) {
+                    if (room != null && room != _museumMapState.value.room) {
                         room.artworks.forEach { artwork ->
                             artwork.visited = knownArtworks.contains(artwork.beacon)
                         }
 
-                        _museumMapState.value = _museumMapState.value.copy(
+                        Log.i(TAG, "room = $room")
+
+                        _museumMapState.value = museumMapState.value.copy(
                             room = room
                         )
                     }
                 }
 
-//                _eventFlow.emit(
-//                    UiEvent.NewCloserBeacon(
-//                        uuid = it!!.id,
-//                        alreadyVisited = room.artworks.find { artwork -> artwork.beacon == it.id }?.visited ?: false
-//                    )
-//                )
+                delay(500L)
+
+                _eventFlow.emit(UiEvent.NewUserPosition(uuid = it!!.id))
+
+                val isArtworkAlreadyVisited = _museumMapState.value.room.artworks.find { artwork -> artwork.beacon == it.id }?.visited ?: false
+
+                delay(500L)
+
+                if (isArtworkAlreadyVisited)
+                    _eventFlow.emit(UiEvent.NewCloserBeaconAlreadyVisited(uuid = it.id))
+                else
+                    _eventFlow.emit(UiEvent.NewCloserBeacon(uuid = it.id))
             }
         }.launchIn(viewModelScope)
 
@@ -86,9 +97,13 @@ class MuseumMapViewModel @Inject constructor(
             is MuseumMapEvent.BackendServerDiscovered -> baseUrl = "http://${event.ip}:${event.port}"
         }
     }
+
+    companion object {
+        const val TAG = "MuseumMapViewModel"
+    }
 }
 
-val room = Room(
+val defaultRoom = Room(
     name = "King's bedroom",
     perimeter = listOf(
         Triple(PerimeterEntity.MOVE, 0, 0),

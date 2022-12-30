@@ -22,7 +22,7 @@ import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ArtworkComponent(
+fun ArtworkScreen(
     navController: NavController,
     viewModel: ArtworkViewModel = hiltViewModel()
 ) {
@@ -78,15 +78,15 @@ fun ArtworkComponent(
                                 horizontalAlignment = Alignment.Start,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                ArtworkName(str = vmState.artwork!!.title)
-                                ArtworkAuthor(str = vmState.artwork!!.author)
+                                ArtworkName(str = vmState.artwork.title)
+                                ArtworkAuthor(str = vmState.artwork.author)
                             }
                             MediaPlayer(
                                 isAudioEnabled = vmState.isAudioEnabled,
                                 onAudioChange = { viewModel.onEvent(ArtworkEvent.AudioChange) })
                         }
                         SlideShow()
-                        Description(desc = vmState.artwork!!.description)
+                        Description(desc = vmState.artwork.description)
                     }
                 }
             }

@@ -17,33 +17,22 @@ class ArtworkViewModel @Inject constructor(
     private val artworkUseCase: GetArtworkUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    // TODO: add UseCase (constructor) 'dependency' -> OK
-
-    // TODO: add private and "public" uiState
     private val _uiState = mutableStateOf(ArtworkState())
     val uiState: State<ArtworkState> = _uiState
 
-    // TODO: create "uiState" (data class: Artwork, currentImageDisplayed: string, isAudioEnabled) -> OK
-
-    // TODO: add init (body constructor) which should retrieve artwork's data (call GetArtworkUseCase)
     init {
-        savedStateHandle.get<UUID>("beaconId")?.let { artworkId ->
-            if(artworkId != null) {
+        savedStateHandle.get<String>("artId")?.let { artworkId ->
+            savedStateHandle.get<String>("url")?.let { url ->
                 viewModelScope.launch {
-                    artworkUseCase(artworkId, baseURL = "")?.also { artwork ->
+                    artworkUseCase(id = UUID.fromString(artworkId), baseURL = url)?.also { artwork ->
                         _uiState.value = uiState.value.copy(artwork = artwork)
                     }
-                }
+            }
             }
         }
     }
-    // TODO: artworkId should be retrieved from SavedStateHandle (see NoteApp)
 
-    // TODO: _uiState.value = uiState.value.copy(artwork = newArtwork) -> OK
 
-    // TODO: add ArtworkEvent (sealed class) (ImageNext, ImagePrev, AudioChange) -> OK
-
-    // TODO: add onEvent method (pattern matching on event type) (see NoteApp)
     fun onEvent(event: ArtworkEvent) {
         when(event){
 /*            is ArtworkEvent.FirstSlide -> {

@@ -38,8 +38,12 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
 
     override fun getCloserBeacons(): Flow<List<Beacon>> = flow {
         while (true) {
-            if (beaconsInRange.isNotEmpty())
+            if (beaconsInRange.isNotEmpty()) {
                 emit(beaconsInRange.toList())
+                beaconsInRange.forEach {
+                    Log.i(TAG, "Ranging beacon ${it.id}, distance = ${it.distance}")
+                }
+            }
 
             delay(1100L)
         }
