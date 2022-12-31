@@ -3,12 +3,20 @@ package it.afm.artworkstracker.featureMuseumMap.presentation.components
 import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -28,19 +36,26 @@ import it.afm.artworkstracker.R
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
 import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
+import it.afm.artworkstracker.featureMuseumMap.domain.util.Side
 import it.afm.artworkstracker.featureMuseumMap.presentation.UiEvent
-import it.afm.artworkstracker.featureMuseumMap.presentation.util.UserPosition
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
-import java.util.UUID
+import kotlinx.coroutines.launch
+import java.util.*
 
 @Composable
 fun RoomMap(
     room: Room,
-    eventFlow: SharedFlow<UiEvent>
+    eventFlow: SharedFlow<UiEvent>,
+    onArtworkClicked: (UUID) -> Unit
 ) {
-    Log.i("RoomMap", "Called recomposition!")
+    Log.i("RoomMap", "Calling recomposition!")
+
     var scale = 1f
+
+    // TODO: Handle case when user comes back from a card (icon should be placed near the just-visited artwork)
+
+    // TODO: split map's items into more composables
 
     val animX = remember { Animatable(initialValue = 0f) }
     val animY = remember { Animatable(initialValue = 0f) }
@@ -48,6 +63,8 @@ fun RoomMap(
     val state = rememberTransformableState { zoomChange, _, _ ->
         scale *= zoomChange
     }
+
+//    val interactionSource = remember { MutableInteractionSource() }
 
     val picturePainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.picture))
     val sculpturePainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.sculpture))
@@ -76,18 +93,19 @@ fun RoomMap(
             eventFlow.collectLatest { event ->
                 when (event) {
                     is UiEvent.NewUserPosition -> {
-                        Log.i("MuseumMap", artworkPositions.toString())
                         val offset = artworkPositions.find { it.first == event.uuid }!!.third
 
-                        animX.animateTo(
-                            targetValue = offset.x,
-                            animationSpec = tween(1000)
-                        )
+                        launch {
+                            animX.animateTo(
+                                targetValue = offset.x,
+                                animationSpec = tween(1000)
+                            )
 
-                        animY.animateTo(
-                            targetValue = offset.y,
-                            animationSpec = tween(1000)
-                        )
+                            animY.animateTo(
+                                targetValue = offset.y,
+                                animationSpec = tween(1000)
+                            )
+                        }
                     }
                     else -> {}
                 }
@@ -97,24 +115,23 @@ fun RoomMap(
         Canvas(
             modifier = Modifier
                 .size(1000.dp, 1000.dp)
+//                .indication(interactionSource, LocalIndication.current)
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
-//                            val art = artworkPositions.find { pos -> pos.second.contains(it) }
-//                            if (art != null) {
-//                                animationScope.launch {
-//                                    animX.animateTo(
-//                                        targetValue = art.second.left,
-//                                        animationSpec = tween(1000)
-//                                    )
+                            val art = artworkPositions.find { pos -> pos.second.contains(it) }
+                            if (art != null) {
+                                onArtworkClicked(art.first)
+                            }
+                        },
+//                        onPress = { offset ->
+//                            val press = PressInteraction.Press(offset)
+//                            interactionSource.emit(press)
 //
-//                                    animY.animateTo(
-//                                        targetValue = art.second.top,
-//                                        animationSpec = tween(1000)
-//                                    )
-//                                }
-//                            }
-                        }
+//                            tryAwaitRelease()
+//
+//                            interactionSource.emit(PressInteraction.Release(press))
+//                        }
                     )
                 }
         ) {
@@ -155,16 +172,30 @@ fun RoomMap(
                     size = Size(width = artworkSize.toPx(), artworkSize.toPx())
                 )
 
+                val offset = when (it.side) {
+                    Side.LEFT -> Offset(
+                        x = rect.left - userSize.toPx() - userDistanceFromArtwork.toPx(),
+                        y = rect.top + artworkSize.toPx() / 2 - userSize.toPx() / 2
+                    )
+                    Side.RIGHT -> Offset(
+                        x = rect.right + userDistanceFromArtwork.toPx(),
+                        y = rect.top + artworkSize.toPx() / 2 - userSize.toPx() / 2
+                    )
+                    Side.UP -> Offset(
+                        x = rect.left + artworkSize.toPx() / 2 - userSize.toPx() / 2,
+                        y = rect.top - userSize.toPx() - userDistanceFromArtwork.toPx()
+                    )
+                    Side.DOWN -> Offset(
+                        x = rect.left + artworkSize.toPx() / 2 - userSize.toPx() / 2,
+                        y = rect.bottom + userDistanceFromArtwork.toPx()
+                    )
+                }
+
                 artworkPositions.add(
                     Triple(
                         first = it.beacon,
                         second = rect,
-                        third = UserPosition.calculatePositionBasedOnArtworkPosition(
-                            position = rect,
-                            side = it.side,
-                            density = density
-                        )
-
+                        third = offset
                     )
                 )
 
@@ -178,7 +209,9 @@ fun RoomMap(
                     top = it.posY.dp.toPx()
                 ) {
                     with(painter) {
-                        draw(Size(artworkSize.toPx(), artworkSize.toPx()))
+                        draw(
+                           size = Size(artworkSize.toPx(), artworkSize.toPx()),
+                        )
                     }
                 }
 

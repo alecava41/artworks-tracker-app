@@ -17,13 +17,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import dagger.hilt.android.AndroidEntryPoint
 import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkScreen
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
@@ -31,13 +29,10 @@ import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 import it.afm.artworkstracker.util.Screen
-import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MuseumMapViewModel by viewModels()
-
-    // TODO: (future implementation) artwork information should be manual (snackbar) + setting to make it auto
 
     // TODO (onResume) check if: bluetooth is enabled, wifi is enabled, location is enabled, permissions (?)
 
@@ -111,7 +106,8 @@ class MainActivity : ComponentActivity() {
             ArtworksTrackerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()

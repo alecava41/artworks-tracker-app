@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -95,6 +96,16 @@ class MuseumMapViewModel @Inject constructor(
             is MuseumMapEvent.ResumeTour -> getCloserBeaconsUseCase.startListeningForBeacons()
             is MuseumMapEvent.PauseTour -> getCloserBeaconsUseCase.stopListeningForBeacons()
             is MuseumMapEvent.BackendServerDiscovered -> baseUrl = "http://${event.ip}:${event.port}"
+            is MuseumMapEvent.ViewArtwork -> {
+                viewModelScope.launch {
+                    val isArtworkAlreadyVisited = knownArtworks.contains(event.id)
+
+                    if (isArtworkAlreadyVisited)
+                        _eventFlow.emit(UiEvent.ArtworkAlreadyVisitedClicked(event.id))
+                    else
+                        _eventFlow.emit(UiEvent.ArtworkNotVisitedClicked)
+                }
+            }
         }
     }
 
