@@ -6,6 +6,7 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Build
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -29,10 +30,14 @@ import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 import it.afm.artworkstracker.util.Screen
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MuseumMapViewModel by viewModels()
+    private lateinit var tts: TextToSpeech
+
+    // TODO: (future implementation) artwork information should be manual (snackbar) + setting to make it auto
 
     // TODO (onResume) check if: bluetooth is enabled, wifi is enabled, location is enabled, permissions (?)
 
@@ -110,18 +115,29 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
                     val navController = rememberNavController()
+                    tts = TextToSpeech(this) { status ->
+                        if (status == TextToSpeech.SUCCESS) {
+                            val locale = this.resources.configuration.locales[0]
+                            tts.language = locale
+                        } else {
+                            Toast.makeText(this, "Initialization Failed!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
 
                     NavHost(
                         navController = navController,
                         startDestination = Screen.MuseumMapScreen.route
                     ) {
+
                         composable(route = Screen.MuseumMapScreen.route) {
                             MuseumMapScreen(
                                 navController = navController,
                                 viewModel = viewModel
                             )
                         }
+
                         composable(
                             route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
                             arguments = listOf(
@@ -139,13 +155,12 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         ) {
-                            ArtworkScreen(navController = navController)
+                            ArtworkScreen(navController = navController, tts = tts)
                         }
                     }
                 }
             }
         }
-
 
         nsdManager = getSystemService(Context.NSD_SERVICE) as NsdManager
         nsdManager.discoverServices("_http._tcp", NsdManager.PROTOCOL_DNS_SD, discoveryListener)
@@ -153,6 +168,11 @@ class MainActivity : ComponentActivity() {
         requestPermissions()
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        tts.shutdown()
+    }
 
     override fun onResume() {
         super.onResume()

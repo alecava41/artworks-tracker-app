@@ -1,5 +1,6 @@
 package it.afm.artworkstracker.featureArtwork.presentation.components
 
+import android.speech.tts.TextToSpeech
 import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
@@ -24,7 +25,8 @@ import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
 @Composable
 fun ArtworkScreen(
     navController: NavController,
-    viewModel: ArtworkViewModel = hiltViewModel()
+    viewModel: ArtworkViewModel = hiltViewModel(),
+    tts: TextToSpeech
 ) {
     val vmState = viewModel.uiState.value
     val scrollState = rememberScrollState()
@@ -83,7 +85,10 @@ fun ArtworkScreen(
                             }
                             MediaPlayer(
                                 isAudioEnabled = vmState.isAudioEnabled,
-                                onAudioChange = { viewModel.onEvent(ArtworkEvent.AudioChange) })
+                                onAudioChange = { viewModel.onEvent(ArtworkEvent.AudioChange) },
+                                description = viewModel.uiState.value.artwork.description,
+                                tts = tts
+                            )
                         }
                         SlideShow()
                         Description(desc = vmState.artwork.description)
