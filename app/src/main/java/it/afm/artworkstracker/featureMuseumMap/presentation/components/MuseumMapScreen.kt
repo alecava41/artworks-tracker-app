@@ -41,6 +41,7 @@ fun MuseumMapScreen(
             )
             RoomMap(
                 room = state.room,
+                firstBeaconRanged = state.firstBeaconRanged,
                 eventFlow = viewModel.eventFlow,
                 onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
             )

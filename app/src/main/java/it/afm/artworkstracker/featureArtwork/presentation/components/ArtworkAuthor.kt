@@ -14,9 +14,6 @@ fun ArtworkAuthor(str: String) {
     Row {
         Text(
             text = str,
-/*            fontSize = 14.sp,
-            fontStyle = FontStyle.Italic,
-            fontFamily = FontFamily.Serif,*/
             textAlign = TextAlign.Start,
             style = MaterialTheme.typography.titleMedium,
         )

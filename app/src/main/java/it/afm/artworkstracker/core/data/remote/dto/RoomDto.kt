@@ -6,14 +6,23 @@ import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
 data class RoomDto(
     val id: Int,
     val name: String,
-    val shape: String,
+    val perimeter: String,
+    val walls: String,
     val artworks: List<ArtworkInfoDto>
 ) {
 
     fun toRoom(): Room {
-        val perimeter = arrayListOf<Triple<PerimeterEntity, Int, Int>>()
+        return Room(
+            id = id,
+            name = name,
+            perimeter = extractRoomData(perimeter),
+            walls = extractRoomData(walls),
+            artworks = artworks.map { it.toArtWorkInfo() })
+    }
 
-        val chunks = shape.split('-')
+    private fun extractRoomData(source: String): ArrayList<Triple<PerimeterEntity, Int, Int>> {
+        val entities = arrayListOf<Triple<PerimeterEntity, Int, Int>>()
+        val chunks = source.split('-')
 
         chunks.forEach {
             when (it[1]) {
@@ -24,7 +33,7 @@ data class RoomDto(
                     val y = it.substringAfter(',')
                         .substringAfter(',')
                         .substringBefore(')').toInt()
-                    perimeter.add(Triple(PerimeterEntity.MOVE, x, y))
+                    entities.add(Triple(PerimeterEntity.MOVE, x, y))
                 }
                 'L' -> { // (L,_,_) (LINE)
                     val x = it.substringAfter(',')
@@ -33,15 +42,11 @@ data class RoomDto(
                     val y = it.substringAfter(',')
                         .substringAfter(',')
                         .substringBefore(')').toInt()
-                    perimeter.add(Triple(PerimeterEntity.LINE, x, y))
+                    entities.add(Triple(PerimeterEntity.LINE, x, y))
                 }
             }
         }
 
-        return Room(
-            id = id,
-            name = name,
-            perimeter = perimeter,
-            artworks = artworks.map { it.toArtWorkInfo() })
+        return entities
     }
 }

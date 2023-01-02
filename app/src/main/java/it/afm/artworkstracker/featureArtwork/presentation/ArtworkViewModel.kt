@@ -1,6 +1,5 @@
 package it.afm.artworkstracker.featureArtwork.presentation
 
-//import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -27,49 +26,23 @@ class ArtworkViewModel @Inject constructor(
                     artworkUseCase(id = UUID.fromString(artworkId), baseURL = url)?.also { artwork ->
                         _uiState.value = uiState.value.copy(artwork = artwork)
                     }
-            }
+                }
             }
         }
     }
 
-
     fun onEvent(event: ArtworkEvent) {
-        when(event){
-/*            is ArtworkEvent.FirstSlide -> {
-                _uiState.value = uiState.value.copy(
-                    currentImagesNumber = 0
-                )
-                //Log.i("Current Image Number Public", uiState.value.currentImagesNumber.toString())
-                //Log.i("Current Image Number Private", _uiState.value.currentImagesNumber.toString())
-            }
-            is ArtworkEvent.ImageNext -> {
-                _uiState.value = uiState.value.copy(
-                    currentImagesNumber = if(uiState.value.currentImagesNumber < uiState.value.maxImagesNumber) uiState.value.currentImagesNumber + 1 else 0
-                )
-                //Log.i("Current Image Number Public", uiState.value.currentImagesNumber.toString())
-                //Log.i("Current Image Number Private", _uiState.value.currentImagesNumber.toString())
-            }
-            is ArtworkEvent.ImagePrevious -> {
-                _uiState.value = uiState.value.copy(
-                    currentImagesNumber = if(uiState.value.currentImagesNumber > 0) uiState.value.currentImagesNumber - 1 else uiState.value.maxImagesNumber
-                )
-                //Log.i("Current Image Number Public", uiState.value.currentImagesNumber.toString())
-                //Log.i("Current Image Number Private", _uiState.value.currentImagesNumber.toString())
-            }*/
+        when (event) {
             is ArtworkEvent.AudioChange -> {
                 _uiState.value = uiState.value.copy(
                     isAudioEnabled = !uiState.value.isAudioEnabled
                 )
-                //Log.i("Current Image Number Public", uiState.value.currentImagesNumber.toString())
-                //Log.i("Current Image Number Private", _uiState.value.currentImagesNumber.toString())
             }
-/*            is ArtworkEvent.LastSlide -> {
+            is ArtworkEvent.SpeechStatus -> {
                 _uiState.value = uiState.value.copy(
-                    currentImagesNumber = uiState.value.maxImagesNumber
+                    isAudioEnabled = event.isSpeaking
                 )
-                //Log.i("Current Image Number Public", uiState.value.currentImagesNumber.toString())
-                //Log.i("Current Image Number Private", _uiState.value.currentImagesNumber.toString())
-            }*/
+            }
         }
     }
 }

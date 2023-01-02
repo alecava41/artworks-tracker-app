@@ -7,6 +7,7 @@ import android.net.nsd.NsdServiceInfo
 import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -18,23 +19,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
+import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
 import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkScreen
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 import it.afm.artworkstracker.util.Screen
-import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: MuseumMapViewModel by viewModels()
+    private lateinit var museumMapViewModel: MuseumMapViewModel
     private lateinit var tts: TextToSpeech
 
     // TODO: (future implementation) artwork information should be manual (snackbar) + setting to make it auto
@@ -60,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
         override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
             Log.d("MainActivity", "Found service: ip ${serviceInfo.host}, port ${serviceInfo.port}")
-            viewModel.onEvent(
+            museumMapViewModel.onEvent(
                 MuseumMapEvent.BackendServerDiscovered(
                     ip = serviceInfo.host.toString(),
                     port = serviceInfo.port.toString()
@@ -79,7 +82,7 @@ class MainActivity : ComponentActivity() {
             // A service was found! Do something with it.
             Log.d("MainActivity", "Service discovery success: $service")
 
-            if (service.serviceName == "MuseumBackend") {
+            if (service.serviceName.contains("MuseumBackend")) {
                 // Desired backend service
                 nsdManager.stopServiceDiscovery(this)
                 nsdManager.resolveService(service, resolveListener)
@@ -117,14 +120,6 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     val navController = rememberNavController()
-                    tts = TextToSpeech(this) { status ->
-                        if (status == TextToSpeech.SUCCESS) {
-                            val locale = this.resources.configuration.locales[0]
-                            tts.language = locale
-                        } else {
-                            Toast.makeText(this, "Initialization Failed!", Toast.LENGTH_SHORT).show()
-                        }
-                    }
 
                     NavHost(
                         navController = navController,
@@ -134,7 +129,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = Screen.MuseumMapScreen.route) {
                             MuseumMapScreen(
                                 navController = navController,
-                                viewModel = viewModel
+                                viewModel = museumMapViewModel
                             )
                         }
 
@@ -155,7 +150,11 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         ) {
-                            ArtworkScreen(navController = navController, tts = tts)
+                            ArtworkScreen(
+                                navController = navController,
+                                viewModel = hiltViewModel(),
+                                tts = tts
+                            )
                         }
                     }
                 }
@@ -164,6 +163,33 @@ class MainActivity : ComponentActivity() {
 
         nsdManager = getSystemService(Context.NSD_SERVICE) as NsdManager
         nsdManager.discoverServices("_http._tcp", NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+
+
+        // TODO: check whether audio is > 0?
+        tts = TextToSpeech(this) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                val locale = this.resources.configuration.locales[0]
+                tts.language = locale
+
+//                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+//                    override fun onStart(utteranceId: String?) {
+//                        artworkViewModel.onEvent(ArtworkEvent.SpeechStatus(true))
+//                    }
+//
+//                    override fun onDone(utteranceId: String?) {
+//                        artworkViewModel.onEvent(ArtworkEvent.SpeechStatus(false))
+//                    }
+//
+//                    override fun onError(utteranceId: String?) {
+//                        artworkViewModel.onEvent(ArtworkEvent.SpeechStatus(false))
+//                    }
+//
+//                })
+            } else {
+                Toast.makeText(this, "Initialization failed!", Toast.LENGTH_SHORT).show()
+                // TODO: disable related commands
+            }
+        }
 
         requestPermissions()
     }
@@ -176,12 +202,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.onEvent(MuseumMapEvent.ResumeTour)
+        museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.onEvent(MuseumMapEvent.PauseTour)
+        museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)
     }
 
     private fun requestPermissions() {
@@ -228,13 +254,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultMuseumMapPreview() {
-//    ArtworksTrackerTheme {
-//        Surface {
-//            MuseumMapScreen()
-//        }
-//    }
-//}

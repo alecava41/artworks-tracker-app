@@ -15,7 +15,6 @@ import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetRoomUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
 import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
 import it.afm.artworkstracker.featureMuseumMap.domain.util.Side
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -66,28 +65,29 @@ class MuseumMapViewModel @Inject constructor(
                         Log.i(TAG, "room = $room")
 
                         _museumMapState.value = museumMapState.value.copy(
-                            room = room
+                            room = room,
+                            firstBeaconRanged = it
                         )
                     }
+                } else {
+                    _eventFlow.emit(UiEvent.NewUserPosition(uuid = it!!.id))
                 }
 
-                delay(500L)
+                val isArtworkAlreadyVisited =
+                    _museumMapState.value.room.artworks.find { artwork -> artwork.beacon == it!!.id }?.visited ?: false
 
-                _eventFlow.emit(UiEvent.NewUserPosition(uuid = it!!.id))
-
-                val isArtworkAlreadyVisited = _museumMapState.value.room.artworks.find { artwork -> artwork.beacon == it.id }?.visited ?: false
-
-                delay(500L)
-
-                if (isArtworkAlreadyVisited)
-                    _eventFlow.emit(UiEvent.NewCloserBeaconAlreadyVisited(uuid = it.id))
-                else
-                    _eventFlow.emit(UiEvent.NewCloserBeacon(uuid = it.id))
+                if (isArtworkAlreadyVisited) _eventFlow.emit(UiEvent.NewCloserBeaconAlreadyVisited(uuid = it!!.id))
+                else _eventFlow.emit(UiEvent.NewCloserBeacon(uuid = it!!.id))
             }
         }.launchIn(viewModelScope)
 
         getArtworksIdsUseCase().onEach {
             knownArtworks = it
+
+            _museumMapState.value.room.artworks.forEach { artwork ->
+                artwork.visited = knownArtworks.contains(artwork.beacon)
+            }
+
         }.launchIn(viewModelScope)
     }
 
@@ -161,5 +161,6 @@ val defaultRoom = Room(
             posY = 50
         )
     ),
+    walls = arrayListOf(),
     id = 3
 )

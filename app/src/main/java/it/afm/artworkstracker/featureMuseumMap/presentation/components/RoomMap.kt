@@ -33,6 +33,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import it.afm.artworkstracker.R
+import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
 import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
@@ -46,25 +47,31 @@ import java.util.*
 @Composable
 fun RoomMap(
     room: Room,
+    firstBeaconRanged: Beacon? = null,
     eventFlow: SharedFlow<UiEvent>,
     onArtworkClicked: (UUID) -> Unit
 ) {
     Log.i("RoomMap", "Calling recomposition!")
 
-    var scale = 1f
+    var scale = remember(
+        key1 = room
+    ) {
+        1f
+    }
 
     // TODO: Handle case when user comes back from a card (icon should be placed near the just-visited artwork)
 
-    // TODO: split map's items into more composables
+    val animX = remember(
+        key1 = room
+    ) { Animatable(initialValue = 0f) }
 
-    val animX = remember { Animatable(initialValue = 0f) }
-    val animY = remember { Animatable(initialValue = 0f) }
+    val animY = remember(
+        key1 = room
+    ) { Animatable(initialValue = 0f) }
 
     val state = rememberTransformableState { zoomChange, _, _ ->
         scale *= zoomChange
     }
-
-//    val interactionSource = remember { MutableInteractionSource() }
 
     val picturePainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.picture))
     val sculpturePainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.sculpture))
@@ -76,23 +83,32 @@ fun RoomMap(
         arrayListOf<Triple<UUID, Rect, Offset>>()
     }
 
+    val hScrollState = rememberScrollState()
+    val vScrollState = rememberScrollState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .horizontalScroll(rememberScrollState())
-            .verticalScroll(rememberScrollState())
+            .horizontalScroll(hScrollState)
+            .verticalScroll(vScrollState)
             .padding(20.dp)
             .transformable(state = state)
             .graphicsLayer(
                 scaleX = scale,
                 scaleY = scale,
             )
+//            .pointerInput(Unit) {
+//                detectTransformGestures { _, _, zoom, _ ->
+//                    scale *= zoom
+//                }
+//            }
 
     ) {
         LaunchedEffect(key1 = true) {
             eventFlow.collectLatest { event ->
                 when (event) {
                     is UiEvent.NewUserPosition -> {
+                        Log.i("RoomMap", "Launching user animation on event!")
                         val offset = artworkPositions.find { it.first == event.uuid }!!.third
 
                         launch {
@@ -105,6 +121,9 @@ fun RoomMap(
                                 targetValue = offset.y,
                                 animationSpec = tween(1000)
                             )
+
+                            hScrollState.animateScrollTo(offset.x.toInt())
+                            vScrollState.animateScrollTo(offset.y.toInt())
                         }
                     }
                     else -> {}
@@ -115,7 +134,6 @@ fun RoomMap(
         Canvas(
             modifier = Modifier
                 .size(1000.dp, 1000.dp)
-//                .indication(interactionSource, LocalIndication.current)
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
@@ -124,14 +142,6 @@ fun RoomMap(
                                 onArtworkClicked(art.first)
                             }
                         },
-//                        onPress = { offset ->
-//                            val press = PressInteraction.Press(offset)
-//                            interactionSource.emit(press)
-//
-//                            tryAwaitRelease()
-//
-//                            interactionSource.emit(PressInteraction.Release(press))
-//                        }
                     )
                 }
         ) {
@@ -148,6 +158,13 @@ fun RoomMap(
                         PerimeterEntity.MOVE -> moveTo(it.second.dp.toPx(), it.third.dp.toPx())
                     }
                 }
+
+                room.walls.forEach {
+                    when (it.first) {
+                        PerimeterEntity.LINE -> lineTo(it.second.dp.toPx(), it.third.dp.toPx())
+                        PerimeterEntity.MOVE -> moveTo(it.second.dp.toPx(), it.third.dp.toPx())
+                    }
+                }
             }
 
             drawPath(
@@ -161,7 +178,7 @@ fun RoomMap(
                 style = Stroke(10.dp.toPx()),
             )
 
-            clipPath(path = path) {}
+            clipPath(path = groundPath) {}
 
             artworkPositions.clear()
 
@@ -246,6 +263,33 @@ fun RoomMap(
                 with(userPainter) {
                     draw(Size(userSize.toPx(), userSize.toPx()))
                 }
+            }
+        }
+
+        if (firstBeaconRanged != null) {
+            LaunchedEffect(key1 = true) {
+                Log.i("RoomMap", "Launching user animation on recomposition!")
+                val offset = artworkPositions.find { it.first == firstBeaconRanged.id }!!.third
+
+                animX.animateTo(
+                    targetValue = offset.x,
+                    animationSpec = tween(500)
+                )
+
+                animY.animateTo(
+                    targetValue = offset.y,
+                    animationSpec = tween(500)
+                )
+
+                hScrollState.animateScrollTo(
+                    value = offset.x.toInt(),
+                    animationSpec = tween(1000)
+                )
+
+                vScrollState.animateScrollTo(
+                    value = offset.y.toInt(),
+                    animationSpec = tween(1000)
+                )
             }
         }
     }
