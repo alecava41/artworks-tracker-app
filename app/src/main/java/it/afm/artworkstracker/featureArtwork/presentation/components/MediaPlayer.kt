@@ -21,9 +21,9 @@ fun MediaPlayer(
     onSpeechStarted: () -> Unit,
     onSpeechFinished: () -> Unit,
     description: String,
-    tts: TextToSpeech,
+    tts: TextToSpeech?,
 ) {
-    tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+    tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
         override fun onStart(utteranceId: String) {
             onSpeechStarted()
         }
@@ -58,7 +58,7 @@ fun MediaPlayer(
         if (!isAudioEnabled) {
             IconButton(
                 onClick = {
-                    tts.speak(
+                    tts?.speak(
                         description,
                         TextToSpeech.QUEUE_FLUSH,
                         null,
@@ -69,7 +69,8 @@ fun MediaPlayer(
                     width = 2.dp,
                     color = MaterialTheme.colorScheme.onPrimary,
                     shape = RoundedCornerShape(30.dp)
-                )
+                ),
+                enabled = tts != null
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.play),
@@ -80,13 +81,14 @@ fun MediaPlayer(
         } else {
             IconButton(
                 onClick = {
-                    tts.stop()
+                    tts?.stop()
                 },
                 modifier = Modifier.border(
                     width = 2.dp,
                     color = MaterialTheme.colorScheme.onPrimary,
                     shape = RoundedCornerShape(30.dp)
-                )
+                ),
+                enabled = tts != null
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.stop),

@@ -19,9 +19,13 @@ class ArtworkViewModel @Inject constructor(
     private val _uiState = mutableStateOf(ArtworkState())
     val uiState: State<ArtworkState> = _uiState
 
+    lateinit var url: String
+    private set
+
     init {
         savedStateHandle.get<String>("artId")?.let { artworkId ->
             savedStateHandle.get<String>("url")?.let { url ->
+                this.url = url
                 viewModelScope.launch {
                     artworkUseCase(id = UUID.fromString(artworkId), baseURL = url)?.also { artwork ->
                         _uiState.value = uiState.value.copy(artwork = artwork)

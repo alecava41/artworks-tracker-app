@@ -24,7 +24,7 @@ import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
 fun ArtworkScreen(
     navController: NavController,
     viewModel: ArtworkViewModel,
-    tts: TextToSpeech
+    tts: TextToSpeech?
 ) {
     val vmState = viewModel.uiState.value
     val scrollState = rememberScrollState()
@@ -78,11 +78,14 @@ fun ArtworkScreen(
                                 isAudioEnabled = vmState.isAudioEnabled,
                                 description = viewModel.uiState.value.artwork.description,
                                 tts = tts,
-                                onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(false))},
-                                onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(true))}
+                                onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(false)) },
+                                onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(true)) }
                             )
                         }
-                        SlideShow()
+                        SlideShow(
+                            url = viewModel.url,
+                            beaconId = viewModel.uiState.value.artwork.id.toString()
+                        )
                         Description(desc = vmState.artwork.description)
                     }
                 }

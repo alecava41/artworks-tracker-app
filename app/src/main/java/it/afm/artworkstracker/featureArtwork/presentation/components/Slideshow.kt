@@ -17,11 +17,15 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import it.afm.artworkstracker.R
 import kotlinx.coroutines.launch
+import java.util.*
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun SlideShow() {
+fun SlideShow(
+    url: String,
+    beaconId: String
+) {
 
     val pagerState = rememberPagerState(initialPage = 0)
     val scope = rememberCoroutineScope()
@@ -33,34 +37,14 @@ fun SlideShow() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        HorizontalPager(count = 3, state = pagerState) { numberImage ->
-/*            Text(
-                text = "Page: $page",
-            )*/
-            if (pagerState.currentPage == 0)
-                AsyncImage(
-                    model = "https://www.shutterstock.com/image-vector/black-share-icons-set-social-600w-1911782200.jpg",
-                    contentDescription = "",
-                    modifier = Modifier.size(250.dp, 200.dp),
-                    alignment = Alignment.Center,
-                    contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
-                )
-            if (pagerState.currentPage == 1)
-                AsyncImage(
-                    model = "https://www.shutterstock.com/image-vector/link-flat-icon-illustration-vector-600w-1551448580.jpg",
-                    contentDescription = "",
-                    modifier = Modifier.size(250.dp, 200.dp),
-                    alignment = Alignment.Center,
-                    contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
-                )
-            if (pagerState.currentPage == 2)
-                AsyncImage(
-                    model = "https://www.shutterstock.com/image-vector/hand-cursor-vector-icon-blue-600w-1628240461.jpg",
-                    contentDescription = "",
-                    modifier = Modifier.size(250.dp, 200.dp),
-                    alignment = Alignment.Center,
-                    contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
-                )
+        HorizontalPager(count = 3, state = pagerState) {
+            AsyncImage(
+                model = "$url/api/artworks/$beaconId/media/${pagerState.currentPage}",
+                contentDescription = "",
+                modifier = Modifier.size(250.dp, 200.dp),
+                alignment = Alignment.Center,
+                contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
+            )
             scope.launch {
                 pagerState.scrollToPage(page = pagerState.currentPage)
                 currentSlide = pagerState.currentPage

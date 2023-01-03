@@ -36,7 +36,7 @@ import it.afm.artworkstracker.util.Screen
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val museumMapViewModel: MuseumMapViewModel by viewModels()
-    private lateinit var tts: TextToSpeech
+    private var tts: TextToSpeech? = null
 
     // TODO: (future implementation) artwork information should be manual (snackbar) + setting to make it auto
 
@@ -172,15 +172,13 @@ class MainActivity : ComponentActivity() {
         nsdManager = getSystemService(Context.NSD_SERVICE) as NsdManager
         nsdManager.discoverServices("_http._tcp", NsdManager.PROTOCOL_DNS_SD, discoveryListener)
 
-
-        // TODO: check whether audio is > 0?
         tts = TextToSpeech(this) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 val locale = this.resources.configuration.locales[0]
-                tts.language = locale
+                tts!!.language = locale
             } else {
                 Toast.makeText(this, "Initialization failed!", Toast.LENGTH_SHORT).show()
-                // TODO: disable related commands
+                tts = null
             }
         }
 
@@ -191,7 +189,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        tts.shutdown()
+        tts?.shutdown()
     }
 
     override fun onResume() {
