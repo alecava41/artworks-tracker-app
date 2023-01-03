@@ -39,11 +39,11 @@ fun SlideShow(
     ) {
         HorizontalPager(count = 3, state = pagerState) {
             AsyncImage(
-                model = "$url/api/artworks/$beaconId/media/${pagerState.currentPage}",
+                model = "$url/api/artworks/$beaconId/media/${pagerState.currentPage + 1}",
                 contentDescription = "",
                 modifier = Modifier.size(250.dp, 200.dp),
                 alignment = Alignment.Center,
-                contentScale = ContentScale.Fit // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/ContentScale.Companion
+                contentScale = ContentScale.Fit
             )
             scope.launch {
                 pagerState.scrollToPage(page = pagerState.currentPage)

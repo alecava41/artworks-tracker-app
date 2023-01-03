@@ -7,7 +7,7 @@ import java.util.*
 class GetArtworkUseCase(
     private val repository: ArtworkRepository
 ){
-    suspend operator fun invoke(id: UUID, baseURL: String): Artwork? {
-        return repository.getArtworkFromId(id, "$baseURL/api/artworks/$id")
+    suspend operator fun invoke(id: UUID, baseURL: String, language: String): Artwork? {
+        return repository.getArtworkFromId(id, "$baseURL/api/artworks/$id?lan=$language")
     }
 }

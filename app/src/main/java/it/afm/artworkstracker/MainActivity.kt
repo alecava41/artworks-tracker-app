@@ -159,7 +159,6 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             ArtworkScreen(
-                                navController = navController,
                                 viewModel = hiltViewModel(),
                                 tts = tts
                             )
