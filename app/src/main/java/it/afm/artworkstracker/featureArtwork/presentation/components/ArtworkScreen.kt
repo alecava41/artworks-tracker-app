@@ -41,7 +41,7 @@ fun ArtworkScreen(
     ) {
         Box(
             Modifier
-                .fillMaxSize()
+                .fillMaxSize(0.85f)
         ) {
             Box(
                 Modifier
@@ -50,11 +50,10 @@ fun ArtworkScreen(
                         enter = slideInVertically(animationSpec = tween(durationMillis = 1000)),
                         exit = slideOutVertically(animationSpec = tween(durationMillis = 1000))
                     )
-                    .sizeIn(minWidth = 256.dp, minHeight = 64.dp)
+                    .fillMaxSize()
             ) {
                 ElevatedCard(
                     modifier = Modifier
-                        .padding(15.dp)
                         .verticalScroll(scrollState),
                     colors = CardDefaults.elevatedCardColors(
                         containerColor = MaterialTheme.colorScheme.primary

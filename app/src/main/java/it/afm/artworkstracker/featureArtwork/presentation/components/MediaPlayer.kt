@@ -32,6 +32,11 @@ fun MediaPlayer(
             onSpeechFinished()
         }
 
+        override fun onStop(utteranceId: String?, interrupted: Boolean) {
+            if (interrupted)
+                onSpeechFinished()
+        }
+
         @Deprecated("Deprecated in Java", ReplaceWith("onSpeechFinished()"))
         override fun onError(utteranceId: String?) {
             onSpeechFinished()

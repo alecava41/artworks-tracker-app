@@ -14,11 +14,14 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
@@ -103,6 +106,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -134,8 +138,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        composable(
+                        dialog(
                             route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
+                            dialogProperties = DialogProperties(
+                                usePlatformDefaultWidth = false
+                            ),
                             arguments = listOf(
                                 navArgument(
                                     name = "artId"
