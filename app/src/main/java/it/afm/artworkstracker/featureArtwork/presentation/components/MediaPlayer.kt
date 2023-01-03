@@ -2,6 +2,7 @@ package it.afm.artworkstracker.featureArtwork.presentation.components
 
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,7 +12,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.afm.artworkstracker.R
 
@@ -55,15 +58,22 @@ fun MediaPlayer(
             .fillMaxWidth()
             .padding(0.dp, 0.dp, 15.dp, 0.dp)
     ) {
+        val ctx = LocalContext.current
+
         if (!isAudioEnabled) {
             IconButton(
                 onClick = {
-                    tts?.speak(
-                        description,
-                        TextToSpeech.QUEUE_FLUSH,
-                        null,
-                        "..."
-                    )
+                    if (tts != null) {
+                        tts.speak(
+                            description,
+                            TextToSpeech.QUEUE_FLUSH,
+                            null,
+                            "..."
+                        )
+                    } else {
+                        // TODO: test if it's working
+                        Toast.makeText(ctx, R.string.tts_not_available, Toast.LENGTH_LONG).show()
+                    }
                 },
                 modifier = Modifier.border(
                     width = 2.dp,
@@ -74,7 +84,7 @@ fun MediaPlayer(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.play),
-                    contentDescription = "Play the audio",
+                    contentDescription = stringResource(id = R.string.play_label),
                     modifier = Modifier.size(35.dp)
                 )
             }
@@ -92,7 +102,7 @@ fun MediaPlayer(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.stop),
-                    contentDescription = "Stop the audio",
+                    contentDescription = stringResource(id = R.string.stop_label),
                     modifier = Modifier.size(35.dp)
                 )
             }

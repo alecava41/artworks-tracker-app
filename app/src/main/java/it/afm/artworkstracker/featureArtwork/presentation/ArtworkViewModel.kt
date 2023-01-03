@@ -38,6 +38,7 @@ class ArtworkViewModel @Inject constructor(
                         baseURL = url,
                         language = lan
                     )?.also { artwork ->
+                        // TODO: handle if artwork is not found
                         _uiState.value = uiState.value.copy(artwork = artwork)
                     }
                 }

@@ -1,0 +1,11 @@
+<resources>
+    <string name="snackbar_unseen_artwork_label">¡Acércate a la obra de arte para ver los detalles!</string>
+    <string name="snackbar_old_artwork_action">si</string>
+    <string name="snackbar_old_artwork_label">¿Quieres volver a ver esta obra de arte?</string>
+    <string name="slide_right_label">Siguiente imagen</string>
+    <string name="slide_left_label">Anterior Imagen</string>
+    <string name="stop_label">"Detener el audio "</string>
+    <string name="play_label">"Reproducir el audio "</string>
+    <string name="description_label">Descripción</string>
+    <string name="tts_not_available">La función Texto a voz no está disponible</string>
+</resources>

@@ -69,6 +69,8 @@ class MuseumMapViewModel @Inject constructor(
                             currentBeaconRanged = it,
                             lastBeaconRanged = _museumMapState.value.currentBeaconRanged
                         )
+                    } else {
+                        // TODO: handle case if room is not present
                     }
                 } else {
                     _museumMapState.value = _museumMapState.value.copy(

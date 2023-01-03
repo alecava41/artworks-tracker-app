@@ -55,8 +55,6 @@ fun RoomMap(
         1f
     }
 
-    // TODO: Handle case when user comes back from a card (icon should be placed near the just-visited artwork)
-
     val animX = remember(
         key1 = room
     ) { Animatable(initialValue = 0f) }
@@ -94,30 +92,6 @@ fun RoomMap(
                 scaleY = scale,
             )
     ) {
-//        LaunchedEffect(key1 = true) {
-//            eventFlow.collectLatest { event ->
-//                when (event) {
-//                    is UiEvent.NewUserPosition -> {
-//                        Log.i("RoomMap", "Launching user animation on event!")
-//                        val offset = artworkPositions.find { it.first == event.uuid }!!.third
-//
-//                        launch {
-//                            animX.animateTo(
-//                                targetValue = offset.x,
-//                                animationSpec = tween(1000)
-//                            )
-//
-//                            animY.animateTo(
-//                                targetValue = offset.y,
-//                                animationSpec = tween(1000)
-//                            )
-//                        }
-//                    }
-//                    else -> {}
-//                }
-//            }
-//        }
-
         Canvas(
             modifier = Modifier
                 .size(1000.dp, 1000.dp)

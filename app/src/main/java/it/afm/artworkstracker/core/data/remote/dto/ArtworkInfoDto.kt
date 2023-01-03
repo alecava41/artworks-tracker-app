@@ -18,7 +18,7 @@ data class ArtworkInfoDto(
         val type = when (type) {
             "Painting" -> ArtworkType.PICTURE
             "Sculpture" -> ArtworkType.SCULPTURE
-            else -> ArtworkType.PICTURE // TODO: decide what to do
+            else -> ArtworkType.PICTURE
         }
 
         val side = when(side) {
@@ -35,7 +35,7 @@ data class ArtworkInfoDto(
             posX = posX,
             posY = posY,
             starred = starred,
-            visited = false, // TODO: add logic to determine this state,
+            visited = false,
             side = side,
             type = type
         )

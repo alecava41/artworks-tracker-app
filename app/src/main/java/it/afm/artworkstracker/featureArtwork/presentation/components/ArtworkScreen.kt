@@ -32,6 +32,8 @@ fun ArtworkScreen(
         }
     }
 
+    // TODO: add "Close" button at the end of the card (not scrollable, fixed at the end of the card)
+
     AnimatedVisibility(
         visibleState = transitionState,
         enter = fadeIn(),

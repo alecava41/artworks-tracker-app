@@ -1,0 +1,11 @@
+<resources>
+    <string name="tts_not_available">Text-to-Speech-Funktion nicht verfügbar</string>
+    <string name="description_label">Bezeichnung</string>
+    <string name="play_label">Spielen Sie den Ton ab</string>
+    <string name="stop_label">"Stoppen Sie den Ton "</string>
+    <string name="slide_left_label">"Vorheriges Bild "</string>
+    <string name="slide_right_label">"Nächstes Bild "</string>
+    <string name="snackbar_old_artwork_label">Möchten Sie dieses Kunstwerk noch einmal sehen?</string>
+    <string name="snackbar_old_artwork_action">ja</string>
+    <string name="snackbar_unseen_artwork_label">Gehen Sie näher an das Kunstwerk heran, um die Details zu sehen!</string>
+</resources>

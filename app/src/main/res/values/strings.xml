@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">ArtworksTracker</string>
+    <string name="app_name" translatable="false">Artworks Tracker</string>
+    <string name="tts_not_available">Text to Speech feature not available</string>
+    <string name="description_label">Description</string>
+    <string name="play_label">Play the audio</string>
+    <string name="stop_label">Stop the audio</string>
+    <string name="slide_left_label">Previous image</string>
+    <string name="slide_right_label">Next image</string>
+    <string name="snackbar_old_artwork_label">Do you want to see this artwork again?</string>
+    <string name="snackbar_old_artwork_action">yes</string>
+    <string name="snackbar_unseen_artwork_label">Get closer to the artwork to see the details!</string>
 </resources>

@@ -38,8 +38,6 @@ class MainActivity : ComponentActivity() {
     private val museumMapViewModel: MuseumMapViewModel by viewModels()
     private var tts: TextToSpeech? = null
 
-    // TODO: (future implementation) artwork information should be manual (snackbar) + setting to make it auto
-
     // TODO (onResume) check if: bluetooth is enabled, wifi is enabled, location is enabled, permissions (?)
 
     private val locationRequestLauncher = registerForActivityResult(
@@ -176,7 +174,6 @@ class MainActivity : ComponentActivity() {
                 val locale = this.resources.configuration.locales[0]
                 tts!!.language = locale
             } else {
-                Toast.makeText(this, "Initialization failed!", Toast.LENGTH_SHORT).show()
                 tts = null
             }
         }

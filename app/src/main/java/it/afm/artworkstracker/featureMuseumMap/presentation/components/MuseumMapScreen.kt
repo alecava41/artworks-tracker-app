@@ -7,8 +7,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import it.afm.artworkstracker.R
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.UiEvent
@@ -23,6 +25,7 @@ fun MuseumMapScreen(
     viewModel: MuseumMapViewModel
 ) {
     val state = viewModel.museumMapState.value
+    val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -59,8 +62,8 @@ fun MuseumMapScreen(
                     is UiEvent.NewCloserBeaconAlreadyVisited -> {
                         scope.launch {
                             val res = snackbarHostState.showSnackbar(
-                                message = "Do you want to see this artwork again?",
-                                actionLabel = "YES",
+                                message = ctx.getString(R.string.snackbar_old_artwork_label),
+                                actionLabel = ctx.getString(R.string.snackbar_old_artwork_action),
                                 withDismissAction = true,
                                 duration = SnackbarDuration.Long
                             )
@@ -76,10 +79,10 @@ fun MuseumMapScreen(
                     is UiEvent.ArtworkAlreadyVisitedClicked -> {
                         scope.launch {
                             val res = snackbarHostState.showSnackbar(
-                                message = "Do you want to see this artwork again?",
-                                actionLabel = "YES",
+                                message = ctx.getString(R.string.snackbar_old_artwork_label),
+                                actionLabel = ctx.getString(R.string.snackbar_old_artwork_action),
                                 withDismissAction = true,
-                                duration = SnackbarDuration.Long
+                                duration = SnackbarDuration.Short
                             )
 
                             if (res == SnackbarResult.ActionPerformed) {
@@ -93,10 +96,10 @@ fun MuseumMapScreen(
                     is UiEvent.ArtworkNotVisitedClicked -> {
                         scope.launch {
                             snackbarHostState.showSnackbar(
-                                message = "Get closer to the artwork to see the details!",
+                                message = ctx.getString(R.string.snackbar_unseen_artwork_label),
                                 actionLabel = null,
                                 withDismissAction = true,
-                                duration = SnackbarDuration.Long
+                                duration = SnackbarDuration.Short
                             )
                         }
                     }
