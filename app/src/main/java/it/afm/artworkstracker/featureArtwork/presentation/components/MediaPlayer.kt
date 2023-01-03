@@ -1,6 +1,7 @@
 package it.afm.artworkstracker.featureArtwork.presentation.components
 
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,10 +18,31 @@ import it.afm.artworkstracker.R
 @Composable
 fun MediaPlayer(
     isAudioEnabled: Boolean,
-    onAudioChange: () -> Unit,
+    onSpeechStarted: () -> Unit,
+    onSpeechFinished: () -> Unit,
     description: String,
     tts: TextToSpeech,
 ) {
+    tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+        override fun onStart(utteranceId: String) {
+            onSpeechStarted()
+        }
+
+        override fun onDone(utteranceId: String) {
+            onSpeechFinished()
+        }
+
+        @Deprecated("Deprecated in Java", ReplaceWith("onSpeechFinished()"))
+        override fun onError(utteranceId: String?) {
+            onSpeechFinished()
+        }
+
+        override fun onError(utteranceId: String, error: Int) {
+            onSpeechFinished()
+        }
+
+    })
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -35,9 +57,8 @@ fun MediaPlayer(
                         description,
                         TextToSpeech.QUEUE_FLUSH,
                         null,
-                        null
+                        "..."
                     )
-                    onAudioChange()
                 },
                 modifier = Modifier.border(
                     width = 2.dp,
@@ -55,7 +76,6 @@ fun MediaPlayer(
             IconButton(
                 onClick = {
                     tts.stop()
-                    onAudioChange()
                 },
                 modifier = Modifier.border(
                     width = 2.dp,

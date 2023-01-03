@@ -77,9 +77,10 @@ fun ArtworkScreen(
                             }
                             MediaPlayer(
                                 isAudioEnabled = vmState.isAudioEnabled,
-                                onAudioChange = { viewModel.onEvent(ArtworkEvent.AudioChange) },
                                 description = viewModel.uiState.value.artwork.description,
-                                tts = tts
+                                tts = tts,
+                                onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(false))},
+                                onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(true))}
                             )
                         }
                         SlideShow()

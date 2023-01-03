@@ -19,11 +19,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import it.afm.artworkstracker.core.presentation.BluetoothPermissionDialog
 import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkScreen
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
@@ -173,21 +171,6 @@ class MainActivity : ComponentActivity() {
             if (status == TextToSpeech.SUCCESS) {
                 val locale = this.resources.configuration.locales[0]
                 tts.language = locale
-
-//                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-//                    override fun onStart(utteranceId: String?) {
-//                        artworkViewModel.onEvent(ArtworkEvent.SpeechStatus(true))
-//                    }
-//
-//                    override fun onDone(utteranceId: String?) {
-//                        artworkViewModel.onEvent(ArtworkEvent.SpeechStatus(false))
-//                    }
-//
-//                    override fun onError(utteranceId: String?) {
-//                        artworkViewModel.onEvent(ArtworkEvent.SpeechStatus(false))
-//                    }
-//
-//                })
             } else {
                 Toast.makeText(this, "Initialization failed!", Toast.LENGTH_SHORT).show()
                 // TODO: disable related commands

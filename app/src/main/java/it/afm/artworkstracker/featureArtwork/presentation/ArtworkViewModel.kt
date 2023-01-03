@@ -33,11 +33,6 @@ class ArtworkViewModel @Inject constructor(
 
     fun onEvent(event: ArtworkEvent) {
         when (event) {
-            is ArtworkEvent.AudioChange -> {
-                _uiState.value = uiState.value.copy(
-                    isAudioEnabled = !uiState.value.isAudioEnabled
-                )
-            }
             is ArtworkEvent.SpeechStatus -> {
                 _uiState.value = uiState.value.copy(
                     isAudioEnabled = event.isSpeaking
