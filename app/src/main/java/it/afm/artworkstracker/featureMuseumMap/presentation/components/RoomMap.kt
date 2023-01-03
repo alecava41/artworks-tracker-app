@@ -38,17 +38,13 @@ import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
 import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
 import it.afm.artworkstracker.featureMuseumMap.domain.util.Side
-import it.afm.artworkstracker.featureMuseumMap.presentation.UiEvent
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
 fun RoomMap(
     room: Room,
-    firstBeaconRanged: Beacon? = null,
-    eventFlow: SharedFlow<UiEvent>,
+    currentBeacon: Beacon? = null,
+    lastBeacon: Beacon? = null,
     onArtworkClicked: (UUID) -> Unit
 ) {
     Log.i("RoomMap", "Calling recomposition!")
@@ -97,39 +93,30 @@ fun RoomMap(
                 scaleX = scale,
                 scaleY = scale,
             )
-//            .pointerInput(Unit) {
-//                detectTransformGestures { _, _, zoom, _ ->
-//                    scale *= zoom
+    ) {
+//        LaunchedEffect(key1 = true) {
+//            eventFlow.collectLatest { event ->
+//                when (event) {
+//                    is UiEvent.NewUserPosition -> {
+//                        Log.i("RoomMap", "Launching user animation on event!")
+//                        val offset = artworkPositions.find { it.first == event.uuid }!!.third
+//
+//                        launch {
+//                            animX.animateTo(
+//                                targetValue = offset.x,
+//                                animationSpec = tween(1000)
+//                            )
+//
+//                            animY.animateTo(
+//                                targetValue = offset.y,
+//                                animationSpec = tween(1000)
+//                            )
+//                        }
+//                    }
+//                    else -> {}
 //                }
 //            }
-
-    ) {
-        LaunchedEffect(key1 = true) {
-            eventFlow.collectLatest { event ->
-                when (event) {
-                    is UiEvent.NewUserPosition -> {
-                        Log.i("RoomMap", "Launching user animation on event!")
-                        val offset = artworkPositions.find { it.first == event.uuid }!!.third
-
-                        launch {
-                            animX.animateTo(
-                                targetValue = offset.x,
-                                animationSpec = tween(1000)
-                            )
-
-                            animY.animateTo(
-                                targetValue = offset.y,
-                                animationSpec = tween(1000)
-                            )
-
-                            hScrollState.animateScrollTo(offset.x.toInt())
-                            vScrollState.animateScrollTo(offset.y.toInt())
-                        }
-                    }
-                    else -> {}
-                }
-            }
-        }
+//        }
 
         Canvas(
             modifier = Modifier
@@ -227,7 +214,7 @@ fun RoomMap(
                 ) {
                     with(painter) {
                         draw(
-                           size = Size(artworkSize.toPx(), artworkSize.toPx()),
+                            size = Size(artworkSize.toPx(), artworkSize.toPx()),
                         )
                     }
                 }
@@ -266,28 +253,34 @@ fun RoomMap(
             }
         }
 
-        if (firstBeaconRanged != null) {
-            LaunchedEffect(key1 = true) {
-                Log.i("RoomMap", "Launching user animation on recomposition!")
-                val offset = artworkPositions.find { it.first == firstBeaconRanged.id }!!.third
 
+        LaunchedEffect(
+            key1 = currentBeacon
+        ) {
+            if (lastBeacon != null) {
+                val offset = artworkPositions.find { it.first == lastBeacon.id }!!.third
                 animX.animateTo(
                     targetValue = offset.x,
-                    animationSpec = tween(500)
+                    animationSpec = tween(0)
                 )
 
                 animY.animateTo(
                     targetValue = offset.y,
-                    animationSpec = tween(500)
+                    animationSpec = tween(0)
                 )
+            }
 
-                hScrollState.animateScrollTo(
-                    value = offset.x.toInt(),
+
+            if (currentBeacon != null) {
+                val offset = artworkPositions.find { it.first == currentBeacon.id }!!.third
+
+                animX.animateTo(
+                    targetValue = offset.x,
                     animationSpec = tween(1000)
                 )
 
-                vScrollState.animateScrollTo(
-                    value = offset.y.toInt(),
+                animY.animateTo(
+                    targetValue = offset.y,
                     animationSpec = tween(1000)
                 )
             }

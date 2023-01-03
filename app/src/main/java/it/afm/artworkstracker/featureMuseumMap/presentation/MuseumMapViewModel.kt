@@ -64,13 +64,17 @@ class MuseumMapViewModel @Inject constructor(
 
                         Log.i(TAG, "room = $room")
 
-                        _museumMapState.value = museumMapState.value.copy(
+                        _museumMapState.value = _museumMapState.value.copy(
                             room = room,
-                            firstBeaconRanged = it
+                            currentBeaconRanged = it,
+                            lastBeaconRanged = _museumMapState.value.currentBeaconRanged
                         )
                     }
                 } else {
-                    _eventFlow.emit(UiEvent.NewUserPosition(uuid = it!!.id))
+                    _museumMapState.value = _museumMapState.value.copy(
+                        currentBeaconRanged = it,
+                        lastBeaconRanged = _museumMapState.value.currentBeaconRanged
+                    )
                 }
 
                 val isArtworkAlreadyVisited =
@@ -99,6 +103,10 @@ class MuseumMapViewModel @Inject constructor(
             is MuseumMapEvent.ViewArtwork -> {
                 viewModelScope.launch {
                     val isArtworkAlreadyVisited = knownArtworks.contains(event.id)
+
+                    _museumMapState.value = _museumMapState.value.copy(
+                        lastBeaconRanged = _museumMapState.value.currentBeaconRanged
+                    )
 
                     if (isArtworkAlreadyVisited)
                         _eventFlow.emit(UiEvent.ArtworkAlreadyVisitedClicked(event.id))

@@ -1,13 +1,10 @@
 package it.afm.artworkstracker
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -18,26 +15,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
-import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
+import it.afm.artworkstracker.core.presentation.BluetoothPermissionDialog
 import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkScreen
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
+import it.afm.artworkstracker.util.PermissionsUtil
 import it.afm.artworkstracker.util.Screen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var museumMapViewModel: MuseumMapViewModel
+    private val museumMapViewModel: MuseumMapViewModel by viewModels()
     private lateinit var tts: TextToSpeech
 
     // TODO: (future implementation) artwork information should be manual (snackbar) + setting to make it auto
@@ -110,6 +107,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.i("MainActivity", museumMapViewModel.hashCode().toString())
+
         setContent {
             ArtworksTrackerTheme {
                 // A surface container using the 'background' color from the theme
@@ -125,6 +125,9 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = Screen.MuseumMapScreen.route
                     ) {
+//                        dialog(route = Screen.BluetoothPermissionDialog.route) {
+//                            BluetoothPermissionDialog(navController = navController)
+//                        }
 
                         composable(route = Screen.MuseumMapScreen.route) {
                             MuseumMapScreen(
@@ -191,7 +194,8 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        requestPermissions()
+        if (!PermissionsUtil.checkPermissions(this))
+            PermissionsUtil.requestPermissions(locationRequestLauncher)
     }
 
 
@@ -208,49 +212,5 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)
-    }
-
-    private fun requestPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.BLUETOOTH_SCAN
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                locationRequestLauncher.launch(
-                    arrayOf(
-                        android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.BLUETOOTH_SCAN,
-                        android.Manifest.permission.BLUETOOTH_CONNECT
-                    )
-                )
-            }
-        } else {
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.BLUETOOTH
-                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.BLUETOOTH_ADMIN
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                locationRequestLauncher.launch(
-                    arrayOf(
-                        android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.BLUETOOTH,
-                        android.Manifest.permission.BLUETOOTH_ADMIN
-                    )
-                )
-            }
-        }
     }
 }

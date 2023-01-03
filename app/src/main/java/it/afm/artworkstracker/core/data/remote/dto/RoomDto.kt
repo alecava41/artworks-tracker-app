@@ -22,27 +22,30 @@ data class RoomDto(
 
     private fun extractRoomData(source: String): ArrayList<Triple<PerimeterEntity, Int, Int>> {
         val entities = arrayListOf<Triple<PerimeterEntity, Int, Int>>()
-        val chunks = source.split('-')
 
-        chunks.forEach {
-            when (it[1]) {
-                'M' -> { // (M,_,_) (MOVE)
-                    val x = it.substringAfter(',')
-                        .substringBefore(',')
-                        .toInt()
-                    val y = it.substringAfter(',')
-                        .substringAfter(',')
-                        .substringBefore(')').toInt()
-                    entities.add(Triple(PerimeterEntity.MOVE, x, y))
-                }
-                'L' -> { // (L,_,_) (LINE)
-                    val x = it.substringAfter(',')
-                        .substringBefore(',')
-                        .toInt()
-                    val y = it.substringAfter(',')
-                        .substringAfter(',')
-                        .substringBefore(')').toInt()
-                    entities.add(Triple(PerimeterEntity.LINE, x, y))
+        if (source.isNotEmpty() && source.isNotBlank()) {
+            val chunks = source.split('-')
+
+            chunks.forEach {
+                when (it[1]) {
+                    'M' -> { // (M,_,_) (MOVE)
+                        val x = it.substringAfter(',')
+                            .substringBefore(',')
+                            .toInt()
+                        val y = it.substringAfter(',')
+                            .substringAfter(',')
+                            .substringBefore(')').toInt()
+                        entities.add(Triple(PerimeterEntity.MOVE, x, y))
+                    }
+                    'L' -> { // (L,_,_) (LINE)
+                        val x = it.substringAfter(',')
+                            .substringBefore(',')
+                            .toInt()
+                        val y = it.substringAfter(',')
+                            .substringAfter(',')
+                            .substringBefore(')').toInt()
+                        entities.add(Triple(PerimeterEntity.LINE, x, y))
+                    }
                 }
             }
         }
