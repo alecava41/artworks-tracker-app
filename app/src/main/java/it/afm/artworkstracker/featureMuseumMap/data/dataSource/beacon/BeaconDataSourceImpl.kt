@@ -27,7 +27,7 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.ALTBEACON_LAYOUT))
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(IBEACON_LAYOUT))
 
-        beaconManager.foregroundScanPeriod = 1100L
+        //beaconManager.foregroundScanPeriod = 1100L
         beaconManager.foregroundBetweenScanPeriod = 0L
 
         BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter::class.java)
@@ -40,6 +40,7 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
         while (true) {
             if (beaconsInRange.isNotEmpty()) {
                 emit(beaconsInRange.toList())
+
                 beaconsInRange.forEach {
                     Log.i(TAG, "Ranging beacon ${it.id}, distance = ${it.distance}")
                 }
@@ -58,19 +59,17 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
     }
 
     override fun didRangeBeaconsInRegion(
-        beacons: MutableCollection<org.altbeacon.beacon.Beacon>?,
-        region: Region?
+        beacons: Collection<org.altbeacon.beacon.Beacon>,
+        region: Region
     ) {
-        val closerBeacons = beacons?.filter {
+        val closerBeacons = beacons.filter {
             it.distance <= MIN_CONSIDERABLE_DISTANCE
-        }?.map {
+        }.map {
             Beacon(it.id1.toUuid(), it.distance)
         }
 
         beaconsInRange.clear()
-
-        if (closerBeacons != null)
-            beaconsInRange.addAll(closerBeacons)
+        beaconsInRange.addAll(closerBeacons)
     }
 
     companion object {

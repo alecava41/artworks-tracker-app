@@ -36,21 +36,27 @@ class MuseumMapViewModel @Inject constructor(
     private val _museumMapState = mutableStateOf(MuseumMapState())
     val museumMapState: State<MuseumMapState> = _museumMapState
 
+    private val _environmentState = mutableStateOf(EnvironmentState())
+    val environmentState: State<EnvironmentState> = _environmentState
+
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-
 
     private var currentClosestBeacon: Beacon? = null
 
     private var knownArtworks = listOf<UUID>()
 
     init {
+        // TODO: add bluetooth enabled check + broadcast receiver to get information about bluetooth state
+        // TODO: add wifi enabled check + broadcast receiver to get information about wifi state
+        // TODO: add location enabled check (only for older SDK) + broadcast receiver if it disabled!!
+
         getCloserBeaconsUseCase().onEach {
             val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
 
             if (!baseUrl.isNullOrBlank() && isNewClosestBeacon) {
                 currentClosestBeacon = it
-                val isBeaconInCurrentRoom = _museumMapState.value.room.artworks.find { artwork ->
+                val isBeaconInCurrentRoom = _museumMapState.value.room?.artworks?.find { artwork ->
                     artwork.beacon == it!!.id
                 } != null
 
@@ -70,7 +76,9 @@ class MuseumMapViewModel @Inject constructor(
                             lastBeaconRanged = _museumMapState.value.currentBeaconRanged
                         )
                     } else {
-                        // TODO: handle case if room is not present
+                        _museumMapState.value = _museumMapState.value.copy(
+                            room = null,
+                        )
                     }
                 } else {
                     _museumMapState.value = _museumMapState.value.copy(
@@ -80,7 +88,7 @@ class MuseumMapViewModel @Inject constructor(
                 }
 
                 val isArtworkAlreadyVisited =
-                    _museumMapState.value.room.artworks.find { artwork -> artwork.beacon == it!!.id }?.visited ?: false
+                    _museumMapState.value.room?.artworks?.find { artwork -> artwork.beacon == it!!.id }?.visited ?: false
 
                 if (isArtworkAlreadyVisited) _eventFlow.emit(UiEvent.NewCloserBeaconAlreadyVisited(uuid = it!!.id))
                 else _eventFlow.emit(UiEvent.NewCloserBeacon(uuid = it!!.id))
@@ -90,7 +98,7 @@ class MuseumMapViewModel @Inject constructor(
         getArtworksIdsUseCase().onEach {
             knownArtworks = it
 
-            _museumMapState.value.room.artworks.forEach { artwork ->
+            _museumMapState.value.room?.artworks?.forEach { artwork ->
                 artwork.visited = knownArtworks.contains(artwork.beacon)
             }
 

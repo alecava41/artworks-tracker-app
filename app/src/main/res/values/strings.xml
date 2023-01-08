@@ -9,4 +9,9 @@
     <string name="snackbar_old_artwork_label">Do you want to see this artwork again?</string>
     <string name="snackbar_old_artwork_action">yes</string>
     <string name="snackbar_unseen_artwork_label">Get closer to the artwork to see the details!</string>
+    <string name="permission_title">Permissions required</string>
+    <string name="permission_body">Bluetooth and Location permissions are required in order to allow us to detect closer artworks. The position is only needed for allowing bluetooth scanning!</string>
+    <string name="permission_button">OK</string>
+    <string name="permissions_not_given_title">Permissions not given!</string>
+    <string name="permissions_not_given_body">To be allowed to use the app you first have to grant both bluetooth and location permissions. You can enable them in the app settings.</string>
 </resources>
