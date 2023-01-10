@@ -8,4 +8,5 @@
     <string name="snackbar_old_artwork_label">Voulez-vous revoir cette œuvre ?</string>
     <string name="snackbar_old_artwork_action">oui</string>
     <string name="snackbar_unseen_artwork_label">Rapprochez-vous de l\'œuvre pour voir les détails!</string>
+    <string name="close_label">PROCHE</string>
 </resources>

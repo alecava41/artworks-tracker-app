@@ -8,4 +8,5 @@
     <string name="play_label">"Reproducir el audio "</string>
     <string name="description_label">Descripción</string>
     <string name="tts_not_available">La función Texto a voz no está disponible</string>
+    <string name="close_label">CERRA</string>
 </resources>

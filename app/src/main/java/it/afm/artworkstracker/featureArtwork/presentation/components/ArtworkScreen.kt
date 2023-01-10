@@ -7,20 +7,21 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ArtworkScreen(
+    navController: NavController,
     viewModel: ArtworkViewModel,
     tts: TextToSpeech?
 ) {
@@ -53,40 +54,46 @@ fun ArtworkScreen(
                     .fillMaxSize()
             ) {
                 ElevatedCard(
-                    modifier = Modifier
-                        .verticalScroll(scrollState),
                     colors = CardDefaults.elevatedCardColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    ) // light blue = rgb(200, 233, 254), pink = rgb(255, 193, 255), default
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
                 ) {
                     Column {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(scrollState)
+                                .weight(weight =1f, fill = false)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth(fraction = 0.75f)
-                                    .padding(25.dp, 15.dp, 0.dp, 20.dp),
-                                horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                ArtworkName(str = vmState.artwork.title)
-                                ArtworkAuthor(str = vmState.artwork.author)
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(fraction = 0.75f)
+                                        .padding(25.dp, 15.dp, 0.dp, 20.dp)
+                                        .semantics(mergeDescendants = true) { },
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    ArtworkName(str = vmState.artwork.title)
+                                    ArtworkAuthor(str = vmState.artwork.author)
+                                }
+                                MediaPlayer(
+                                    isAudioEnabled = vmState.isAudioEnabled,
+                                    description = vmState.artwork.description,
+                                    tts = tts,
+                                    onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = false)) },
+                                    onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = true)) }
+                                )
                             }
-                            MediaPlayer(
-                                isAudioEnabled = vmState.isAudioEnabled,
-                                description = viewModel.uiState.value.artwork.description,
-                                tts = tts,
-                                onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(false)) },
-                                onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(true)) }
+                            SlideShow(
+                                url = viewModel.url,
+                                beaconId = vmState.artwork.id.toString()
                             )
+                            Description(desc = vmState.artwork.description)
                         }
-                        SlideShow(
-                            url = viewModel.url,
-                            beaconId = viewModel.uiState.value.artwork.id.toString()
-                        )
-                        Description(desc = vmState.artwork.description)
+                        CloseButton(navController = navController)
                     }
                 }
             }

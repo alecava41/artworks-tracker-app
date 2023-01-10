@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -32,7 +33,6 @@ fun SlideShow(
     val scope = rememberCoroutineScope()
     var currentSlide: Int
 
-
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -41,7 +41,7 @@ fun SlideShow(
         HorizontalPager(count = 3, state = pagerState) {
             AsyncImage(
                 model = "$url/api/artworks/$beaconId/media/${pagerState.currentPage + 1}",
-                contentDescription = "",
+                contentDescription = null,
                 modifier = Modifier.size(250.dp, 200.dp),
                 alignment = Alignment.Center,
                 contentScale = ContentScale.Fit
@@ -51,7 +51,11 @@ fun SlideShow(
                 currentSlide = pagerState.currentPage
             }
         }
-        Row(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 10.dp, 0.dp, 0.dp)
+                .semantics(mergeDescendants = true) { }
+        ) {
             IconButton(onClick = {
                 currentSlide = if (pagerState.currentPage > 0) pagerState.currentPage - 1 else 2
                 scope.launch { pagerState.scrollToPage(page = currentSlide) }

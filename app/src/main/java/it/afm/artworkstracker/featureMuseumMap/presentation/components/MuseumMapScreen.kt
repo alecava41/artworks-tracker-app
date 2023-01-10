@@ -59,7 +59,7 @@ fun MuseumMapScreen(
         }
     )
 
-    if (permissionsState.allPermissionsGranted) {
+    /*if (permissionsState.allPermissionsGranted) {
         Scaffold(
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
         ) {
@@ -87,8 +87,29 @@ fun MuseumMapScreen(
         )
     } else {
         PermissionsNotGiven()
-    }
+    }*/
 
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+            Text(
+                text = state.room!!.name, // TODO: fix it
+                style = MaterialTheme.typography.titleLarge
+            )
+            RoomMap(
+                room = state.room,
+                lastBeacon = state.lastBeaconRanged,
+                currentBeacon = state.currentBeaconRanged,
+                onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
+            )
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -105,7 +126,7 @@ fun MuseumMapScreen(
                             message = ctx.getString(R.string.snackbar_old_artwork_label),
                             actionLabel = ctx.getString(R.string.snackbar_old_artwork_action),
                             withDismissAction = true,
-                            duration = SnackbarDuration.Long
+                            duration = SnackbarDuration.Indefinite
                         )
 
                         if (res == SnackbarResult.ActionPerformed) {

@@ -8,4 +8,5 @@
     <string name="snackbar_old_artwork_label">Möchten Sie dieses Kunstwerk noch einmal sehen?</string>
     <string name="snackbar_old_artwork_action">ja</string>
     <string name="snackbar_unseen_artwork_label">Gehen Sie näher an das Kunstwerk heran, um die Details zu sehen!</string>
+    <string name="close_label">" SCHLIESS"</string>
 </resources>

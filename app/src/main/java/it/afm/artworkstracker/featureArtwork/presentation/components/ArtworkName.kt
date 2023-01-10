@@ -11,12 +11,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ArtworkName(str: String) {
-        Text(
-            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp),
-            text = str,
-            textAlign = TextAlign.Start,
-            style = MaterialTheme.typography.headlineMedium,
-            fontStyle = FontStyle.Italic
-
-        )
+    Text(
+        modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp),
+        text = str,
+        textAlign = TextAlign.Start,
+        style = MaterialTheme.typography.headlineMedium,
+        fontStyle = FontStyle.Italic
+    )
 }

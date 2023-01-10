@@ -29,6 +29,7 @@ import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 import it.afm.artworkstracker.util.Screen
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -138,6 +139,7 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             ArtworkScreen(
+                                navController = navController,
                                 viewModel = hiltViewModel(),
                                 tts = tts
                             )
