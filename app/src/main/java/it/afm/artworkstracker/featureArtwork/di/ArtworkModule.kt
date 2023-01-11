@@ -13,6 +13,7 @@ import it.afm.artworkstracker.featureArtwork.data.util.UUIDConverter
 import it.afm.artworkstracker.featureArtwork.domain.repository.ArtworkRepository
 import it.afm.artworkstracker.featureArtwork.domain.useCase.DeleteAllArtworksUseCase
 import it.afm.artworkstracker.featureArtwork.domain.useCase.GetArtworkUseCase
+import it.afm.artworkstracker.featureArtwork.domain.useCase.GetVisitedArtworksUseCase
 import javax.inject.Singleton
 
 @Module
@@ -29,6 +30,12 @@ object ArtworkModule {
     @Singleton
     fun provideGetArtworkUseCase(artworkRepository: ArtworkRepository): GetArtworkUseCase {
         return GetArtworkUseCase(artworkRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetVisitedArtworks(artworkRepository: ArtworkRepository): GetVisitedArtworksUseCase {
+        return GetVisitedArtworksUseCase(artworkRepository)
     }
 
     @Provides

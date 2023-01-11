@@ -23,4 +23,7 @@ interface ArtworkDao {
     @Query("SELECT id FROM ArtworkEntity")
     fun getArtworksId(): Flow<List<UUID>>
 
+    @Query("SELECT * FROM ArtworkEntity ORDER BY ArtworkEntity.title")
+    fun getVisitedArtworksOrderedByTitle(): Flow<List<ArtworkEntity>>
+
 }

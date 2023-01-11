@@ -8,13 +8,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.afm.artworkstracker.featureArtwork.domain.useCase.GetArtworkUseCase
+import it.afm.artworkstracker.featureArtwork.domain.useCase.GetVisitedArtworksUseCase
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class ArtworkViewModel @Inject constructor(
-    private val artworkUseCase: GetArtworkUseCase,
+    private val getArtworkUseCase: GetArtworkUseCase,
+    private val getVisitedArtworksUseCase: GetVisitedArtworksUseCase,
     app: Application,
     savedStateHandle: SavedStateHandle
 ) : AndroidViewModel(
@@ -33,13 +36,16 @@ class ArtworkViewModel @Inject constructor(
             savedStateHandle.get<String>("url")?.let { url ->
                 this.url = url
                 viewModelScope.launch {
-                    artworkUseCase(
+                    getArtworkUseCase(
                         id = UUID.fromString(artworkId),
                         baseURL = url,
                         language = lan
                     )?.also { artwork ->
                         // TODO: handle if artwork is not found
                         _uiState.value = uiState.value.copy(artwork = artwork)
+                    }
+                    getVisitedArtworksUseCase().onEach { visitedArtworks ->
+                        _uiState.value = uiState.value.copy(visitedArtworks = visitedArtworks)
                     }
                 }
             }
