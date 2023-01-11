@@ -52,7 +52,6 @@ class MuseumMapViewModel @Inject constructor(
         // TODO: add wifi enabled check + broadcast receiver to get information about wifi state
         // TODO: add location enabled check (only for older SDK) + broadcast receiver if it disabled!!
 
-        // TODO: add TTS for telling the path to reach the next artwork (starting from a specific artwork)
         // TODO: add "Bottom Navigation Bar" (entries: MAP, ARTWORKS_LIST)
         // TODO: add "Top App Bar" (App title (?) + action_button (close_visit, ?))
         // TODO: check if it is possible to "close" an artwork's card without using navController

@@ -27,6 +27,7 @@ import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
+import it.afm.artworkstracker.util.LanguageUtil
 import it.afm.artworkstracker.util.Screen
 import java.util.*
 
@@ -155,14 +156,7 @@ class MainActivity : ComponentActivity() {
         tts = TextToSpeech(this) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 val locale = this.resources.configuration.locales[0]
-                if (
-                    locale.language.equals(Locale.ITALIAN.language) || locale.language.equals(Locale.GERMAN.language)
-                    || locale.language.equals(Locale.FRENCH.language) || locale.language.equals(Locale("es").language)
-                ) {
-                    tts!!.language = locale
-                } else {
-                    tts!!.language = Locale.ENGLISH
-                }
+                tts!!.language = if (LanguageUtil.supportedLanguages.contains(locale.language)) locale else Locale.ENGLISH
             } else {
                 tts = null
             }
