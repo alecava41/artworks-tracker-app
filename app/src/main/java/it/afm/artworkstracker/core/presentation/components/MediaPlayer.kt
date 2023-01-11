@@ -1,4 +1,4 @@
-package it.afm.artworkstracker.featureArtwork.presentation.components
+package it.afm.artworkstracker.core.presentation.components
 
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
@@ -84,7 +84,7 @@ fun MediaPlayer(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.play),
-                    contentDescription = stringResource(id = R.string.play_label),
+                    contentDescription = stringResource(id = R.string.play_label), // TODO: may be different depending on where is used
                     modifier = Modifier.size(35.dp)
                 )
             }
@@ -102,7 +102,7 @@ fun MediaPlayer(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.stop),
-                    contentDescription = stringResource(id = R.string.stop_label),
+                    contentDescription = stringResource(id = R.string.stop_label), // TODO: may be different depending on where is used
                     modifier = Modifier.size(35.dp)
                 )
             }

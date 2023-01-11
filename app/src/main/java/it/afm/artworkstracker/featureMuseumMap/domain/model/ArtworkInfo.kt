@@ -11,6 +11,7 @@ data class ArtworkInfo(
     val posY: Int,
     val starred: Boolean,
     var visited: Boolean,
+    val direction: String,
     val side: Side,
     val type: ArtworkType
 )

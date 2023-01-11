@@ -11,6 +11,7 @@ data class ArtworkInfoDto(
     val posX: Int,
     val posY: Int,
     val starred: Boolean,
+    val direction: String,
     val side: Char,
     val type: String
 ) {
@@ -35,6 +36,7 @@ data class ArtworkInfoDto(
             posX = posX,
             posY = posY,
             starred = starred,
+            direction = direction,
             visited = false,
             side = side,
             type = type

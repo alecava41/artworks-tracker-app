@@ -22,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
@@ -33,7 +34,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import it.afm.artworkstracker.R
-import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
+import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkBeacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
 import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
@@ -43,25 +44,17 @@ import java.util.*
 @Composable
 fun RoomMap(
     room: Room,
-    currentBeacon: Beacon? = null,
-    lastBeacon: Beacon? = null,
+    currentArtwork: ArtworkBeacon? = null,
+    lastArtwork: ArtworkBeacon? = null,
     onArtworkClicked: (UUID) -> Unit
 ) {
     Log.i("RoomMap", "Calling recomposition!")
 
-    var scale = remember(
-        key1 = room
-    ) {
-        1f
-    }
+    var scale = remember(key1 = room) { 1f }
 
-    val animX = remember(
-        key1 = room
-    ) { Animatable(initialValue = 0f) }
+    val animX = remember(key1 = room) { Animatable(initialValue = 0f) }
 
-    val animY = remember(
-        key1 = room
-    ) { Animatable(initialValue = 0f) }
+    val animY = remember(key1 = room) { Animatable(initialValue = 0f) }
 
     val state = rememberTransformableState { zoomChange, _, _ ->
         scale *= zoomChange
@@ -73,9 +66,7 @@ fun RoomMap(
     val starredPainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.star))
     val visitedPainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.visit))
 
-    val artworkPositions = remember {
-        arrayListOf<Triple<UUID, Rect, Offset>>()
-    }
+    val artworkPositions = remember { arrayListOf<Triple<UUID, Rect, Offset>>() }
 
     val hScrollState = rememberScrollState()
     val vScrollState = rememberScrollState()
@@ -102,7 +93,7 @@ fun RoomMap(
                             if (art != null) {
                                 onArtworkClicked(art.first)
                             }
-                        },
+                        }
                     )
                 }
         ) {
@@ -137,6 +128,21 @@ fun RoomMap(
                 path = path,
                 color = Color.Black,
                 style = Stroke(10.dp.toPx()),
+            )
+
+            val starredPath = Path().apply {
+                room.starredPath.forEach {
+                    when (it.first) {
+                        PerimeterEntity.LINE -> lineTo(it.second.dp.toPx(), it.third.dp.toPx())
+                        PerimeterEntity.MOVE -> moveTo(it.second.dp.toPx(), it.third.dp.toPx())
+                    }
+                }
+            }
+
+            drawPath(
+                path = starredPath,
+                color = Color.Green.copy(alpha = 0.2f),
+                style = Stroke(30.dp.toPx()),
             )
 
             clipPath(path = groundPath) {}
@@ -229,10 +235,10 @@ fun RoomMap(
 
 
         LaunchedEffect(
-            key1 = currentBeacon
+            key1 = currentArtwork
         ) {
-            if (lastBeacon != null) {
-                val offset = artworkPositions.find { it.first == lastBeacon.id }!!.third
+            if (lastArtwork != null) {
+                val offset = artworkPositions.find { it.first == lastArtwork.id }!!.third
                 animX.animateTo(
                     targetValue = offset.x,
                     animationSpec = tween(0)
@@ -245,8 +251,8 @@ fun RoomMap(
             }
 
 
-            if (currentBeacon != null) {
-                val offset = artworkPositions.find { it.first == currentBeacon.id }!!.third
+            if (currentArtwork != null) {
+                val offset = artworkPositions.find { it.first == currentArtwork.id }!!.third
 
                 animX.animateTo(
                     targetValue = offset.x,

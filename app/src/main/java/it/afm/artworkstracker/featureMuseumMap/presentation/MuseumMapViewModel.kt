@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkInfo
+import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkBeacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetArtworksIdsUseCase
@@ -51,9 +52,7 @@ class MuseumMapViewModel @Inject constructor(
         // TODO: add wifi enabled check + broadcast receiver to get information about wifi state
         // TODO: add location enabled check (only for older SDK) + broadcast receiver if it disabled!!
 
-        // TODO: add "walking" path to the map (passing through artworks)
         // TODO: add TTS for telling the path to reach the next artwork (starting from a specific artwork)
-        // TODO: check if the first language of the device is one the known, otherwise set TTS to english -> DONE
         // TODO: add "Bottom Navigation Bar" (entries: MAP, ARTWORKS_LIST)
         // TODO: add "Top App Bar" (App title (?) + action_button (close_visit, ?))
         // TODO: check if it is possible to "close" an artwork's card without using navController
@@ -79,26 +78,28 @@ class MuseumMapViewModel @Inject constructor(
 
                         _museumMapState.value = _museumMapState.value.copy(
                             room = room,
-                            currentBeaconRanged = it,
-                            lastBeaconRanged = _museumMapState.value.currentBeaconRanged
                         )
                     } else {
                         _museumMapState.value = _museumMapState.value.copy(
                             room = null,
                         )
                     }
-                } else {
-                    _museumMapState.value = _museumMapState.value.copy(
-                        currentBeaconRanged = it,
-                        lastBeaconRanged = _museumMapState.value.currentBeaconRanged
-                    )
                 }
+                val newClosestArtworkItem = ArtworkBeacon(
+                    id = it!!.id,
+                    direction = _museumMapState.value.room?.artworks?.find { artwork -> artwork.beacon == it.id }?.direction ?: ""
+                )
+
+                _museumMapState.value = _museumMapState.value.copy(
+                    currentArtwork = newClosestArtworkItem,
+                    lastArtwork = _museumMapState.value.currentArtwork
+                )
 
                 val isArtworkAlreadyVisited =
-                    _museumMapState.value.room?.artworks?.find { artwork -> artwork.beacon == it!!.id }?.visited ?: false
+                    _museumMapState.value.room?.artworks?.find { artwork -> artwork.beacon == it.id }?.visited ?: false
 
-                if (isArtworkAlreadyVisited) _eventFlow.emit(UiEvent.NewCloserBeaconAlreadyVisited(uuid = it!!.id))
-                else _eventFlow.emit(UiEvent.NewCloserBeacon(uuid = it!!.id))
+                if (isArtworkAlreadyVisited) _eventFlow.emit(UiEvent.NewCloserBeaconAlreadyVisited(uuid = it.id))
+                else _eventFlow.emit(UiEvent.NewCloserBeacon(uuid = it.id))
             }
         }.launchIn(viewModelScope)
 
@@ -116,13 +117,18 @@ class MuseumMapViewModel @Inject constructor(
         when (event) {
             is MuseumMapEvent.ResumeTour -> getCloserBeaconsUseCase.startListeningForBeacons()
             is MuseumMapEvent.PauseTour -> getCloserBeaconsUseCase.stopListeningForBeacons()
+            is MuseumMapEvent.SpeechStatus -> {
+                _museumMapState.value = _museumMapState.value.copy(
+                    isAudioEnabled = event.isSpeaking
+                )
+            }
             is MuseumMapEvent.BackendServerDiscovered -> baseUrl = "http://${event.ip}:${event.port}"
             is MuseumMapEvent.ViewArtwork -> {
                 viewModelScope.launch {
                     val isArtworkAlreadyVisited = knownArtworks.contains(event.id)
 
                     _museumMapState.value = _museumMapState.value.copy(
-                        lastBeaconRanged = _museumMapState.value.currentBeaconRanged
+                        lastArtwork = _museumMapState.value.currentArtwork
                     )
 
                     if (isArtworkAlreadyVisited)
@@ -141,6 +147,43 @@ class MuseumMapViewModel @Inject constructor(
 
 val defaultRoom = Room(
     name = "King's bedroom",
+    artworks = listOf(
+        ArtworkInfo(
+            id = 1,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            visited = true,
+            type = ArtworkType.PICTURE,
+            side = Side.LEFT,
+            direction = "Go left",
+            posX = 50,
+            posY = 50
+        ),
+        ArtworkInfo(
+            id = 2,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            visited = true,
+            type = ArtworkType.SCULPTURE,
+            side = Side.DOWN,
+            direction = "Go right",
+            posX = 250,
+            posY = 50
+        ),
+        ArtworkInfo(
+            id = 3,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            visited = true,
+            side = Side.RIGHT,
+            type = ArtworkType.PICTURE,
+            direction = "Turn around and go left",
+            posX = 500,
+            posY = 50
+        )
+    ),
+    walls = arrayListOf(),
+    id = 3,
     perimeter = listOf(
         Triple(PerimeterEntity.MOVE, 0, 0),
         Triple(PerimeterEntity.LINE, 0, 125),
@@ -154,38 +197,11 @@ val defaultRoom = Room(
         Triple(PerimeterEntity.LINE, 1000, 0),
         Triple(PerimeterEntity.LINE, 0, 0)
     ),
-    artworks = listOf(
-        ArtworkInfo(
-            id = 1,
-            beacon = UUID.randomUUID(),
-            starred = true,
-            visited = true,
-            type = ArtworkType.PICTURE,
-            side = Side.LEFT,
-            posX = 50,
-            posY = 50
-        ),
-        ArtworkInfo(
-            id = 2,
-            beacon = UUID.randomUUID(),
-            starred = true,
-            visited = true,
-            type = ArtworkType.SCULPTURE,
-            side = Side.DOWN,
-            posX = 250,
-            posY = 50
-        ),
-        ArtworkInfo(
-            id = 3,
-            beacon = UUID.randomUUID(),
-            starred = true,
-            visited = true,
-            side = Side.RIGHT,
-            type = ArtworkType.PICTURE,
-            posX = 500,
-            posY = 50
-        )
-    ),
-    walls = arrayListOf(),
-    id = 3
+    starredPath = listOf(
+        Triple(PerimeterEntity.MOVE, 750, 1000),
+        Triple(PerimeterEntity.LINE, 750, 75),
+        Triple(PerimeterEntity.LINE, 25, 75),
+        Triple(PerimeterEntity.LINE, 25, 250),
+        Triple(PerimeterEntity.LINE, 0, 250),
+    )
 )

@@ -8,6 +8,7 @@ data class RoomDto(
     val name: String,
     val perimeter: String,
     val walls: String,
+    val starredPath: String,
     val artworks: List<ArtworkInfoDto>
 ) {
 
@@ -17,6 +18,7 @@ data class RoomDto(
             name = name,
             perimeter = extractRoomData(perimeter),
             walls = extractRoomData(walls),
+            starredPath = extractRoomData(starredPath),
             artworks = artworks.map { it.toArtWorkInfo() })
     }
 

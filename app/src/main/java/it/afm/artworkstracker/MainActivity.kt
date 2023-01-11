@@ -114,7 +114,8 @@ class MainActivity : ComponentActivity() {
                         composable(route = Screen.MuseumMapScreen.route) {
                             MuseumMapScreen(
                                 navController = navController,
-                                viewModel = museumMapViewModel
+                                viewModel = museumMapViewModel,
+                                tts = tts
                             )
                         }
 
@@ -177,11 +178,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)
+        museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour) // TODO: optimize
     }
 
     override fun onPause() {
         super.onPause()
-        museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)
+        museumMapViewModel.onEvent(MuseumMapEvent.PauseTour) // TODO: optimize
     }
 }
