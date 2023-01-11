@@ -53,7 +53,7 @@ class MuseumMapViewModel @Inject constructor(
 
         // TODO: add "walking" path to the map (passing through artworks)
         // TODO: add TTS for telling the path to reach the next artwork (starting from a specific artwork)
-        // TODO: check if the first language of the device is one the known, otherwise set TTS to english
+        // TODO: check if the first language of the device is one the known, otherwise set TTS to english -> DONE
         // TODO: add "Bottom Navigation Bar" (entries: MAP, ARTWORKS_LIST)
         // TODO: add "Top App Bar" (App title (?) + action_button (close_visit, ?))
         // TODO: check if it is possible to "close" an artwork's card without using navController

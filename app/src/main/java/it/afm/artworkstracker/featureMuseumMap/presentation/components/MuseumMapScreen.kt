@@ -1,9 +1,11 @@
 package it.afm.artworkstracker.featureMuseumMap.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -96,18 +98,20 @@ fun MuseumMapScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxWidth()
-                .padding(10.dp)
+                .background(Color(0xFFffffff))
         ) {
-            Text(
-                text = state.room!!.name, // TODO: fix it
-                style = MaterialTheme.typography.titleLarge
-            )
-            RoomMap(
-                room = state.room,
-                lastBeacon = state.lastBeaconRanged,
-                currentBeacon = state.currentBeaconRanged,
-                onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
-            )
+            Column(modifier = Modifier.padding(10.dp)) {
+                Text(
+                    text = state.room!!.name, // TODO: fix it
+                    style = MaterialTheme.typography.titleLarge
+                )
+                RoomMap(
+                    room = state.room,
+                    lastBeacon = state.lastBeaconRanged,
+                    currentBeacon = state.currentBeaconRanged,
+                    onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
+                )
+            }
         }
     }
 

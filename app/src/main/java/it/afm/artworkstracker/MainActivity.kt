@@ -155,7 +155,14 @@ class MainActivity : ComponentActivity() {
         tts = TextToSpeech(this) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 val locale = this.resources.configuration.locales[0]
-                tts!!.language = locale
+                if (
+                    locale.language.equals(Locale.ITALIAN.language) || locale.language.equals(Locale.GERMAN.language)
+                    || locale.language.equals(Locale.FRENCH.language) || locale.language.equals(Locale("es").language)
+                ) {
+                    tts!!.language = locale
+                } else {
+                    tts!!.language = Locale.ENGLISH
+                }
             } else {
                 tts = null
             }
