@@ -5,20 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import it.afm.artworkstracker.R
-import it.afm.artworkstracker.core.presentation.components.MediaPlayer
+import it.afm.artworkstracker.core.presentation.components.*
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.UiEvent
@@ -32,6 +26,8 @@ import kotlinx.coroutines.launch
 fun MuseumMapScreen(
     navController: NavController,
     tts: TextToSpeech?,
+    onBluetoothEnableRequest: () -> Unit,
+    onLocationEnableRequest: () -> Unit,
     viewModel: MuseumMapViewModel
 ) {
     val state = viewModel.museumMapState.value
@@ -43,57 +39,6 @@ fun MuseumMapScreen(
 
     val permissionsState = rememberMultiplePermissionsState(permissions = PermissionsUtil.getPermissionsList())
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(
-        key1 = lifecycleOwner,
-        effect = {
-            val observer = LifecycleEventObserver { _, event ->
-                if (event == Lifecycle.Event.ON_START) {
-                    // TODO: add environment checks? (wifi, bluetooth, location, ...)
-                    // TODO: trigger acton to start to listen for beacons
-                    if (!permissionsState.allPermissionsGranted)
-                        permissionsState.launchMultiplePermissionRequest()
-                }
-            }
-            lifecycleOwner.lifecycle.addObserver(observer)
-
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(observer)
-                // TODO: may trigger actions on VM (such as stop ranging, reset url, ...)
-            }
-        }
-    )
-
-    /*if (permissionsState.allPermissionsGranted) {
-        Scaffold(
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            ) {
-                Text(
-                    text = state.room!!.name, // TODO: fix it
-                    style = MaterialTheme.typography.titleLarge
-                )
-                RoomMap(
-                    room = state.room,
-                    lastBeacon = state.lastBeaconRanged,
-                    currentBeacon = state.currentBeaconRanged,
-                    onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
-                )
-            }
-        }
-    } else if (permissionsState.shouldShowRationale) {
-        PermissionsRequest(
-            onAnyButtonClicked = { permissionsState.launchMultiplePermissionRequest() }
-        )
-    } else {
-        PermissionsNotGiven()
-    }*/
-
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) {
@@ -103,39 +48,35 @@ fun MuseumMapScreen(
                 .fillMaxWidth()
                 .background(Color(0xFFffffff))
         ) {
-            Column(modifier = Modifier.padding(10.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(fraction = 0.75f)
-                            .padding(25.dp, 15.dp, 0.dp, 20.dp)
-                            .semantics(mergeDescendants = true) { },
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = state.room!!.name, // TODO: fix it
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                    MediaPlayer(
-                        isAudioEnabled = state.isAudioEnabled,
-                        description = state.currentArtwork?.direction ?: "",
-                        tts = tts,
-                        onSpeechFinished = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = false)) },
-                        onSpeechStarted = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = true)) }
-                    )
-                }
-                RoomMap(
-                    room = state.room!!,
-                    lastArtwork = state.lastArtwork,
-                    currentArtwork = state.currentArtwork,
-                    onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
+            if (permissionsState.allPermissionsGranted) {
+                if (environmentState.isWifiEnabled) {
+                    if (environmentState.isLocationEnabled) {
+                        if (environmentState.isBluetoothEnabled) {
+                            MuseumMap(
+                                room = state.room,
+                                currentArtwork = state.currentArtwork,
+                                lastArtwork = state.lastArtwork,
+                                tts = tts,
+                                isAudioEnabled = state.isAudioEnabled,
+                                onSpeechStarted = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = true)) },
+                                onSpeechFinished = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = false)) },
+                                onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
+                            )
+                        } else
+                            BluetoothNotAvailableScreen {
+                                onBluetoothEnableRequest()
+                            }
+                    } else
+                        LocationNotAvailableScreen {
+                            onLocationEnableRequest()
+                        }
+                } else
+                    BackendServerNotAvailableScreen()
+            } else if (permissionsState.shouldShowRationale) {
+                PermissionsRequestScreen(
+                    onRequestPermissionButtonClick = { permissionsState.launchMultiplePermissionRequest() }
                 )
-            }
+            } else PermissionsNotGiven()
         }
     }
 

@@ -7,12 +7,25 @@
     <string name="slide_left_label">Previous image</string>
     <string name="slide_right_label">Next image</string>
     <string name="snackbar_old_artwork_label">Do you want to see this artwork again?</string>
-    <string name="snackbar_old_artwork_action">yes</string>
+    <string name="snackbar_old_artwork_action">YES</string>
     <string name="snackbar_unseen_artwork_label">Get closer to the artwork to see the details!</string>
-    <string name="permission_title">Permissions required</string>
-    <string name="permission_body">Bluetooth and Location permissions are required in order to allow us to detect closer artworks. The position is only needed for allowing bluetooth scanning!</string>
-    <string name="permission_button">OK</string>
+    <string name="close_label">CLOSE</string>
+
+    <string name="permissions_require_title">Permissions required</string>
+    <string name="permissions_require_bluetooth">Bluetooth permissions is required in order to find closer artworks.</string>
+    <string name="permissions_require_location">Location permissions is required in order to allow bluetooth scanning.</string>
+    <string name="permissions_require_button">REQUIRE PERMISSIONS</string>
     <string name="permissions_not_given_title">Permissions not given!</string>
     <string name="permissions_not_given_body">To be allowed to use the app you first have to grant both bluetooth and location permissions. You can enable them in the app settings.</string>
-    <string name="close_label">CLOSE</string>
+
+    <string name="wifi_not_enabled_title">Connection problem</string>
+    <string name="wifi_not_enabled_body">Cannot establish a connection with the museum network. Please be sure to be connected to the museum wifi.</string>
+
+    <string name="location_not_enabled_title">Location not enabled</string>
+    <string name="location_not_enabled_body">Looks like the location is off, please turn it in order to find allow the app to scan the artworks.</string>
+    <string name="location_not_enabled_button">ENABLE LOCATION</string>
+
+    <string name="bluetooth_not_enabled_title">Bluetooth not enabled</string>
+    <string name="bluetooth_not_enabled_body">Looks like the bluetooth is off, please turn it in order to find artworks.</string>
+    <string name="bluetooth_not_enabled_button">ENABLE BLUETOOTH</string>
 </resources>

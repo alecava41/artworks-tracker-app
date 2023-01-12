@@ -48,13 +48,8 @@ class MuseumMapViewModel @Inject constructor(
     private var knownArtworks = listOf<UUID>()
 
     init {
-        // TODO: add bluetooth enabled check + broadcast receiver to get information about bluetooth state
-        // TODO: add wifi enabled check + broadcast receiver to get information about wifi state
-        // TODO: add location enabled check (only for older SDK) + broadcast receiver if it disabled!!
-
-        // TODO: add "Bottom Navigation Bar" (entries: MAP, ARTWORKS_LIST)
+        // TODO: add "Bottom Navigation Bar" (entries: MAP, ARTWORKS_LIST, "SETTINGS")
         // TODO: add "Top App Bar" (App title (?) + action_button (close_visit, ?))
-        // TODO: check if it is possible to "close" an artwork's card without using navController
 
         getCloserBeaconsUseCase().onEach {
             val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
@@ -121,7 +116,6 @@ class MuseumMapViewModel @Inject constructor(
                     isAudioEnabled = event.isSpeaking
                 )
             }
-            is MuseumMapEvent.BackendServerDiscovered -> baseUrl = "http://${event.ip}:${event.port}"
             is MuseumMapEvent.ViewArtwork -> {
                 viewModelScope.launch {
                     val isArtworkAlreadyVisited = knownArtworks.contains(event.id)
@@ -135,6 +129,46 @@ class MuseumMapViewModel @Inject constructor(
                     else
                         _eventFlow.emit(UiEvent.ArtworkNotVisitedClicked)
                 }
+            }
+            is MuseumMapEvent.BackendServerLost -> baseUrl = null
+            is MuseumMapEvent.BackendServerDiscovered -> {
+                baseUrl = "http://${event.ip}:${event.port}"
+
+                _environmentState.value = _environmentState.value.copy(
+                    isWifiEnabled = true
+                )
+            }
+            is MuseumMapEvent.WifiConnectionAvailable -> {
+                _environmentState.value = _environmentState.value.copy(
+                    isWifiEnabled = baseUrl != null
+                )
+            }
+            is MuseumMapEvent.WifiConnectionNotAvailable -> {
+                baseUrl = null
+
+                _environmentState.value = _environmentState.value.copy(
+                    isWifiEnabled = false
+                )
+            }
+            is MuseumMapEvent.BluetoothAvailable -> {
+                _environmentState.value = _environmentState.value.copy(
+                    isBluetoothEnabled = true
+                )
+            }
+            is MuseumMapEvent.BluetoothNotAvailable -> {
+                _environmentState.value = _environmentState.value.copy(
+                    isBluetoothEnabled = false
+                )
+            }
+            is MuseumMapEvent.LocationAvailable -> {
+                _environmentState.value = _environmentState.value.copy(
+                    isLocationEnabled = true
+                )
+            }
+            is MuseumMapEvent.LocationNotAvailable -> {
+                _environmentState.value = _environmentState.value.copy(
+                    isLocationEnabled = false
+                )
             }
         }
     }

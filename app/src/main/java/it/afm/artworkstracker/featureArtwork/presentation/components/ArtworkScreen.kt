@@ -33,9 +33,6 @@ fun ArtworkScreen(
             targetState = true
         }
     }
-
-    // TODO: add "Close" button at the end of the card (not scrollable, fixed at the end of the card)
-
     AnimatedVisibility(
         visibleState = transitionState,
         enter = fadeIn(),
@@ -43,7 +40,7 @@ fun ArtworkScreen(
     ) {
         Box(
             Modifier
-                .fillMaxSize(0.85f)
+                .fillMaxSize(0.85f) // TODO: (side effect) if the dialog is smaller than that, then clicking on empty spots will not close it
         ) {
             Box(
                 Modifier

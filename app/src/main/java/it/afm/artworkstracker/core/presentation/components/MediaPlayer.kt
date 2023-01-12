@@ -26,6 +26,8 @@ fun MediaPlayer(
     description: String,
     tts: TextToSpeech?,
 ) {
+    // TODO: (side effect) if the dialog is closed, then tts will keep talking!
+
     tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
         override fun onStart(utteranceId: String) {
             onSpeechStarted()
