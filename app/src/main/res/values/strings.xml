@@ -28,4 +28,7 @@
     <string name="bluetooth_not_enabled_title">Bluetooth not enabled</string>
     <string name="bluetooth_not_enabled_body">Looks like the bluetooth is off, please turn it in order to find artworks.</string>
     <string name="bluetooth_not_enabled_button">ENABLE BLUETOOTH</string>
+    <string name="map_label">Map</string>
+    <string name="settings_label">Settings</string>
+    <string name="visited_list_label">Visited List</string>
 </resources>

@@ -1,5 +1,6 @@
 package it.afm.artworkstracker
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
@@ -22,10 +23,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -35,6 +39,8 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import it.afm.artworkstracker.core.presentation.components.BottomBar
+import it.afm.artworkstracker.core.presentation.components.TopBar
 import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkScreen
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
@@ -141,6 +147,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var locationManager: LocationManager
     private val locationUpdateReceiver = object : BroadcastReceiver() {
         // No need to perform check on intent -> it will be always LocationManager.MODE_CHANGED_ACTION
+        @RequiresApi(Build.VERSION_CODES.P)
         override fun onReceive(context: Context, intent: Intent) {
             val isEnabled =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
@@ -153,7 +160,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalComposeUiApi::class)
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -166,51 +174,64 @@ class MainActivity : ComponentActivity() {
 
                     val navController = rememberNavController()
 
-                    NavHost(
-                        navController = navController,
-                        startDestination = Screen.MuseumMapScreen.route
+                    Scaffold(
+                        topBar = { TopBar() },
+                        bottomBar = { BottomBar(navController = navController) }
                     ) {
-                        // TODO: maybe welcome dialog?
-
-                        composable(route = Screen.MuseumMapScreen.route) {
-                            MuseumMapScreen(
-                                navController = navController,
-                                viewModel = museumMapViewModel,
-                                tts = tts,
-                                onBluetoothEnableRequest = {
-                                    bluetoothEnablerLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
-                                },
-                                onLocationEnableRequest = {
-                                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                                }
-                            )
-                        }
-
-                        dialog(
-                            route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
-                            dialogProperties = DialogProperties(
-                                usePlatformDefaultWidth = false
-                            ),
-                            arguments = listOf(
-                                navArgument(
-                                    name = "artId"
-                                ) {
-                                    type = NavType.StringType
-                                    defaultValue = ""
-                                },
-                                navArgument(
-                                    name = "url"
-                                ) {
-                                    type = NavType.StringType
-                                    defaultValue = ""
-                                }
-                            )
+                        NavHost(
+                            navController = navController,
+                            startDestination = Screen.MuseumMapScreen.route
                         ) {
-                            ArtworkScreen(
-                                navController = navController,
-                                viewModel = hiltViewModel(),
-                                tts = tts
-                            )
+                            // TODO: maybe welcome dialog?
+                            composable(route = Screen.MuseumMapScreen.route) {
+                                MuseumMapScreen(
+                                    navController = navController,
+                                    viewModel = museumMapViewModel,
+                                    tts = tts,
+                                    onBluetoothEnableRequest = {
+                                        bluetoothEnablerLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+                                    },
+                                    onLocationEnableRequest = {
+                                        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                                    }
+                                )
+                                // mappa, lista, settings
+                            }
+
+                            dialog(
+                                route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
+                                dialogProperties = DialogProperties(
+                                    usePlatformDefaultWidth = false
+                                ),
+                                arguments = listOf(
+                                    navArgument(
+                                        name = "artId"
+                                    ) {
+                                        type = NavType.StringType
+                                        defaultValue = ""
+                                    },
+                                    navArgument(
+                                        name = "url"
+                                    ) {
+                                        type = NavType.StringType
+                                        defaultValue = ""
+                                    }
+                                )
+                            ) {
+                                ArtworkScreen(
+                                    navController = navController,
+                                    viewModel = hiltViewModel(),
+                                    tts = tts
+                                )
+                            }
+                            composable(route = Screen.VisitedArtworksListScreen.route) {
+                                Log.e("Visited List: ", "Navigated")
+                                Text(text = "Visited List", color = Color.Black)
+                            }
+                            composable(route = Screen.SettingsScreen.route) {
+                                Log.e("Settings: ", "Navigated")
+                                Text(text = "Settings", color = Color.Black)
+                            }
                         }
                     }
                 }
@@ -238,6 +259,7 @@ class MainActivity : ComponentActivity() {
         tts?.shutdown()
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onResume() {
         super.onResume()
 
