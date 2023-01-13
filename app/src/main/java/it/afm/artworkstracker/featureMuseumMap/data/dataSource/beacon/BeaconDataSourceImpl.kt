@@ -13,7 +13,7 @@ import org.altbeacon.beacon.Region
 import org.altbeacon.beacon.service.RunningAverageRssiFilter
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
+class BeaconDataSourceImpl(ctx: Context) : BeaconsDataSource, RangeNotifier {
     private val beaconsInRange: ConcurrentLinkedQueue<Beacon> = ConcurrentLinkedQueue()
 
     private val beaconManager = BeaconManager.getInstanceForApplication(ctx)
@@ -26,9 +26,6 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
     private fun setupBeaconListener() {
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BeaconParser.ALTBEACON_LAYOUT))
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(IBEACON_LAYOUT))
-
-        //beaconManager.foregroundScanPeriod = 1100L
-        beaconManager.foregroundBetweenScanPeriod = 0L
 
         BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter::class.java)
         RunningAverageRssiFilter.setSampleExpirationMilliseconds(5000L)
@@ -46,7 +43,7 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
                 }
             }
 
-            delay(1100L)
+            delay(1200L)
         }
     }
 
@@ -55,7 +52,8 @@ class BeaconDataSourceImpl(ctx: Context): BeaconsDataSource, RangeNotifier {
     }
 
     override fun stopListeningForBeacons() {
-       beaconManager.stopRangingBeacons(region)
+        beaconManager.stopRangingBeacons(region)
+        beaconsInRange.clear()
     }
 
     override fun didRangeBeaconsInRegion(

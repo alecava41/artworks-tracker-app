@@ -20,7 +20,8 @@ import it.afm.artworkstracker.R
 
 @Composable
 fun CloseButton(
-    navController: NavController
+    navController: NavController,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -29,6 +30,7 @@ fun CloseButton(
     ) {
         IconButton(
             onClick = {
+                onClick()
                 navController.navigateUp()
             },
             modifier = Modifier

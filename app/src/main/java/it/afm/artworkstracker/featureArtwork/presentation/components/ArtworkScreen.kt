@@ -1,6 +1,7 @@
 package it.afm.artworkstracker.featureArtwork.presentation.components
 
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
@@ -11,20 +12,25 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import it.afm.artworkstracker.core.presentation.components.MediaPlayer
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
+import it.afm.artworkstracker.util.Screen
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ArtworkScreen(
     navController: NavController,
     viewModel: ArtworkViewModel,
-    tts: TextToSpeech?
+    tts: TextToSpeech?,
+    onDialogClosed: () -> Unit
 ) {
     val vmState = viewModel.uiState.value
     val scrollState = rememberScrollState()
@@ -38,60 +44,76 @@ fun ArtworkScreen(
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        Box(
-            Modifier
-                .fillMaxSize(0.85f) // TODO: (side effect) if the dialog is smaller than that, then clicking on empty spots will not close it
-        ) {
+        Dialog(
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+            ),
+            onDismissRequest = {
+                val isMapShownBehind = navController.previousBackStackEntry?.destination?.navigatorName == Screen.MuseumMapScreen.route
+
+                Log.i("...", navController.previousBackStackEntry?.destination?.navigatorName ?: "daaai")
+
+                if (isMapShownBehind)
+                    onDialogClosed()
+            }) {
             Box(
                 Modifier
-                    .align(Alignment.Center)
-                    .animateEnterExit(
-                        enter = slideInVertically(animationSpec = tween(durationMillis = 1000)),
-                        exit = slideOutVertically(animationSpec = tween(durationMillis = 1000))
-                    )
-                    .fillMaxSize()
+                    .fillMaxSize(0.85f) // TODO: (side effect) if the dialog is smaller than that, then clicking on empty spots will not close it
             ) {
-                ElevatedCard(
-                    colors = CardDefaults.elevatedCardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    )
+                Box(
+                    Modifier
+                        .align(Alignment.Center)
+                        .animateEnterExit(
+                            enter = slideInVertically(animationSpec = tween(durationMillis = 1000)),
+                            exit = slideOutVertically(animationSpec = tween(durationMillis = 1000))
+                        )
+                        .fillMaxSize()
                 ) {
-                    Column {
-                        Column(
-                            modifier = Modifier
-                                .verticalScroll(scrollState)
-                                .weight(weight =1f, fill = false)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                    ElevatedCard(
+                        colors = CardDefaults.elevatedCardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    ) {
+                        Column {
+                            Column(
+                                modifier = Modifier
+                                    .verticalScroll(scrollState)
+                                    .weight(weight = 1f, fill = false)
                             ) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth(fraction = 0.75f)
-                                        .padding(25.dp, 15.dp, 0.dp, 20.dp)
-                                        .semantics(mergeDescendants = true) { },
-                                    horizontalAlignment = Alignment.Start,
-                                    verticalArrangement = Arrangement.Center
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    ArtworkName(str = vmState.artwork.title)
-                                    ArtworkAuthor(str = vmState.artwork.author)
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth(fraction = 0.75f)
+                                            .padding(25.dp, 15.dp, 0.dp, 20.dp)
+                                            .semantics(mergeDescendants = true) { },
+                                        horizontalAlignment = Alignment.Start,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        ArtworkName(str = vmState.artwork.title)
+                                        ArtworkAuthor(str = vmState.artwork.author)
+                                    }
+                                    MediaPlayer(
+                                        isAudioEnabled = vmState.isAudioEnabled,
+                                        description = vmState.artwork.description,
+                                        tts = tts,
+                                        onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = false)) },
+                                        onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = true)) }
+                                    )
                                 }
-                                MediaPlayer(
-                                    isAudioEnabled = vmState.isAudioEnabled,
-                                    description = vmState.artwork.description,
-                                    tts = tts,
-                                    onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = false)) },
-                                    onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = true)) }
+                                SlideShow(
+                                    url = viewModel.url,
+                                    beaconId = vmState.artwork.id.toString()
                                 )
+                                Description(desc = vmState.artwork.description)
                             }
-                            SlideShow(
-                                url = viewModel.url,
-                                beaconId = vmState.artwork.id.toString()
+                            CloseButton(
+                                navController = navController,
+                                onClick = onDialogClosed
                             )
-                            Description(desc = vmState.artwork.description)
                         }
-                        CloseButton(navController = navController)
                     }
                 }
             }

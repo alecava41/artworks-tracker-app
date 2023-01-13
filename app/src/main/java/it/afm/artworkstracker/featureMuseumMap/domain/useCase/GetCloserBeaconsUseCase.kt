@@ -45,19 +45,20 @@ class GetCloserBeaconsUseCase(
     private var beaconsCleaner: Timer? = null
 
     fun startListeningForBeacons() {
-        repository.startListeningForBeacons()
-
-        beaconsCleaner = restartBeaconsCleaning()
-
         Log.i(TAG, "Start listening for beacons!")
+
+        repository.startListeningForBeacons()
+        beaconsCleaner = restartBeaconsCleaning()
     }
 
     fun stopListeningForBeacons() {
+        Log.i(TAG, "Stop listening for beacons!")
+
         repository.stopListeningForBeacons()
 
         beaconsCleaner?.cancel()
-
-        Log.i(TAG, "Stop listening for beacons!")
+        closestBeacon.set(null)
+        closerBeaconsMap.clear()
     }
 
     private fun restartBeaconsCleaning(): Timer {

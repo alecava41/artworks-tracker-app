@@ -23,21 +23,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -90,7 +86,6 @@ class MainActivity : ComponentActivity() {
             if (service.serviceName.contains("MuseumBackend")) {
                 // Desired backend service
                 nsdManager.resolveService(service, resolveListener)
-                nsdManager.stopServiceDiscovery(this)
             }
         }
 
@@ -165,7 +160,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -177,10 +172,12 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     val navController = rememberNavController()
+                    val snackbarHostState = remember { SnackbarHostState()}
 
                     Scaffold(
                         topBar = { TopBar() },
-                        bottomBar = { BottomBar(navController = navController) }
+                        bottomBar = { BottomBar(navController = navController) },
+                        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
                     ) {
                         NavHost(
                             navController = navController,
@@ -189,6 +186,7 @@ class MainActivity : ComponentActivity() {
                             composable(route = Screen.MuseumMapScreen.route) {
                                 MuseumMapScreen(
                                     navController = navController,
+                                    snackbarHostState = snackbarHostState,
                                     viewModel = museumMapViewModel,
                                     tts = tts,
                                     onBluetoothEnableRequest = {
@@ -198,7 +196,6 @@ class MainActivity : ComponentActivity() {
                                         startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                                     }
                                 )
-                                // mappa, lista, settings
                             }
 
                             dialog(
@@ -224,15 +221,14 @@ class MainActivity : ComponentActivity() {
                                 ArtworkScreen(
                                     navController = navController,
                                     viewModel = hiltViewModel(),
-                                    tts = tts
+                                    tts = tts,
+                                    onDialogClosed = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)}
                                 )
                             }
                             composable(route = Screen.VisitedArtworksListScreen.route) {
-                                Log.e("Visited List: ", "Navigated")
                                 Text(text = "Visited List", color = Color.Black)
                             }
                             composable(route = Screen.SettingsScreen.route) {
-                                Log.e("Settings: ", "Navigated")
                                 SettingsScreen()
                             }
                         }
@@ -277,14 +273,14 @@ class MainActivity : ComponentActivity() {
 
         registerReceiver(bluetoothUpdateReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
 
-        museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour) // TODO: optimize
+        museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)
     }
 
     override fun onPause() {
         super.onPause()
 
-        if (museumMapViewModel.baseUrl.isNullOrEmpty()) // Ugly, but only way the detect if NSD has been successful or not
-            nsdManager.stopServiceDiscovery(discoveryListener)
+        nsdManager.stopServiceDiscovery(discoveryListener)
+        museumMapViewModel.onEvent(MuseumMapEvent.BackendServerLost)
 
         connectivityManager.unregisterNetworkCallback(networkCallback)
 
@@ -292,7 +288,7 @@ class MainActivity : ComponentActivity() {
 
         unregisterReceiver(locationUpdateReceiver)
 
-        museumMapViewModel.onEvent(MuseumMapEvent.PauseTour) // TODO: optimize
+        museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)
     }
 }
 

@@ -1,6 +1,7 @@
 package it.afm.artworkstracker.featureMuseumMap.presentation.components
 
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -21,10 +22,11 @@ import it.afm.artworkstracker.util.Screen
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MuseumMapScreen(
     navController: NavController,
+    snackbarHostState: SnackbarHostState,
     tts: TextToSpeech?,
     onBluetoothEnableRequest: () -> Unit,
     onLocationEnableRequest: () -> Unit,
@@ -33,60 +35,55 @@ fun MuseumMapScreen(
     val state = viewModel.museumMapState.value
     val environmentState = viewModel.environmentState.value
 
+    Log.i("MuseumMapScreen", environmentState.toString())
+
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     val permissionsState = rememberMultiplePermissionsState(permissions = PermissionsUtil.getPermissionsList())
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    Column(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .background(Color(0xFFffffff))
-        ) {
-            if (permissionsState.allPermissionsGranted) {
-                if (environmentState.isWifiEnabled) {
-                    if (environmentState.isLocationEnabled) {
-                        if (environmentState.isBluetoothEnabled) {
-                            MuseumMap(
-                                room = state.room,
-                                currentArtwork = state.currentArtwork,
-                                lastArtwork = state.lastArtwork,
-                                tts = tts,
-                                isAudioEnabled = state.isAudioEnabled,
-                                onSpeechStarted = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = true)) },
-                                onSpeechFinished = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = false)) },
-                                onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
-                            )
-                        } else
-                            BluetoothNotAvailableScreen {
-                                onBluetoothEnableRequest()
-                            }
+        if (permissionsState.allPermissionsGranted) {
+            if (environmentState.isWifiEnabled) {
+                if (environmentState.isLocationEnabled) {
+                    if (environmentState.isBluetoothEnabled) {
+                        MuseumMap(
+                            room = state.room,
+                            currentArtwork = state.currentArtwork,
+                            lastArtwork = state.lastArtwork,
+                            tts = tts,
+                            isAudioEnabled = state.isAudioEnabled,
+                            onSpeechStarted = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = true)) },
+                            onSpeechFinished = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = false)) },
+                            onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
+                        )
                     } else
-                        LocationNotAvailableScreen {
-                            onLocationEnableRequest()
+                        BluetoothNotAvailableScreen {
+                            onBluetoothEnableRequest()
                         }
                 } else
-                    BackendServerNotAvailableScreen()
-            } else if (permissionsState.shouldShowRationale) {
-                PermissionsRequestScreen(
-                    onRequestPermissionButtonClick = { permissionsState.launchMultiplePermissionRequest() }
-                )
-            } else PermissionsNotGiven()
-        }
+                    LocationNotAvailableScreen {
+                        onLocationEnableRequest()
+                    }
+            } else
+                BackendServerNotAvailableScreen()
+        } else if (permissionsState.shouldShowRationale) {
+            PermissionsRequestScreen(
+                onRequestPermissionButtonClick = { permissionsState.launchMultiplePermissionRequest() }
+            )
+        } else PermissionsNotGiven()
     }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEvent.NewCloserBeacon -> {
+                    viewModel.onEvent(MuseumMapEvent.PauseTour)
+
                     navController.navigate(
-                        Screen.ArtworkScreen.route
-                                + "?artId=${event.uuid}&url=${viewModel.baseUrl!!}"
+                        route = Screen.ArtworkScreen.route + "?artId=${event.uuid}&url=${viewModel.baseUrl!!}"
                     )
                 }
                 is UiEvent.NewCloserBeaconAlreadyVisited -> {
@@ -99,6 +96,7 @@ fun MuseumMapScreen(
                         )
 
                         if (res == SnackbarResult.ActionPerformed) {
+                            viewModel.onEvent(MuseumMapEvent.PauseTour)
                             navController.navigate(
                                 Screen.ArtworkScreen.route
                                         + "?artId=${event.uuid}&url=${viewModel.baseUrl!!}"
@@ -116,8 +114,10 @@ fun MuseumMapScreen(
                         )
 
                         if (res == SnackbarResult.ActionPerformed) {
+                            viewModel.onEvent(MuseumMapEvent.PauseTour)
+
                             navController.navigate(
-                                Screen.ArtworkScreen.route + "?artId=${event.uuid}&url=${viewModel.baseUrl!!}"
+                                route = Screen.ArtworkScreen.route + "?artId=${event.uuid}&url=${viewModel.baseUrl!!}"
                             )
                         }
                     }

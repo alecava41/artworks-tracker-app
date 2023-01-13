@@ -127,27 +127,39 @@ class MuseumMapViewModel @Inject constructor(
                         lastArtwork = _museumMapState.value.currentArtwork
                     )
 
-                    if (isArtworkAlreadyVisited)
-                        _eventFlow.emit(UiEvent.ArtworkAlreadyVisitedClicked(event.id))
-                    else
-                        _eventFlow.emit(UiEvent.ArtworkNotVisitedClicked)
+                    if (isArtworkAlreadyVisited) _eventFlow.emit(UiEvent.ArtworkAlreadyVisitedClicked(event.id))
+                    else _eventFlow.emit(UiEvent.ArtworkNotVisitedClicked)
                 }
             }
-            is MuseumMapEvent.BackendServerLost -> baseUrl = null
+            is MuseumMapEvent.BackendServerLost -> {
+                baseUrl = null
+
+                Log.i(TAG, "VM: Server Lost, $baseUrl")
+
+                _environmentState.value = _environmentState.value.copy(
+                    isWifiEnabled = false
+                )
+            }
             is MuseumMapEvent.BackendServerDiscovered -> {
                 baseUrl = "http://${event.ip}:${event.port}"
+
+                Log.i(TAG, "VM: Server discovered, $baseUrl")
 
                 _environmentState.value = _environmentState.value.copy(
                     isWifiEnabled = true
                 )
             }
             is MuseumMapEvent.WifiConnectionAvailable -> {
+                Log.i(TAG, "VM: Connection available, $baseUrl")
+
                 _environmentState.value = _environmentState.value.copy(
                     isWifiEnabled = baseUrl != null
                 )
             }
             is MuseumMapEvent.WifiConnectionNotAvailable -> {
                 baseUrl = null
+
+                Log.i(TAG, "VM: Connection not available, $baseUrl")
 
                 _environmentState.value = _environmentState.value.copy(
                     isWifiEnabled = false
