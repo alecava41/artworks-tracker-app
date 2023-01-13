@@ -32,10 +32,10 @@
     <string name="settings_label">Settings</string>
     <string name="visited_list_label">Visited List</string>
     <string name="visited_artworks_label">Visited artworks</string>
-
     <string name="no_room_title">No room map available</string>
     <string name="no_room_body">To see the map of the room in which you are currently, just closer to an artwork and wait for the map to appear.</string>
-
     <string name="path_play_label">Play audio to get the path to the next artwork</string>
     <string name="path_stop_label">Stop audio to get the path to the next artwork</string>
+    <string name="empty_list_visited_artworks_label">It seems you haven\'t visited any artwork yet. Get closer to a beacon to visit an artwork.</string>
+    <string name="title_empty_list">No visited artworks</string>
 </resources>

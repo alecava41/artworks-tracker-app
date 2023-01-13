@@ -49,7 +49,7 @@ fun VisitedArtworksList(
                     }
                 }
             } else {
-                Text(text = "It seems you haven't visited any artwork yet. Get closer to a beacon to visit an artwork.")
+                VisitedArtWorksListEmpty()
             }
         }
     }
