@@ -2,8 +2,8 @@
     <string name="app_name" translatable="false">Artworks Tracker</string>
     <string name="tts_not_available">Text to Speech feature not available</string>
     <string name="description_label">Description</string>
-    <string name="play_label">Play the audio</string>
-    <string name="stop_label">Stop the audio</string>
+    <string name="artwork_play_label">Play the audio</string>
+    <string name="artwork_stop_label">Stop the audio</string>
     <string name="slide_left_label">Previous image</string>
     <string name="slide_right_label">Next image</string>
     <string name="snackbar_old_artwork_label">Do you want to see this artwork again?</string>
@@ -32,4 +32,10 @@
     <string name="settings_label">Settings</string>
     <string name="visited_list_label">Visited List</string>
     <string name="visited_artworks_label">Visited artworks</string>
+
+    <string name="no_room_title">No room map available</string>
+    <string name="no_room_body">To see the map of the room in which you are currently, just closer to an artwork and wait for the map to appear.</string>
+
+    <string name="path_play_label">Play audio to get the path to the next artwork</string>
+    <string name="path_stop_label">Stop audio to get the path to the next artwork</string>
 </resources>

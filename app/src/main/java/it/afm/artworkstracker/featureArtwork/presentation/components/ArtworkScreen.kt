@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
+import it.afm.artworkstracker.R
 import it.afm.artworkstracker.core.presentation.components.MediaPlayer
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel
@@ -52,6 +53,8 @@ fun ArtworkScreen(
                 val isMapShownBehind = navController.previousBackStackEntry?.destination?.navigatorName == Screen.MuseumMapScreen.route
 
                 Log.i("...", navController.previousBackStackEntry?.destination?.navigatorName ?: "daaai")
+
+                tts?.stop()
 
                 if (isMapShownBehind)
                     onDialogClosed()
@@ -99,6 +102,8 @@ fun ArtworkScreen(
                                         isAudioEnabled = vmState.isAudioEnabled,
                                         description = vmState.artwork.description,
                                         tts = tts,
+                                        startLabel = R.string.artwork_stop_label,
+                                        stopLabel = R.string.artwork_play_label,
                                         onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = false)) },
                                         onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = true)) }
                                     )
@@ -111,7 +116,10 @@ fun ArtworkScreen(
                             }
                             CloseButton(
                                 navController = navController,
-                                onClick = onDialogClosed
+                                onClick = {
+                                    tts?.stop()
+                                    onDialogClosed()
+                                }
                             )
                         }
                     }

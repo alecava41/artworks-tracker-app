@@ -6,16 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkInfo
 import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkBeacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
-import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetArtworksIdsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetCloserBeaconsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetRoomUseCase
-import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
-import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
-import it.afm.artworkstracker.featureMuseumMap.domain.util.Side
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -48,11 +43,14 @@ class MuseumMapViewModel @Inject constructor(
     private var knownArtworks = listOf<UUID>()
 
     init {
-        // TODO: add "Bottom Navigation Bar" (entries: MAP, ARTWORKS_LIST, "SETTINGS")
-        // TODO: add "Top App Bar" (App title (?) + action_button (close_visit, ?))
+        // TODO: add "Top App Bar" (action_button (info-tutorial))
 
         // TODO: handle case when backend service is no more available! (through NSD)
-        // TODO: optimize scannings (start & stop when needed)
+        // TODO: optimize scans (start & stop when needed)
+
+        // TODO: implement deleteAllArtworksFeature
+        // TODO: redefine "error" screens (only view side)
+        // TODO: check NSD MANAGER (it's not working properly)
 
         getCloserBeaconsUseCase().onEach {
             val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
@@ -112,7 +110,10 @@ class MuseumMapViewModel @Inject constructor(
 
     fun onEvent(event: MuseumMapEvent) {
         when (event) {
-            is MuseumMapEvent.ResumeTour -> getCloserBeaconsUseCase.startListeningForBeacons()
+            is MuseumMapEvent.ResumeTour -> {
+                // TODO: restart scan if and only everything is available (wifi, bt enabled, location)
+                getCloserBeaconsUseCase.startListeningForBeacons()
+            }
             is MuseumMapEvent.PauseTour -> getCloserBeaconsUseCase.stopListeningForBeacons()
             is MuseumMapEvent.SpeechStatus -> {
                 _museumMapState.value = _museumMapState.value.copy(
@@ -192,64 +193,3 @@ class MuseumMapViewModel @Inject constructor(
         const val TAG = "MuseumMapViewModel"
     }
 }
-
-val defaultRoom = Room(
-    name = "King's bedroom",
-    artworks = listOf(
-        ArtworkInfo(
-            id = 1,
-            beacon = UUID.randomUUID(),
-            starred = true,
-            visited = true,
-            type = ArtworkType.PICTURE,
-            side = Side.LEFT,
-            direction = "Go left",
-            posX = 50,
-            posY = 50
-        ),
-        ArtworkInfo(
-            id = 2,
-            beacon = UUID.randomUUID(),
-            starred = true,
-            visited = true,
-            type = ArtworkType.SCULPTURE,
-            side = Side.DOWN,
-            direction = "Go right",
-            posX = 250,
-            posY = 50
-        ),
-        ArtworkInfo(
-            id = 3,
-            beacon = UUID.randomUUID(),
-            starred = true,
-            visited = true,
-            side = Side.RIGHT,
-            type = ArtworkType.PICTURE,
-            direction = "Turn around and go left",
-            posX = 500,
-            posY = 50
-        )
-    ),
-    walls = arrayListOf(),
-    id = 3,
-    perimeter = listOf(
-        Triple(PerimeterEntity.MOVE, 0, 0),
-        Triple(PerimeterEntity.LINE, 0, 125),
-        Triple(PerimeterEntity.MOVE, 0, 375),
-        Triple(PerimeterEntity.LINE, 0, 500),
-        Triple(PerimeterEntity.LINE, 500, 500),
-        Triple(PerimeterEntity.LINE, 500, 1000),
-        Triple(PerimeterEntity.LINE, 625, 1000),
-        Triple(PerimeterEntity.MOVE, 875, 1000),
-        Triple(PerimeterEntity.LINE, 1000, 1000),
-        Triple(PerimeterEntity.LINE, 1000, 0),
-        Triple(PerimeterEntity.LINE, 0, 0)
-    ),
-    starredPath = listOf(
-        Triple(PerimeterEntity.MOVE, 750, 1000),
-        Triple(PerimeterEntity.LINE, 750, 75),
-        Triple(PerimeterEntity.LINE, 25, 75),
-        Triple(PerimeterEntity.LINE, 25, 250),
-        Triple(PerimeterEntity.LINE, 0, 250),
-    )
-)

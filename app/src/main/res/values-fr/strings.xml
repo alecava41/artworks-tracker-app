@@ -1,8 +1,8 @@
 <resources>
     <string name="tts_not_available">Fonction de synthèse vocale non disponible</string>
     <string name="description_label">La description</string>
-    <string name="play_label">Jouer le son</string>
-    <string name="stop_label">Arrêter le son</string>
+    <string name="artwork_play_label">Jouer le son</string>
+    <string name="artwork_stop_label">Arrêter le son</string>
     <string name="slide_left_label">Image précédente</string>
     <string name="slide_right_label">Image suivante</string>
     <string name="snackbar_old_artwork_label">Voulez-vous revoir cette œuvre ?</string>

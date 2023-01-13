@@ -10,8 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import it.afm.artworkstracker.core.presentation.components.MediaPlayer
+import it.afm.artworkstracker.core.presentation.components.NoRoomScreen
 import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkBeacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
+import it.afm.artworkstracker.R
 import java.util.*
 
 @Composable
@@ -26,37 +28,43 @@ fun MuseumMap(
     onArtworkClicked: (UUID) -> Unit
 
 ) {
-    Column(modifier = Modifier.padding(10.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(fraction = 0.75f)
-                    .padding(25.dp, 15.dp, 0.dp, 20.dp)
-                    .semantics(mergeDescendants = true) { },
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Center
+    if (room == null) {
+        NoRoomScreen()
+    } else {
+        Column(modifier = Modifier.padding(10.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = room!!.name, // TODO: fix it
-                    style = MaterialTheme.typography.titleLarge
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = 0.75f)
+                        .padding(25.dp, 15.dp, 0.dp, 20.dp)
+                        .semantics(mergeDescendants = true) { },
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = room.name,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+                MediaPlayer(
+                    isAudioEnabled = isAudioEnabled,
+                    description = currentArtwork?.direction ?: "",
+                    tts = tts,
+                    startLabel = R.string.path_play_label,
+                    stopLabel = R.string.path_stop_label,
+                    onSpeechFinished = onSpeechFinished,
+                    onSpeechStarted = onSpeechStarted
                 )
             }
-            MediaPlayer(
-                isAudioEnabled = isAudioEnabled,
-                description = currentArtwork?.direction ?: "",
-                tts = tts,
-                onSpeechFinished = onSpeechFinished,
-                onSpeechStarted = onSpeechStarted
+            RoomMap(
+                room = room,
+                lastArtwork = lastArtwork,
+                currentArtwork = currentArtwork,
+                onArtworkClicked = onArtworkClicked
             )
         }
-        RoomMap(
-            room = room!!,
-            lastArtwork = lastArtwork,
-            currentArtwork = currentArtwork,
-            onArtworkClicked = onArtworkClicked
-        )
     }
 }

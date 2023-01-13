@@ -1,8 +1,8 @@
 <resources>
     <string name="tts_not_available">La funzione Testo a Voce non è disponibile</string>
     <string name="description_label">Descrizione</string>
-    <string name="play_label">Avvia l\'audio</string>
-    <string name="stop_label">Ferma l\'audio</string>
+    <string name="artwork_play_label">Avvia l\'audio</string>
+    <string name="artwork_stop_label">Ferma l\'audio</string>
     <string name="slide_left_label">Immagine precedente</string>
     <string name="slide_right_label">Immagine successiva</string>
     <string name="snackbar_old_artwork_label">Vuoi vedere quest\'opera di nuovo?</string>

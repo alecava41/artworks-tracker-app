@@ -3,6 +3,7 @@ package it.afm.artworkstracker.core.presentation.components
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,10 +25,10 @@ fun MediaPlayer(
     onSpeechStarted: () -> Unit,
     onSpeechFinished: () -> Unit,
     description: String,
+    @StringRes startLabel: Int,
+    @StringRes stopLabel: Int,
     tts: TextToSpeech?,
 ) {
-    // TODO: (side effect) if the dialog is closed, then tts will keep talking!
-
     tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
         override fun onStart(utteranceId: String) {
             onSpeechStarted()
@@ -73,7 +74,6 @@ fun MediaPlayer(
                             "..."
                         )
                     } else {
-                        // TODO: test if it's working
                         Toast.makeText(ctx, R.string.tts_not_available, Toast.LENGTH_LONG).show()
                     }
                 },
@@ -86,7 +86,7 @@ fun MediaPlayer(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.play),
-                    contentDescription = stringResource(id = R.string.play_label), // TODO: may be different depending on where is used
+                    contentDescription = stringResource(id = startLabel),
                     modifier = Modifier.size(35.dp)
                 )
             }
@@ -104,7 +104,7 @@ fun MediaPlayer(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.stop),
-                    contentDescription = stringResource(id = R.string.stop_label), // TODO: may be different depending on where is used
+                    contentDescription = stringResource(id = stopLabel),
                     modifier = Modifier.size(35.dp)
                 )
             }

@@ -177,12 +177,19 @@ class MainActivity : ComponentActivity() {
 
                     Scaffold(
                         topBar = { TopBar() },
-                        bottomBar = { BottomBar(navController = navController) },
+                        bottomBar = {
+                            BottomBar(
+                                navController = navController,
+                                onNavigationButtonClicked = { tts?.stop() }
+                            )
+                        },
                         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
                     ) {
-                        Box(modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it)) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(it)
+                        ) {
                             NavHost(
                                 navController = navController,
                                 startDestination = Screen.MuseumMapScreen.route
