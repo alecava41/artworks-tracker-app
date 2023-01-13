@@ -31,5 +31,5 @@
     <string name="map_label">Map</string>
     <string name="settings_label">Settings</string>
     <string name="visited_list_label">Visited List</string>
-    <string name="visited_artworks_label">Visited Artworks</string>
+    <string name="visited_artworks_label">Visited artworks</string>
 </resources>

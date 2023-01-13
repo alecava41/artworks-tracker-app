@@ -26,4 +26,5 @@
     <string name="visited_list_label">Liste visitée</string>
     <string name="location_not_enabled_button">ACTIVER LA LOCALISATION</string>
     <string name="bluetooth_not_enabled_button">ACTIVER LE BLUETOOTH</string>
+    <string name="visited_artworks_label">Oeuvres visitées</string>
 </resources>

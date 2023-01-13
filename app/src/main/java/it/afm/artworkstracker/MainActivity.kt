@@ -25,13 +25,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -47,6 +47,7 @@ import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkScre
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
+import it.afm.artworkstracker.featureVisitedArtworksList.presentation.components.VisitedArtworksList
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 import it.afm.artworkstracker.util.LanguageUtil
 import it.afm.artworkstracker.util.Screen
@@ -172,64 +173,71 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     val navController = rememberNavController()
-                    val snackbarHostState = remember { SnackbarHostState()}
+                    val snackbarHostState = remember { SnackbarHostState() }
 
                     Scaffold(
                         topBar = { TopBar() },
                         bottomBar = { BottomBar(navController = navController) },
                         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
                     ) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = Screen.MuseumMapScreen.route
-                        ) {
-                            composable(route = Screen.MuseumMapScreen.route) {
-                                MuseumMapScreen(
-                                    navController = navController,
-                                    snackbarHostState = snackbarHostState,
-                                    viewModel = museumMapViewModel,
-                                    tts = tts,
-                                    onBluetoothEnableRequest = {
-                                        bluetoothEnablerLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
-                                    },
-                                    onLocationEnableRequest = {
-                                        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                                    }
-                                )
-                            }
-
-                            dialog(
-                                route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
-                                dialogProperties = DialogProperties(
-                                    usePlatformDefaultWidth = false
-                                ),
-                                arguments = listOf(
-                                    navArgument(
-                                        name = "artId"
-                                    ) {
-                                        type = NavType.StringType
-                                        defaultValue = ""
-                                    },
-                                    navArgument(
-                                        name = "url"
-                                    ) {
-                                        type = NavType.StringType
-                                        defaultValue = ""
-                                    }
-                                )
+                        Box(modifier = Modifier
+                            .fillMaxSize()
+                            .padding(it)) {
+                            NavHost(
+                                navController = navController,
+                                startDestination = Screen.MuseumMapScreen.route
                             ) {
-                                ArtworkScreen(
-                                    navController = navController,
-                                    viewModel = hiltViewModel(),
-                                    tts = tts,
-                                    onDialogClosed = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)}
-                                )
-                            }
-                            composable(route = Screen.VisitedArtworksListScreen.route) {
-                                Text(text = "Visited List", color = Color.Black)
-                            }
-                            composable(route = Screen.SettingsScreen.route) {
-                                SettingsScreen()
+                                composable(route = Screen.MuseumMapScreen.route) {
+                                    MuseumMapScreen(
+                                        navController = navController,
+                                        snackbarHostState = snackbarHostState,
+                                        viewModel = museumMapViewModel,
+                                        tts = tts,
+                                        onBluetoothEnableRequest = {
+                                            bluetoothEnablerLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+                                        },
+                                        onLocationEnableRequest = {
+                                            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                                        }
+                                    )
+                                }
+
+                                dialog(
+                                    route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
+                                    dialogProperties = DialogProperties(
+                                        usePlatformDefaultWidth = false
+                                    ),
+                                    arguments = listOf(
+                                        navArgument(
+                                            name = "artId"
+                                        ) {
+                                            type = NavType.StringType
+                                            defaultValue = ""
+                                        },
+                                        navArgument(
+                                            name = "url"
+                                        ) {
+                                            type = NavType.StringType
+                                            defaultValue = ""
+                                        }
+                                    )
+                                ) {
+                                    ArtworkScreen(
+                                        navController = navController,
+                                        viewModel = hiltViewModel(),
+                                        tts = tts,
+                                        onDialogClosed = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour) }
+                                    )
+                                }
+                                composable(route = Screen.VisitedArtworksListScreen.route) {
+                                    VisitedArtworksList(
+                                        viewModel = hiltViewModel(),
+                                        navController = navController
+                                    )
+                                }
+                                composable(route = Screen.SettingsScreen.route) {
+                                    SettingsScreen()
+                                }
                             }
                         }
                     }
