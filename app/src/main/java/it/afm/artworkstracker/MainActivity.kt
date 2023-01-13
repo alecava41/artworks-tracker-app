@@ -23,15 +23,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -54,8 +60,6 @@ import java.util.*
 class MainActivity : ComponentActivity() {
     private val museumMapViewModel: MuseumMapViewModel by viewModels()
     private var tts: TextToSpeech? = null
-
-    // TODO (onResume) check if: bluetooth is enabled, location is enabled
 
     private lateinit var nsdManager: NsdManager
 
@@ -86,6 +90,7 @@ class MainActivity : ComponentActivity() {
             if (service.serviceName.contains("MuseumBackend")) {
                 // Desired backend service
                 nsdManager.resolveService(service, resolveListener)
+                nsdManager.stopServiceDiscovery(this)
             }
         }
 
@@ -147,7 +152,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var locationManager: LocationManager
     private val locationUpdateReceiver = object : BroadcastReceiver() {
         // No need to perform check on intent -> it will be always LocationManager.MODE_CHANGED_ACTION
-        @RequiresApi(Build.VERSION_CODES.P)
         override fun onReceive(context: Context, intent: Intent) {
             val isEnabled =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
@@ -182,7 +186,6 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = Screen.MuseumMapScreen.route
                         ) {
-                            // TODO: maybe welcome dialog?
                             composable(route = Screen.MuseumMapScreen.route) {
                                 MuseumMapScreen(
                                     navController = navController,
@@ -230,7 +233,7 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(route = Screen.SettingsScreen.route) {
                                 Log.e("Settings: ", "Navigated")
-                                Text(text = "Settings", color = Color.Black)
+                                SettingsScreen()
                             }
                         }
                     }
@@ -259,7 +262,6 @@ class MainActivity : ComponentActivity() {
         tts?.shutdown()
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
     override fun onResume() {
         super.onResume()
 
@@ -291,5 +293,19 @@ class MainActivity : ComponentActivity() {
         unregisterReceiver(locationUpdateReceiver)
 
         museumMapViewModel.onEvent(MuseumMapEvent.PauseTour) // TODO: optimize
+    }
+}
+
+@Composable
+fun SettingsScreen(
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "SETTINGS",
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }

@@ -9,7 +9,7 @@ class GetVisitedArtworksUseCase(
     private val repository: ArtworkRepository
 ) {
     suspend operator fun invoke(): Flow<List<Artwork>> {
-        return repository.getVisitedArtworksOrderedByTitle()
-            .map { list -> list.map { artworkEntity -> artworkEntity.toArtwork() } }
+        return repository.getVisitedArtworksOrderedByTitle().map { list ->
+            list.map { artworkEntity -> artworkEntity.toArtwork() } }
     }
 }

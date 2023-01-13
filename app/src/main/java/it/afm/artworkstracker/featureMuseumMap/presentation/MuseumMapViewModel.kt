@@ -51,6 +51,9 @@ class MuseumMapViewModel @Inject constructor(
         // TODO: add "Bottom Navigation Bar" (entries: MAP, ARTWORKS_LIST, "SETTINGS")
         // TODO: add "Top App Bar" (App title (?) + action_button (close_visit, ?))
 
+        // TODO: handle case when backend service is no more available! (through NSD)
+        // TODO: optimize scannings (start & stop when needed)
+
         getCloserBeaconsUseCase().onEach {
             val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
 

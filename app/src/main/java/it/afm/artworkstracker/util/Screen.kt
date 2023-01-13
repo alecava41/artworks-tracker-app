@@ -16,5 +16,4 @@ sealed class Screen(
     object ArtworkScreen : Screen("artwork_screen", null, null)
     object VisitedArtworksListScreen : Screen("visited_artworks_list_screen", R.string.visited_list_label, Icons.Default.List)
     object SettingsScreen : Screen("settings_screen", R.string.settings_label, Icons.Default.Settings)
-    object BluetoothPermissionDialog : Screen("bluetooth_permission_dialog", null, null)
 }
