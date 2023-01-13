@@ -6,7 +6,24 @@
     <string name="slide_left_label">"Vorheriges Bild "</string>
     <string name="slide_right_label">"Nächstes Bild "</string>
     <string name="snackbar_old_artwork_label">Möchten Sie dieses Kunstwerk noch einmal sehen?</string>
-    <string name="snackbar_old_artwork_action">ja</string>
+    <string name="snackbar_old_artwork_action">JA</string>
     <string name="snackbar_unseen_artwork_label">Gehen Sie näher an das Kunstwerk heran, um die Details zu sehen!</string>
-    <string name="close_label">" SCHLIESS"</string>
+    <string name="close_label">SCHLIESS</string>
+    <string name="permissions_require_title">Genehmigung erforderlich</string>
+    <string name="permissions_require_bluetooth">Bluetooth-Berechtigungen sind erforderlich, um nähere Kunstwerke zu finden.</string>
+    <string name="permissions_require_location">Die Standortberechtigung ist erforderlich, um Bluetooth-Scans zuzulassen.</string>
+    <string name="permissions_require_button">BERECHTIGUNGEN ERFORDERLICH</string>
+    <string name="permissions_not_given_title">Berechtigungen nicht erteilt!</string>
+    <string name="permissions_not_given_body">Um die App verwenden zu dürfen, müssen Sie zunächst sowohl Bluetooth- als auch Standortberechtigungen erteilen. Sie können sie in den App-Einstellungen aktivieren.</string>
+    <string name="wifi_not_enabled_title">Verbindungsproblem</string>
+    <string name="wifi_not_enabled_body">Es kann keine Verbindung mit dem Museumsnetzwerk hergestellt werden. Bitte stellen Sie sicher, dass Sie mit dem WLAN des Museums verbunden sind.</string>
+    <string name="location_not_enabled_title">Standort nicht aktiviert</string>
+    <string name="location_not_enabled_body">Sieht so aus, als ob der Standort deaktiviert ist. Bitte drehen Sie ihn, damit die App die Kunstwerke scannen kann.</string>
+    <string name="bluetooth_not_enabled_title">Bluetooth nicht aktiviert</string>
+    <string name="bluetooth_not_enabled_body">Anscheinend ist Bluetooth ausgeschaltet. Bitte schalten Sie es ein, um Kunstwerke zu finden.</string>
+    <string name="map_label">Karte</string>
+    <string name="settings_label">Einstellungen</string>
+    <string name="visited_list_label">Besuchte Liste</string>
+    <string name="location_not_enabled_button">STANDORT AKTIVIEREN</string>
+    <string name="bluetooth_not_enabled_button">BLUETOOTH AKTIVIEREN</string>
 </resources>

@@ -1,6 +1,6 @@
 package it.afm.artworkstracker.featureArtwork.domain.useCase
 
-import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
+import it.afm.artworkstracker.core.domain.model.Artwork
 import it.afm.artworkstracker.featureArtwork.domain.repository.ArtworkRepository
 import java.util.*
 

@@ -1,15 +1,14 @@
 package it.afm.artworkstracker.featureArtwork.data.repository
 
 import android.util.Log
-import it.afm.artworkstracker.core.data.remote.MuseumApi
 import it.afm.artworkstracker.core.data.local.ArtworkDao
 import it.afm.artworkstracker.core.data.local.entity.ArtworkEntity
-import it.afm.artworkstracker.featureArtwork.domain.model.Artwork
+import it.afm.artworkstracker.core.data.remote.MuseumApi
+import it.afm.artworkstracker.core.domain.model.Artwork
 import it.afm.artworkstracker.featureArtwork.domain.repository.ArtworkRepository
-import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import java.io.IOException
-import java.util.UUID
+import java.util.*
 
 class ArtworkRepositoryImpl(
     private val api: MuseumApi,
@@ -41,10 +40,6 @@ class ArtworkRepositoryImpl(
 
     override suspend fun insertArtwork(artworkEntity: ArtworkEntity) {
         dao.insertArtwork(artworkEntity)
-    }
-
-    override suspend fun getVisitedArtworksOrderedByTitle(): Flow<List<ArtworkEntity>> {
-        return dao.getVisitedArtworksOrderedByTitle()
     }
 
     companion object {

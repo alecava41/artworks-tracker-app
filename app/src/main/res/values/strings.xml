@@ -12,8 +12,8 @@
     <string name="close_label">CLOSE</string>
 
     <string name="permissions_require_title">Permissions required</string>
-    <string name="permissions_require_bluetooth">Bluetooth permissions is required in order to find closer artworks.</string>
-    <string name="permissions_require_location">Location permissions is required in order to allow bluetooth scanning.</string>
+    <string name="permissions_require_bluetooth">Bluetooth permissions are required in order to find closer artworks.</string>
+    <string name="permissions_require_location">Location permission is required in order to allow bluetooth scanning.</string>
     <string name="permissions_require_button">REQUIRE PERMISSIONS</string>
     <string name="permissions_not_given_title">Permissions not given!</string>
     <string name="permissions_not_given_body">To be allowed to use the app you first have to grant both bluetooth and location permissions. You can enable them in the app settings.</string>
@@ -31,4 +31,5 @@
     <string name="map_label">Map</string>
     <string name="settings_label">Settings</string>
     <string name="visited_list_label">Visited List</string>
+    <string name="visited_artworks_label">Visited Artworks</string>
 </resources>

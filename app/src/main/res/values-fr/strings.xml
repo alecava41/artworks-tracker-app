@@ -6,7 +6,24 @@
     <string name="slide_left_label">Image précédente</string>
     <string name="slide_right_label">Image suivante</string>
     <string name="snackbar_old_artwork_label">Voulez-vous revoir cette œuvre ?</string>
-    <string name="snackbar_old_artwork_action">oui</string>
+    <string name="snackbar_old_artwork_action">OUI</string>
     <string name="snackbar_unseen_artwork_label">Rapprochez-vous de l\'œuvre pour voir les détails!</string>
     <string name="close_label">PROCHE</string>
+    <string name="permissions_require_title">Autorisation requise</string>
+    <string name="permissions_require_bluetooth">Des autorisations Bluetooth sont nécessaires pour trouver des œuvres d\'art plus proches.</string>
+    <string name="permissions_require_location">Une autorisation de localisation est requise pour permettre la numérisation Bluetooth.</string>
+    <string name="permissions_require_button">AUTORISATIONS REQUISES</string>
+    <string name="permissions_not_given_title">Autorisations non données!</string>
+    <string name="permissions_not_given_body">Pour être autorisé à utiliser l\'application, vous devez d\'abord accorder les autorisations Bluetooth et de localisation. Vous pouvez les activer dans les paramètres de l\'application.</string>
+    <string name="wifi_not_enabled_title">Problème de connection</string>
+    <string name="wifi_not_enabled_body">Impossible d\'établir une connexion avec le réseau du musée. Assurez-vous d\'être connecté au wifi du musée.</string>
+    <string name="location_not_enabled_title">Emplacement non activé</string>
+    <string name="location_not_enabled_body">Il semble que l\'emplacement soit désactivé, veuillez l\'activer afin de permettre à l\'application de numériser les œuvres d\'art.</string>
+    <string name="bluetooth_not_enabled_title">Bluetooth non activé</string>
+    <string name="bluetooth_not_enabled_body">Il semble que le Bluetooth soit désactivé, veuillez l\'activer afin de trouver des œuvres d\'art.</string>
+    <string name="map_label">Carte</string>
+    <string name="settings_label">Paramètres</string>
+    <string name="visited_list_label">Liste visitée</string>
+    <string name="location_not_enabled_button">ACTIVER LA LOCALISATION</string>
+    <string name="bluetooth_not_enabled_button">ACTIVER LE BLUETOOTH</string>
 </resources>

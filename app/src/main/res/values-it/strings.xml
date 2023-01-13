@@ -6,7 +6,24 @@
     <string name="slide_left_label">Immagine precedente</string>
     <string name="slide_right_label">Immagine successiva</string>
     <string name="snackbar_old_artwork_label">Vuoi vedere quest\'opera di nuovo?</string>
-    <string name="snackbar_old_artwork_action">si</string>
+    <string name="snackbar_old_artwork_action">SI</string>
     <string name="snackbar_unseen_artwork_label">Avvicinati all\'opera per vederne i dettagli!</string>
     <string name="close_label">CHIUDI</string>
+    <string name="permissions_require_title">Autorizzazione richiesta</string>
+    <string name="permissions_require_bluetooth">Sono necessarie le autorizzazioni Bluetooth per trovare opere d\'arte più vicine.</string>
+    <string name="permissions_require_location">È necessaria l\'autorizzazione alla posizione per consentire la scansione Bluetooth.</string>
+    <string name="permissions_require_button">RICHIESTA AUTORIZZAZIONI</string>
+    <string name="permissions_not_given_title">Autorizzazioni non concesse!</string>
+    <string name="permissions_not_given_body">Per poter utilizzare l\'app devi prima concedere sia le autorizzazioni Bluetooth che di localizzazione. Puoi abilitarli nelle impostazioni dell\'app.</string>
+    <string name="wifi_not_enabled_title">Problema di connessione</string>
+    <string name="wifi_not_enabled_body">Impossibile stabilire una connessione con la rete del museo. Assicurati di essere connesso al wifi del museo.</string>
+    <string name="location_not_enabled_title">Posizione non abilitata</string>
+    <string name="location_not_enabled_body">Sembra che la posizione sia disattivata, attivala per consentire all\'app di scansionare le opere d\'arte.</string>
+    <string name="bluetooth_not_enabled_title">Bluetooth non abilitato</string>
+    <string name="bluetooth_not_enabled_body">Sembra che il bluetooth sia spento, attivalo per trovare opere d\'arte.</string>
+    <string name="map_label">Mappa</string>
+    <string name="settings_label">Impostazioni</string>
+    <string name="visited_list_label">Lista visitati</string>
+    <string name="location_not_enabled_button">ATTIVA POSIZIONE</string>
+    <string name="bluetooth_not_enabled_button">ATTIVA BLUETOOTH</string>
 </resources>

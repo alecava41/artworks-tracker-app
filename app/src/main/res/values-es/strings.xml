@@ -1,6 +1,6 @@
 <resources>
     <string name="snackbar_unseen_artwork_label">¡Acércate a la obra de arte para ver los detalles!</string>
-    <string name="snackbar_old_artwork_action">si</string>
+    <string name="snackbar_old_artwork_action">SI</string>
     <string name="snackbar_old_artwork_label">¿Quieres volver a ver esta obra de arte?</string>
     <string name="slide_right_label">Siguiente imagen</string>
     <string name="slide_left_label">Anterior Imagen</string>
@@ -9,4 +9,21 @@
     <string name="description_label">Descripción</string>
     <string name="tts_not_available">La función Texto a voz no está disponible</string>
     <string name="close_label">CERRA</string>
+    <string name="permissions_require_title">Se requiere permiso</string>
+    <string name="permissions_require_bluetooth">Se requieren permisos de Bluetooth para encontrar obras de arte más cercanas.</string>
+    <string name="permissions_require_location">Se requiere permiso de ubicación para permitir el escaneo de bluetooth.</string>
+    <string name="permissions_require_button">REQUIERE PERMISOS</string>
+    <string name="permissions_not_given_title">¡Permisos no otorgados!</string>
+    <string name="permissions_not_given_body">Para poder usar la aplicación, primero debe otorgar permisos de ubicación y bluetooth. Puede habilitarlos en la configuración de la aplicación.</string>
+    <string name="wifi_not_enabled_title">Problema de conexión</string>
+    <string name="wifi_not_enabled_body">No se puede establecer una conexión con la red del museo. Asegúrese de estar conectado al wifi del museo.</string>
+    <string name="location_not_enabled_title">Ubicación no habilitada</string>
+    <string name="location_not_enabled_body">Parece que la ubicación está desactivada, gírela para permitir que la aplicación escanee las obras de arte.</string>
+    <string name="bluetooth_not_enabled_title">Bluetooth no habilitado</string>
+    <string name="bluetooth_not_enabled_body">Parece que el bluetooth está apagado, enciéndalo para encontrar obras de arte.</string>
+    <string name="map_label">Mapa</string>
+    <string name="settings_label">Ajustes</string>
+    <string name="visited_list_label">Lista visitados</string>
+    <string name="location_not_enabled_button">ACTIVAR UBICACIÓN</string>
+    <string name="bluetooth_not_enabled_button">ACTIVAR BLUETOOTH</string>
 </resources>
