@@ -50,7 +50,8 @@ fun ArtworkScreen(
                 usePlatformDefaultWidth = false,
             ),
             onDismissRequest = {
-                val isMapShownBehind = navController.previousBackStackEntry?.destination?.navigatorName == Screen.MuseumMapScreen.route
+                val isMapShownBehind =
+                    navController.previousBackStackEntry?.destination?.navigatorName == Screen.MuseumMapScreen.route
 
                 Log.i("...", navController.previousBackStackEntry?.destination?.navigatorName ?: "daaai")
 
@@ -78,49 +79,53 @@ fun ArtworkScreen(
                         )
                     ) {
                         Column {
-                            Column(
-                                modifier = Modifier
-                                    .verticalScroll(scrollState)
-                                    .weight(weight = 1f, fill = false)
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
+                            if (vmState.artwork != null) {
+                                Column(
+                                    modifier = Modifier
+                                        .verticalScroll(scrollState)
+                                        .weight(weight = 1f, fill = false)
                                 ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth(fraction = 0.75f)
-                                            .padding(25.dp, 15.dp, 0.dp, 20.dp)
-                                            .semantics(mergeDescendants = true) { },
-                                        horizontalAlignment = Alignment.Start,
-                                        verticalArrangement = Arrangement.Center
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        ArtworkName(str = vmState.artwork.title)
-                                        ArtworkAuthor(str = vmState.artwork.author)
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth(fraction = 0.75f)
+                                                .padding(25.dp, 15.dp, 0.dp, 20.dp)
+                                                .semantics(mergeDescendants = true) { },
+                                            horizontalAlignment = Alignment.Start,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            ArtworkName(str = vmState.artwork.title)
+                                            ArtworkAuthor(str = vmState.artwork.author)
+                                        }
+                                        MediaPlayer(
+                                            isAudioEnabled = vmState.isAudioEnabled,
+                                            description = vmState.artwork.description,
+                                            tts = tts,
+                                            startLabel = R.string.artwork_stop_label,
+                                            stopLabel = R.string.artwork_play_label,
+                                            onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = false)) },
+                                            onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = true)) }
+                                        )
                                     }
-                                    MediaPlayer(
-                                        isAudioEnabled = vmState.isAudioEnabled,
-                                        description = vmState.artwork.description,
-                                        tts = tts,
-                                        startLabel = R.string.artwork_stop_label,
-                                        stopLabel = R.string.artwork_play_label,
-                                        onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = false)) },
-                                        onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = true)) }
+                                    SlideShow(
+                                        url = viewModel.url,
+                                        beaconId = vmState.artwork.id.toString()
                                     )
+                                    Description(desc = vmState.artwork.description)
                                 }
-                                SlideShow(
-                                    url = viewModel.url,
-                                    beaconId = vmState.artwork.id.toString()
+                                CloseButton(
+                                    navController = navController,
+                                    onClick = {
+                                        tts?.stop()
+                                        onDialogClosed()
+                                    }
                                 )
-                                Description(desc = vmState.artwork.description)
+                            } else {
+                                ArtworkScreenNotAvailable()
                             }
-                            CloseButton(
-                                navController = navController,
-                                onClick = {
-                                    tts?.stop()
-                                    onDialogClosed()
-                                }
-                            )
                         }
                     }
                 }

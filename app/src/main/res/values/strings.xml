@@ -38,4 +38,6 @@
     <string name="path_stop_label">Stop audio to get the path to the next artwork</string>
     <string name="empty_list_visited_artworks_label">It seems you haven\'t visited any artwork yet. Get closer to a beacon to visit an artwork.</string>
     <string name="title_empty_list">No visited artworks</string>
+    <string name="title_artwork_not_available">Artwork not available</string>
+    <string name="artwork_not_available_label">Ops!! The artwork cannot be seen due to an error. Try again please!</string>
 </resources>

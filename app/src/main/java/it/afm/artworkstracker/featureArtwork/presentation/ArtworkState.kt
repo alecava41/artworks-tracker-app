@@ -4,6 +4,6 @@ import it.afm.artworkstracker.core.domain.model.Artwork
 import java.util.*
 
 data class ArtworkState(
-    val artwork: Artwork = Artwork(id = UUID.randomUUID(), description = "", author = "", title = ""),
+    val artwork: Artwork? = null,
     val isAudioEnabled: Boolean = false
 )
