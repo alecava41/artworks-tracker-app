@@ -43,14 +43,23 @@ class MuseumMapViewModel @Inject constructor(
     private var knownArtworks = listOf<UUID>()
 
     init {
-        // TODO: add "Top App Bar" (action_button (info-tutorial))
+        // TODO: add "Top App Bar" (equal to bottomAppBar) (action_button (info-tutorial)) (PIPPO)
 
-        // TODO: handle case when backend service is no more available! (through NSD)
-        // TODO: optimize scans (start & stop when needed)
+        // TODO: handle case when backend service is no more available! (through NSD) (ALE)
+        // TODO: check NSD MANAGER (it's not working properly) (ALE)
+        // TODO: optimize scans (start & stop when needed) (ALE)
 
-        // TODO: implement deleteAllArtworksFeature
-        // TODO: redefine "error" screens (only view side)
-        // TODO: check NSD MANAGER (it's not working properly)
+        // TODO: implement deleteAllArtworksFeature (ALE) (big button "end tour")
+
+        // TODO: redefine "error" screens (only view side) (BOTH)
+        // TODO: colors (BOTH)
+
+        // TODO: check if ArtworkScreen animation can be executed only once (so only in composition, not in recomposition) (PIPPO)
+
+        // TODO: enable zoom on map (ALE)
+        // TODO: enable != colors on map (ALE)
+
+        // TODO: refine visited list view (padding, bold title, ...) (PIPPO)
 
         getCloserBeaconsUseCase().onEach {
             val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
