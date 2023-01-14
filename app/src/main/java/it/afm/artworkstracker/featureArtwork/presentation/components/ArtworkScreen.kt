@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -53,14 +52,16 @@ fun ArtworkScreen(
             ),
             onDismissRequest = {
                 val isMapShownBehind =
-                    navController.previousBackStackEntry?.destination?.navigatorName == Screen.MuseumMapScreen.route
+                    navController.previousBackStackEntry?.destination?.route == Screen.MuseumMapScreen.route
 
-                Log.i("...", navController.previousBackStackEntry?.destination?.navigatorName ?: "daaai")
+                Log.i("...", navController.previousBackStackEntry?.destination?.route ?: "null")
 
                 tts?.stop()
 
                 if (isMapShownBehind)
                     onDialogClosed()
+
+                navController.navigateUp()
             }) {
             Box(
                 Modifier

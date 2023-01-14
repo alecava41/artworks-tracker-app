@@ -7,7 +7,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import it.afm.artworkstracker.R
 
@@ -25,22 +24,18 @@ fun NoRoomScreen(
             text = stringResource(id = R.string.no_room_title),
             style = MaterialTheme.typography.titleLarge
         )
-
         Spacer(modifier = Modifier.height(50.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                modifier = Modifier.size(40.dp),
-                painter = painterResource(id = R.drawable.museum),
-                contentDescription = null
-            )
-            Text(
-                text = stringResource(id = R.string.no_room_body),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
+        Icon(
+            modifier = Modifier
+                .size(120.dp)
+                .align(Alignment.CenterHorizontally),
+            painter = painterResource(id = R.drawable.museum),
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.height(50.dp))
+        Text(
+            text = stringResource(id = R.string.no_room_body),
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }

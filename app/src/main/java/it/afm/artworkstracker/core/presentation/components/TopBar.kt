@@ -2,9 +2,7 @@ package it.afm.artworkstracker.core.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 
@@ -19,6 +17,9 @@ fun TopBar() {
             ) {
                 Text(text = "Artworks Tracker")
             }
-        }
+        },
+        colors = TopAppBarDefaults.smallTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant // TODO: same color as bottom bar
+        )
     )
 }

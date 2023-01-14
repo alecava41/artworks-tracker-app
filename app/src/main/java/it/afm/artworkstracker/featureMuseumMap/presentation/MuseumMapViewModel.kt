@@ -29,6 +29,8 @@ class MuseumMapViewModel @Inject constructor(
     var baseUrl: String? = null
         private set
 
+    private var isScanning = false
+
     private val _museumMapState = mutableStateOf(MuseumMapState())
     val museumMapState: State<MuseumMapState> = _museumMapState
 
@@ -43,11 +45,7 @@ class MuseumMapViewModel @Inject constructor(
     private var knownArtworks = listOf<UUID>()
 
     init {
-        // TODO: add "Top App Bar" (equal to bottomAppBar) (action_button (info-tutorial)) (PIPPO)
-
-        // TODO: handle case when backend service is no more available! (through NSD) (ALE)
-        // TODO: check NSD MANAGER (it's not working properly) (ALE)
-        // TODO: optimize scans (start & stop when needed) (ALE)
+        // TODO: add "Top App Bar" (equal to bottomAppBar (color)) (action_button (info-tutorial)) (PIPPO)
 
         // TODO: implement deleteAllArtworksFeature (ALE) (big button "end tour")
 
@@ -121,9 +119,18 @@ class MuseumMapViewModel @Inject constructor(
         when (event) {
             is MuseumMapEvent.ResumeTour -> {
                 // TODO: restart scan if and only everything is available (wifi, bt enabled, location)
-                getCloserBeaconsUseCase.startListeningForBeacons()
+
+                if (!isScanning) {
+                    getCloserBeaconsUseCase.startListeningForBeacons()
+                    isScanning = true
+                }
             }
-            is MuseumMapEvent.PauseTour -> getCloserBeaconsUseCase.stopListeningForBeacons()
+            is MuseumMapEvent.PauseTour -> {
+                if (isScanning) {
+                    getCloserBeaconsUseCase.stopListeningForBeacons()
+                    isScanning = false
+                }
+            }
             is MuseumMapEvent.SpeechStatus -> {
                 _museumMapState.value = _museumMapState.value.copy(
                     isAudioEnabled = event.isSpeaking

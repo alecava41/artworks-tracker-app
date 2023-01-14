@@ -16,6 +16,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class BeaconDataSourceImpl(ctx: Context) : BeaconsDataSource, RangeNotifier {
     private val beaconsInRange: ConcurrentLinkedQueue<Beacon> = ConcurrentLinkedQueue()
 
+    private var isScanning = false
+
     private val beaconManager = BeaconManager.getInstanceForApplication(ctx)
     private val region = Region("all-beacon-region", null, null, null)
 
@@ -36,7 +38,10 @@ class BeaconDataSourceImpl(ctx: Context) : BeaconsDataSource, RangeNotifier {
     override fun getCloserBeacons(): Flow<List<Beacon>> = flow {
         while (true) {
             if (beaconsInRange.isNotEmpty()) {
-                emit(beaconsInRange.toList())
+                if (isScanning)
+                    emit(beaconsInRange.toList())
+                else
+                    beaconsInRange.clear()
 
                 beaconsInRange.forEach {
                     Log.i(TAG, "Ranging beacon ${it.id}, distance = ${it.distance}")
@@ -49,11 +54,12 @@ class BeaconDataSourceImpl(ctx: Context) : BeaconsDataSource, RangeNotifier {
 
     override fun startListeningForBeacons() {
         beaconManager.startRangingBeacons(region)
+        isScanning = true
     }
 
     override fun stopListeningForBeacons() {
         beaconManager.stopRangingBeacons(region)
-        beaconsInRange.clear()
+        isScanning = false
     }
 
     override fun didRangeBeaconsInRegion(

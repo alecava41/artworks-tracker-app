@@ -18,7 +18,8 @@ import it.afm.artworkstracker.util.Screen
 @Composable
 fun BottomBar(
     navController: NavHostController,
-    onNavigationButtonClicked: () -> Unit
+    onMuseumMapExit: () -> Unit,
+    onMuseumMapEntrance: () -> Unit
 ) {
 
     val screens = listOf(
@@ -36,7 +37,8 @@ fun BottomBar(
                 screen = screen,
                 currentDestination = currentDestination,
                 navController = navController,
-                onNavigationButtonClicked = onNavigationButtonClicked
+                onMuseumMapExit = onMuseumMapExit,
+                onMuseumMapEntrance = onMuseumMapEntrance
             )
         }
     }
@@ -47,7 +49,8 @@ fun RowScope.AddItem(
     screen: Screen,
     currentDestination: NavDestination?,
     navController: NavHostController,
-    onNavigationButtonClicked: () -> Unit
+    onMuseumMapExit: () -> Unit,
+    onMuseumMapEntrance: () -> Unit
 ) {
     NavigationBarItem(label = {
         val label = screen.stringId?.let { stringResource(id = it) }
@@ -63,7 +66,8 @@ fun RowScope.AddItem(
         },
         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
         onClick = {
-            onNavigationButtonClicked()
+            if (screen.route == Screen.MuseumMapScreen.route) onMuseumMapEntrance()
+            else onMuseumMapExit()
 
             navController.navigate(screen.route) {
                 popUpTo(navController.graph.findStartDestination().id)

@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
             Log.d("MainActivity", "Service discovery success: $service")
 
             if (service.serviceName.contains("MuseumBackend")) {
-                // Desired backend service
+                nsdManager.stopServiceDiscovery(this)
                 nsdManager.resolveService(service, resolveListener)
             }
         }
@@ -180,7 +180,11 @@ class MainActivity : ComponentActivity() {
                         bottomBar = {
                             BottomBar(
                                 navController = navController,
-                                onNavigationButtonClicked = { tts?.stop() }
+                                onMuseumMapExit = {
+                                    tts?.stop()
+                                    museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)
+                                },
+                                onMuseumMapEntrance = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)}
                             )
                         },
                         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
@@ -212,7 +216,9 @@ class MainActivity : ComponentActivity() {
                                 dialog(
                                     route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
                                     dialogProperties = DialogProperties(
-                                        usePlatformDefaultWidth = false
+                                        usePlatformDefaultWidth = false,
+                                        dismissOnBackPress = true,
+                                        dismissOnClickOutside = true
                                     ),
                                     arguments = listOf(
                                         navArgument(
