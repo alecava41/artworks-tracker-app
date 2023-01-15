@@ -43,6 +43,7 @@ import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import it.afm.artworkstracker.core.presentation.components.BottomBar
 import it.afm.artworkstracker.core.presentation.components.TopBar
+import it.afm.artworkstracker.core.presentation.components.TutorialScreen
 import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkScreen
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
@@ -87,6 +88,7 @@ class MainActivity : ComponentActivity() {
             if (service.serviceName.contains("MuseumBackend")) {
                 nsdManager.stopServiceDiscovery(this)
                 nsdManager.resolveService(service, resolveListener)
+                nsdManager.stopServiceDiscovery(this)
             }
         }
 
@@ -176,7 +178,7 @@ class MainActivity : ComponentActivity() {
                     val snackbarHostState = remember { SnackbarHostState() }
 
                     Scaffold(
-                        topBar = { TopBar() },
+                        topBar = { TopBar(navController = navController) },
                         bottomBar = {
                             BottomBar(
                                 navController = navController,
@@ -184,7 +186,7 @@ class MainActivity : ComponentActivity() {
                                     tts?.stop()
                                     museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)
                                 },
-                                onMuseumMapEntrance = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)}
+                                onMuseumMapEntrance = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour) }
                             )
                         },
                         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
@@ -250,6 +252,11 @@ class MainActivity : ComponentActivity() {
                                 }
                                 composable(route = Screen.SettingsScreen.route) {
                                     SettingsScreen()
+                                }
+                                dialog(route = Screen.TutorialScreen.route) {
+                                    TutorialScreen(navController = navController,
+                                        tts = tts,
+                                        onDialogClosed = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour) })
                                 }
                             }
                         }

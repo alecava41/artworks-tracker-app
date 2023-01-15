@@ -5,10 +5,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
+import it.afm.artworkstracker.R
+import it.afm.artworkstracker.util.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar() {
+fun TopBar(navController: NavController) {
     TopAppBar(
         title = @Composable {
             Column(
@@ -16,6 +21,14 @@ fun TopBar() {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(text = "Artworks Tracker")
+            }
+        },
+        actions = {
+            IconButton(onClick = { navController.navigate(Screen.TutorialScreen.route) }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.question_mark),
+                    contentDescription = stringResource(R.string.help_label)
+                )
             }
         },
         colors = TopAppBarDefaults.smallTopAppBarColors(

@@ -15,5 +15,6 @@ sealed class Screen(
     object MuseumMapScreen : Screen("museum_map_screen", R.string.map_label, Icons.Default.Map)
     object ArtworkScreen : Screen("artwork_screen", null, null)
     object VisitedArtworksListScreen : Screen("visited_artworks_list_screen", R.string.visited_list_label, Icons.Default.List)
+    object TutorialScreen: Screen("tutorial_screen", null, null)
     object SettingsScreen : Screen("settings_screen", R.string.settings_label, Icons.Default.Settings)
 }
