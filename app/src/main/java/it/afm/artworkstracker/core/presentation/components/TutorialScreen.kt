@@ -5,10 +5,9 @@ import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -16,7 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
@@ -32,6 +33,7 @@ fun TutorialScreen(
     onDialogClosed: () -> Unit
 ) {
 
+    val scrollState = rememberScrollState()
     val transitionState = remember {
         MutableTransitionState(false).apply {
             targetState = true
@@ -79,48 +81,80 @@ fun TutorialScreen(
                         )
                     ) {
                         Column {
-                            Text(text = "Help Tutorial")
-                            Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                                Text(text = "How to begin a visit")
-                                Text(text = "")
-                            }
-                            Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                                Text(text = "Map")
-                                Text(text = "")
-                            }
-                            Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                                Text(text = "Legend")
-                                Text(text = "Here there are more details about some icons:")
-                                val icons = listOf(R.drawable.picture)
-                                val contentDesc = listOf("")
-                                val iconsDesc = listOf("")
-                                for (i in icons.indices) {
-                                    Row {
-                                        Icon(painter = painterResource(id = icons[i]), contentDescription = contentDesc[i])
-                                        Text(text = iconsDesc[i])
+                            Text(text = stringResource(id = R.string.help_tutorial_label))
+                            Column(
+                                modifier = Modifier
+                                    .verticalScroll(scrollState)
+                                    .weight(weight = 1f, fill = false)
+                            ) {
+                                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                                    Text(text = stringResource(id = R.string.how_to_begin_visit_label))
+                                    Text(text = stringResource(id = R.string.how_to_begin_visit_desc_label))
+                                }
+                                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                                    Text(text = stringResource(id = R.string.map_label))
+                                    Text(text = stringResource(id = R.string.map_desc_label))
+                                }
+                                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                                    Text(text = stringResource(id = R.string.legend_label))
+                                    Text(text = stringResource(id = R.string.legend_desc_label))
+                                    val icons = listOf(
+                                        R.drawable.picture,
+                                        R.drawable.sculpture,
+                                        R.drawable.user,
+                                        R.drawable.star,
+                                        R.drawable.visit
+                                    )
+                                    val contentDesc = listOf(
+                                        R.string.picture_label,
+                                        R.string.sculpture_label,
+                                        R.string.user_label,
+                                        R.string.starred_artwork_label,
+                                        R.string.visited_artwork_label
+                                    )
+                                    val iconsDesc = listOf(
+                                        R.string.picture_desc_label,
+                                        R.string.sculpture_desc_label,
+                                        R.string.user_desc_label,
+                                        R.string.starred_artwork_desc_label,
+                                        R.string.visited_artwork_desc_label
+                                    )
+                                    for (i in icons.indices) {
+                                        Spacer(modifier = Modifier.height(15.dp))
+                                        Row {
+                                            Icon(
+                                                painter = painterResource(id = icons[i]),
+                                                contentDescription = stringResource(id = contentDesc[i])
+                                            )
+                                            Spacer(modifier = Modifier.width(15.dp))
+                                            Text(
+                                                text = stringResource(id = iconsDesc[i]),
+                                                style = MaterialTheme.typography.labelMedium
+                                            )
+                                        }
                                     }
                                 }
+                                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                                    Text(text = stringResource(id = R.string.multimedia_label))
+                                    Text(text = stringResource(id = R.string.multimedia_desc_label))
+                                }
+                                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                                    Text(text = stringResource(id = R.string.visited_artworks_list_label))
+                                    Text(text = stringResource(id = R.string.visited_artworks_list_desc_label))
+                                }
+                                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                                    Text(text = stringResource(id = R.string.how_to_end_visit_label))
+                                    Text(text = stringResource(id = R.string.how_to_end_visit_desc_label))
+                                }
                             }
+                            CloseButton(
+                                navController = navController,
+                                onClick = {
+                                    tts?.stop()
+                                    onDialogClosed()
+                                }
+                            )
                         }
-                        Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                            Text(text = "Multimedia")
-                            Text(text = "")
-                        }
-                        Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                            Text(text = "Visited Artworks List")
-                            Text(text = "")
-                        }
-                        Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                            Text(text = "How to end a visit")
-                            Text(text = "")
-                        }
-                        CloseButton(
-                            navController = navController,
-                            onClick = {
-                                tts?.stop()
-                                onDialogClosed()
-                            }
-                        )
                     }
                 }
             }
