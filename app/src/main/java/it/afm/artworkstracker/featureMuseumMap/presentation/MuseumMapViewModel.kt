@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import it.afm.artworkstracker.core.domain.useCase.GetArtworksIdsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkBeacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
-import it.afm.artworkstracker.core.domain.useCase.GetArtworksIdsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetCloserBeaconsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetRoomUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -53,7 +53,6 @@ class MuseumMapViewModel @Inject constructor(
 
         // TODO: check if ArtworkScreen animation can be executed only once (so only in composition, not in recomposition) (PIPPO)
 
-        // TODO: enable zoom on map (ALE)
         // TODO: enable != colors on map (ALE)
 
 

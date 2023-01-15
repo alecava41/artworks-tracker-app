@@ -1,6 +1,5 @@
 package it.afm.artworkstracker.featureMuseumMap.presentation.components
 
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -16,13 +15,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
@@ -48,16 +47,17 @@ fun RoomMap(
     lastArtwork: ArtworkBeacon? = null,
     onArtworkClicked: (UUID) -> Unit
 ) {
-    Log.i("RoomMap", "Calling recomposition!")
-
-    var scale = remember(key1 = room) { 1f }
+    val scale = remember(key1 = room) { mutableStateOf(1f) }
 
     val animX = remember(key1 = room) { Animatable(initialValue = 0f) }
 
     val animY = remember(key1 = room) { Animatable(initialValue = 0f) }
 
     val state = rememberTransformableState { zoomChange, _, _ ->
-        scale *= zoomChange
+        var newScale = scale.value * zoomChange
+        newScale = if (newScale > 1f) 1f else newScale
+
+        scale.value = newScale
     }
 
     val picturePainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.picture))
@@ -76,26 +76,26 @@ fun RoomMap(
             .fillMaxSize()
             .horizontalScroll(hScrollState)
             .verticalScroll(vScrollState)
-            .padding(20.dp)
-            .transformable(state = state)
-            .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-            )
+            .padding(10.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        val art = artworkPositions.find { pos -> pos.second.contains(it) }
+                        if (art != null) {
+                            onArtworkClicked(art.first)
+                        }
+                    }
+                )
+            }
     ) {
         Canvas(
             modifier = Modifier
                 .size(1000.dp, 1000.dp)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = {
-                            val art = artworkPositions.find { pos -> pos.second.contains(it) }
-                            if (art != null) {
-                                onArtworkClicked(art.first)
-                            }
-                        }
-                    )
-                }
+                .graphicsLayer(
+                    scaleX = scale.value,
+                    scaleY = scale.value,
+                )
+                .transformable(state = state)
         ) {
             // Draw the room's perimeter
             val groundPath = Path()

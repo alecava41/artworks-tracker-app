@@ -87,7 +87,6 @@ class MainActivity : ComponentActivity() {
             if (service.serviceName.contains("MuseumBackend")) {
                 nsdManager.stopServiceDiscovery(this)
                 nsdManager.resolveService(service, resolveListener)
-                nsdManager.stopServiceDiscovery(this)
             }
         }
 
@@ -119,7 +118,8 @@ class MainActivity : ComponentActivity() {
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            nsdManager.discoverServices("_http._tcp", NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+            if (museumMapViewModel.baseUrl.isNullOrEmpty())
+                nsdManager.discoverServices("_http._tcp", NsdManager.PROTOCOL_DNS_SD, discoveryListener)
         }
 
         override fun onUnavailable() {
