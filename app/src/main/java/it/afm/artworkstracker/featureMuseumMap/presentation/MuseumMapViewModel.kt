@@ -6,11 +6,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import it.afm.artworkstracker.core.domain.useCase.GetArtworksIdsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkBeacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
+import it.afm.artworkstracker.core.domain.useCase.GetArtworksIdsUseCase
+import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkInfo
+import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetCloserBeaconsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetRoomUseCase
+import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
+import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
+import it.afm.artworkstracker.featureMuseumMap.domain.util.Side
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -53,7 +58,7 @@ class MuseumMapViewModel @Inject constructor(
 
         // TODO: check if ArtworkScreen animation can be executed only once (so only in composition, not in recomposition) (PIPPO)
 
-        // TODO: enable != colors on map (ALE)
+        // TODO: check behaviour of user movements and artworks click (on map) with zoom (ALE)
 
 
         getCloserBeaconsUseCase().onEach {
@@ -207,3 +212,58 @@ class MuseumMapViewModel @Inject constructor(
         const val TAG = "MuseumMapViewModel"
     }
 }
+
+val defaultRoom = Room(
+    name = "King's bedroom",
+    perimeter = listOf(
+        Triple(PerimeterEntity.MOVE, 0, 0),
+        Triple(PerimeterEntity.LINE, 0, 125),
+        Triple(PerimeterEntity.MOVE, 0, 375),
+        Triple(PerimeterEntity.LINE, 0, 500),
+        Triple(PerimeterEntity.LINE, 500, 500),
+        Triple(PerimeterEntity.LINE, 500, 1000),
+        Triple(PerimeterEntity.LINE, 625, 1000),
+        Triple(PerimeterEntity.MOVE, 875, 1000),
+        Triple(PerimeterEntity.LINE, 1000, 1000),
+        Triple(PerimeterEntity.LINE, 1000, 0),
+        Triple(PerimeterEntity.LINE, 0, 0)
+    ),
+    artworks = listOf(
+        ArtworkInfo(
+            id = 1,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            visited = true,
+            type = ArtworkType.PICTURE,
+            side = Side.LEFT,
+            direction = "",
+            posX = 50,
+            posY = 50
+        ),
+        ArtworkInfo(
+            id = 2,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            visited = true,
+            type = ArtworkType.SCULPTURE,
+            side = Side.DOWN,
+            direction = "",
+            posX = 250,
+            posY = 50
+        ),
+        ArtworkInfo(
+            id = 3,
+            beacon = UUID.randomUUID(),
+            starred = true,
+            visited = true,
+            side = Side.RIGHT,
+            type = ArtworkType.PICTURE,
+            direction = "",
+            posX = 500,
+            posY = 50
+        )
+    ),
+    walls = arrayListOf(),
+    id = 3,
+    starredPath = listOf()
+)

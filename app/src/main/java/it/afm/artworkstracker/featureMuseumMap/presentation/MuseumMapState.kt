@@ -5,7 +5,7 @@ import it.afm.artworkstracker.featureMuseumMap.domain.model.Room
 
 data class MuseumMapState(
     val isAudioEnabled: Boolean = false,
-    val room: Room? = null,
+    val room: Room? = defaultRoom,
     val currentArtwork: ArtworkBeacon? = null,
     val lastArtwork: ArtworkBeacon? = null
 )

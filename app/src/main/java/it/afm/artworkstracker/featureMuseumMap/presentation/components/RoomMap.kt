@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,8 @@ import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.RenderVectorGroup
+import androidx.compose.ui.graphics.vector.RootGroupName
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
@@ -47,7 +50,8 @@ fun RoomMap(
     lastArtwork: ArtworkBeacon? = null,
     onArtworkClicked: (UUID) -> Unit
 ) {
-    val scale = remember(key1 = room) { mutableStateOf(1f) }
+    // Zoom will remain the same even on room change
+    val scale = remember(key1 = true) { mutableStateOf(1f) }
 
     val animX = remember(key1 = room) { Animatable(initialValue = 0f) }
 
@@ -60,9 +64,48 @@ fun RoomMap(
         scale.value = newScale
     }
 
-    val picturePainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.picture))
-    val sculpturePainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.sculpture))
-    val userPainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.user))
+    val pictureImageVector = ImageVector.vectorResource(id = R.drawable.picture)
+    val picturePainter = rememberVectorPainter(
+        defaultWidth = pictureImageVector.defaultWidth,
+        defaultHeight = pictureImageVector.defaultHeight,
+        viewportWidth = pictureImageVector.viewportWidth,
+        viewportHeight = pictureImageVector.viewportHeight,
+        name = RootGroupName,
+        tintColor = MaterialTheme.colorScheme.primaryContainer,
+        tintBlendMode = pictureImageVector.tintBlendMode,
+        autoMirror = false,
+    ) { _, _ ->
+        RenderVectorGroup(group = pictureImageVector.root)
+    }
+
+    val sculptureImageVector = ImageVector.vectorResource(id = R.drawable.sculpture)
+    val sculpturePainter = rememberVectorPainter(
+        defaultWidth = sculptureImageVector.defaultWidth,
+        defaultHeight = sculptureImageVector.defaultHeight,
+        viewportWidth = sculptureImageVector.viewportWidth,
+        viewportHeight = sculptureImageVector.viewportHeight,
+        name = RootGroupName,
+        tintColor = MaterialTheme.colorScheme.primaryContainer,
+        tintBlendMode = sculptureImageVector.tintBlendMode,
+        autoMirror = false,
+    ) { _, _ ->
+        RenderVectorGroup(group = sculptureImageVector.root)
+    }
+
+    val userImageVector = ImageVector.vectorResource(id = R.drawable.user)
+    val userPainter = rememberVectorPainter(
+        defaultWidth = userImageVector.defaultWidth,
+        defaultHeight = userImageVector.defaultHeight,
+        viewportWidth = userImageVector.viewportWidth,
+        viewportHeight = userImageVector.viewportHeight,
+        name = RootGroupName,
+        tintColor = MaterialTheme.colorScheme.onPrimary,
+        tintBlendMode = userImageVector.tintBlendMode,
+        autoMirror = false,
+    ) { _, _ ->
+        RenderVectorGroup(group = userImageVector.root)
+    }
+
     val starredPainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.star))
     val visitedPainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.visit))
 
