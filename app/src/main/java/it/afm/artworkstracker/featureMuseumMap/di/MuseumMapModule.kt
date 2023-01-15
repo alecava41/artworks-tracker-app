@@ -15,7 +15,7 @@ import it.afm.artworkstracker.featureMuseumMap.data.repository.RoomRepositoryImp
 import it.afm.artworkstracker.featureMuseumMap.domain.repository.ArtworkRepository
 import it.afm.artworkstracker.featureMuseumMap.domain.repository.BeaconsRepository
 import it.afm.artworkstracker.featureMuseumMap.domain.repository.RoomRepository
-import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetArtworksIdsUseCase
+import it.afm.artworkstracker.core.domain.useCase.GetArtworksIdsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetCloserBeaconsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetRoomUseCase
 import javax.inject.Singleton

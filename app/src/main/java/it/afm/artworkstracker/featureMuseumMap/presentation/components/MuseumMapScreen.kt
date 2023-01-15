@@ -1,7 +1,6 @@
 package it.afm.artworkstracker.featureMuseumMap.presentation.components
 
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,12 +27,11 @@ fun MuseumMapScreen(
     tts: TextToSpeech?,
     onBluetoothEnableRequest: () -> Unit,
     onLocationEnableRequest: () -> Unit,
+    onTourStarted: () -> Unit,
     viewModel: MuseumMapViewModel
 ) {
     val state = viewModel.museumMapState.value
     val environmentState = viewModel.environmentState.value
-
-    Log.i("MuseumMapScreen", environmentState.toString())
 
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -43,35 +41,42 @@ fun MuseumMapScreen(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        if (permissionsState.allPermissionsGranted) {
-            if (environmentState.isWifiEnabled) {
-                if (environmentState.isLocationEnabled) {
-                    if (environmentState.isBluetoothEnabled) {
-                        MuseumMap(
-                            room = state.room,
-                            currentArtwork = state.currentArtwork,
-                            lastArtwork = state.lastArtwork,
-                            tts = tts,
-                            isAudioEnabled = state.isAudioEnabled,
-                            onSpeechStarted = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = true)) },
-                            onSpeechFinished = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = false)) },
-                            onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
-                        )
+        if (environmentState.isTourStarted) {
+            if (permissionsState.allPermissionsGranted) {
+                if (environmentState.isWifiEnabled) {
+                    if (environmentState.isLocationEnabled) {
+                        if (environmentState.isBluetoothEnabled) {
+                            MuseumMap(
+                                room = state.room,
+                                currentArtwork = state.currentArtwork,
+                                lastArtwork = state.lastArtwork,
+                                tts = tts,
+                                isAudioEnabled = state.isAudioEnabled,
+                                onSpeechStarted = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = true)) },
+                                onSpeechFinished = { viewModel.onEvent(MuseumMapEvent.SpeechStatus(isSpeaking = false)) },
+                                onArtworkClicked = { id -> viewModel.onEvent(MuseumMapEvent.ViewArtwork(id)) }
+                            )
+                        } else
+                            BluetoothNotAvailableScreen {
+                                onBluetoothEnableRequest()
+                            }
                     } else
-                        BluetoothNotAvailableScreen {
-                            onBluetoothEnableRequest()
+                        LocationNotAvailableScreen {
+                            onLocationEnableRequest()
                         }
                 } else
-                    LocationNotAvailableScreen {
-                        onLocationEnableRequest()
-                    }
+                    BackendServerNotAvailableScreen()
+            } else if (permissionsState.shouldShowRationale) {
+                PermissionsRequestScreen(
+                    onRequestPermissionButtonClick = { permissionsState.launchMultiplePermissionRequest() }
+                )
             } else
-                BackendServerNotAvailableScreen()
-        } else if (permissionsState.shouldShowRationale) {
-            PermissionsRequestScreen(
-                onRequestPermissionButtonClick = { permissionsState.launchMultiplePermissionRequest() }
+                PermissionsNotGiven()
+        } else {
+            StartTourScreen(
+                onTourStarted = onTourStarted
             )
-        } else PermissionsNotGiven()
+        }
     }
 
     LaunchedEffect(key1 = true) {

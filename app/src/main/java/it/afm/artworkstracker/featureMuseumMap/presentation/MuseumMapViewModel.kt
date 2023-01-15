@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkBeacon
 import it.afm.artworkstracker.featureMuseumMap.domain.model.Beacon
-import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetArtworksIdsUseCase
+import it.afm.artworkstracker.core.domain.useCase.GetArtworksIdsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetCloserBeaconsUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetRoomUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -47,9 +47,8 @@ class MuseumMapViewModel @Inject constructor(
     init {
         // TODO: add "Top App Bar" (equal to bottomAppBar (color)) (action_button (info-tutorial)) (PIPPO)
 
-        // TODO: implement deleteAllArtworksFeature (ALE) (big button "end tour")
-
         // TODO: redefine "error" screens (only view side) (BOTH)
+        // TODO: refine visited list view (padding, bold title, ...) (PIPPO)
         // TODO: colors (BOTH)
 
         // TODO: check if ArtworkScreen animation can be executed only once (so only in composition, not in recomposition) (PIPPO)
@@ -57,7 +56,6 @@ class MuseumMapViewModel @Inject constructor(
         // TODO: enable zoom on map (ALE)
         // TODO: enable != colors on map (ALE)
 
-        // TODO: refine visited list view (padding, bold title, ...) (PIPPO)
 
         getCloserBeaconsUseCase().onEach {
             val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
@@ -112,14 +110,23 @@ class MuseumMapViewModel @Inject constructor(
                 artwork.visited = knownArtworks.contains(artwork.beacon)
             }
 
+            _environmentState.value = _environmentState.value.copy(
+                isTourStarted = it.isNotEmpty()
+            )
+
         }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: MuseumMapEvent) {
         when (event) {
-            is MuseumMapEvent.ResumeTour -> {
-                // TODO: restart scan if and only everything is available (wifi, bt enabled, location)
+            is MuseumMapEvent.StartTour -> {
+                _environmentState.value = _environmentState.value.copy(
+                    isTourStarted = true
+                )
 
+                onEvent(MuseumMapEvent.ResumeTour)
+            }
+            is MuseumMapEvent.ResumeTour -> {
                 if (!isScanning) {
                     getCloserBeaconsUseCase.startListeningForBeacons()
                     isScanning = true
@@ -151,8 +158,6 @@ class MuseumMapViewModel @Inject constructor(
             is MuseumMapEvent.BackendServerLost -> {
                 baseUrl = null
 
-                Log.i(TAG, "VM: Server Lost, $baseUrl")
-
                 _environmentState.value = _environmentState.value.copy(
                     isWifiEnabled = false
                 )
@@ -160,23 +165,17 @@ class MuseumMapViewModel @Inject constructor(
             is MuseumMapEvent.BackendServerDiscovered -> {
                 baseUrl = "http://${event.ip}:${event.port}"
 
-                Log.i(TAG, "VM: Server discovered, $baseUrl")
-
                 _environmentState.value = _environmentState.value.copy(
                     isWifiEnabled = true
                 )
             }
             is MuseumMapEvent.WifiConnectionAvailable -> {
-                Log.i(TAG, "VM: Connection available, $baseUrl")
-
                 _environmentState.value = _environmentState.value.copy(
                     isWifiEnabled = baseUrl != null
                 )
             }
             is MuseumMapEvent.WifiConnectionNotAvailable -> {
                 baseUrl = null
-
-                Log.i(TAG, "VM: Connection not available, $baseUrl")
 
                 _environmentState.value = _environmentState.value.copy(
                     isWifiEnabled = false

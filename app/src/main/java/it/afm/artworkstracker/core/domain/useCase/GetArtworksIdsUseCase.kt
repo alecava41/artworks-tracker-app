@@ -1,4 +1,4 @@
-package it.afm.artworkstracker.featureMuseumMap.domain.useCase
+package it.afm.artworkstracker.core.domain.useCase
 
 import it.afm.artworkstracker.featureMuseumMap.domain.repository.ArtworkRepository
 import kotlinx.coroutines.flow.Flow

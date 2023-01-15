@@ -8,19 +8,12 @@ import it.afm.artworkstracker.core.data.remote.MuseumApi
 import it.afm.artworkstracker.core.data.local.ArtworkDatabase
 import it.afm.artworkstracker.featureArtwork.data.repository.ArtworkRepositoryImpl
 import it.afm.artworkstracker.featureArtwork.domain.repository.ArtworkRepository
-import it.afm.artworkstracker.featureArtwork.domain.useCase.DeleteAllArtworksUseCase
 import it.afm.artworkstracker.featureArtwork.domain.useCase.GetArtworkUseCase
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object ArtworkModule {
-
-    @Provides
-    @Singleton
-    fun provideDeleteAllArtworksUseCase(artworkRepository: ArtworkRepository): DeleteAllArtworksUseCase {
-        return DeleteAllArtworksUseCase(artworkRepository)
-    }
 
     @Provides
     @Singleton

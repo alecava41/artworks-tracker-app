@@ -63,4 +63,10 @@
     <string name="how_to_end_visit_label">How to end a visit</string>
     <string name="how_to_end_visit_desc_label">Click on settings and on \"End Visit\" button in order to finish a visit.</string>
     <string name="map_desc_label">Thanks to the map, you can see how is the room you are visiting.</string>
+
+    <string name="end_tour_button">END TOUR</string>
+
+    <string name="start_tour_title">Museum Tour</string>
+    <string name="start_tour_body">Click on the button below to start the tour!</string>
+    <string name="start_tour_button">START TOUR</string>
 </resources>

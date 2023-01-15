@@ -2,7 +2,6 @@ package it.afm.artworkstracker.featureArtwork.data.repository
 
 import android.util.Log
 import it.afm.artworkstracker.core.data.local.ArtworkDao
-import it.afm.artworkstracker.core.data.local.entity.ArtworkEntity
 import it.afm.artworkstracker.core.data.remote.MuseumApi
 import it.afm.artworkstracker.core.domain.model.Artwork
 import it.afm.artworkstracker.featureArtwork.domain.repository.ArtworkRepository
@@ -32,14 +31,6 @@ class ArtworkRepositoryImpl(
             }
         }
         return searchArtwork?.toArtwork()
-    }
-
-    override suspend fun deleteAllArtworks() {
-        dao.deleteAllArtworks()
-    }
-
-    override suspend fun insertArtwork(artworkEntity: ArtworkEntity) {
-        dao.insertArtwork(artworkEntity)
     }
 
     companion object {

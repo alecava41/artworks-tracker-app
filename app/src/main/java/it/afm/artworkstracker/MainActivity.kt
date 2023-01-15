@@ -27,9 +27,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogProperties
@@ -48,6 +46,7 @@ import it.afm.artworkstracker.featureArtwork.presentation.components.ArtworkScre
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapEvent
 import it.afm.artworkstracker.featureMuseumMap.presentation.MuseumMapViewModel
 import it.afm.artworkstracker.featureMuseumMap.presentation.components.MuseumMapScreen
+import it.afm.artworkstracker.featureSettings.presentation.components.SettingsScreen
 import it.afm.artworkstracker.featureVisitedArtworksList.presentation.components.VisitedArtworksList
 import it.afm.artworkstracker.ui.theme.ArtworksTrackerTheme
 import it.afm.artworkstracker.util.LanguageUtil
@@ -186,7 +185,9 @@ class MainActivity : ComponentActivity() {
                                     tts?.stop()
                                     museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)
                                 },
-                                onMuseumMapEntrance = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour) }
+                                onMuseumMapEntrance = {
+                                    museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)
+                                }
                             )
                         },
                         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
@@ -211,6 +212,9 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onLocationEnableRequest = {
                                             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                                        },
+                                        onTourStarted = {
+                                            museumMapViewModel.onEvent(MuseumMapEvent.StartTour)
                                         }
                                     )
                                 }
@@ -251,7 +255,9 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                                 composable(route = Screen.SettingsScreen.route) {
-                                    SettingsScreen()
+                                    SettingsScreen(
+                                        viewModel = hiltViewModel()
+                                    )
                                 }
                                 dialog(route = Screen.TutorialScreen.route) {
                                     TutorialScreen(navController = navController,
@@ -301,13 +307,16 @@ class MainActivity : ComponentActivity() {
 
         registerReceiver(bluetoothUpdateReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
 
-        museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)
+        if (museumMapViewModel.environmentState.value.isTourStarted)
+            museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)
     }
 
     override fun onPause() {
         super.onPause()
 
-        nsdManager.stopServiceDiscovery(discoveryListener)
+        if (museumMapViewModel.baseUrl.isNullOrEmpty())
+            nsdManager.stopServiceDiscovery(discoveryListener)
+
         museumMapViewModel.onEvent(MuseumMapEvent.BackendServerLost)
 
         connectivityManager.unregisterNetworkCallback(networkCallback)
@@ -317,19 +326,5 @@ class MainActivity : ComponentActivity() {
         unregisterReceiver(locationUpdateReceiver)
 
         museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)
-    }
-}
-
-@Composable
-fun SettingsScreen(
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "SETTINGS",
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }
