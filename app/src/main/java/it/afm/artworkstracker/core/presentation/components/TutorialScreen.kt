@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -81,23 +83,51 @@ fun TutorialScreen(
                         )
                     ) {
                         Column {
-                            Text(text = stringResource(id = R.string.help_tutorial_label))
+                            Text(
+                                text = stringResource(id = R.string.help_tutorial_label),
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(25.dp, 15.dp, 25.dp, 0.dp)
+                            )
                             Column(
                                 modifier = Modifier
                                     .verticalScroll(scrollState)
                                     .weight(weight = 1f, fill = false)
+                                    .padding(25.dp, 15.dp)
                             ) {
                                 Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                                    Text(text = stringResource(id = R.string.how_to_begin_visit_label))
+                                    Text(
+                                        text = stringResource(id = R.string.how_to_begin_visit_label),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                    Spacer(modifier = Modifier.padding(5.dp))
                                     Text(text = stringResource(id = R.string.how_to_begin_visit_desc_label))
+                                    Spacer(modifier = Modifier.padding(10.dp))
                                 }
                                 Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                                    Text(text = stringResource(id = R.string.map_label))
+                                    Text(
+                                        text = stringResource(id = R.string.map_label),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                    Spacer(modifier = Modifier.padding(5.dp))
                                     Text(text = stringResource(id = R.string.map_desc_label))
+                                    Spacer(modifier = Modifier.padding(10.dp))
                                 }
                                 Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                                    Text(text = stringResource(id = R.string.legend_label))
+                                    Text(
+                                        text = stringResource(id = R.string.legend_label),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                    Spacer(modifier = Modifier.padding(5.dp))
                                     Text(text = stringResource(id = R.string.legend_desc_label))
+                                    Spacer(modifier = Modifier.padding(5.dp))
                                     val icons = listOf(
                                         R.drawable.picture,
                                         R.drawable.sculpture,
@@ -129,21 +159,42 @@ fun TutorialScreen(
                                             Spacer(modifier = Modifier.width(15.dp))
                                             Text(
                                                 text = stringResource(id = iconsDesc[i]),
-                                                style = MaterialTheme.typography.labelMedium
+                                                style = MaterialTheme.typography.labelLarge
                                             )
                                         }
                                     }
+                                    Spacer(modifier = Modifier.padding(10.dp))
                                 }
                                 Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                                    Text(text = stringResource(id = R.string.multimedia_label))
+                                    Text(
+                                        text = stringResource(id = R.string.multimedia_label),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                    Spacer(modifier = Modifier.padding(5.dp))
                                     Text(text = stringResource(id = R.string.multimedia_desc_label))
+                                    Spacer(modifier = Modifier.padding(10.dp))
                                 }
                                 Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                                    Text(text = stringResource(id = R.string.visited_artworks_list_label))
+                                    Text(
+                                        text = stringResource(id = R.string.visited_artworks_list_label),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                    Spacer(modifier = Modifier.padding(5.dp))
                                     Text(text = stringResource(id = R.string.visited_artworks_list_desc_label))
+                                    Spacer(modifier = Modifier.padding(10.dp))
                                 }
                                 Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                                    Text(text = stringResource(id = R.string.how_to_end_visit_label))
+                                    Text(
+                                        text = stringResource(id = R.string.how_to_end_visit_label),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                    Spacer(modifier = Modifier.padding(5.dp))
                                     Text(text = stringResource(id = R.string.how_to_end_visit_desc_label))
                                 }
                             }
