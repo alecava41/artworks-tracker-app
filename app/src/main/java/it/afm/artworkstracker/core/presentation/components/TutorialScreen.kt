@@ -136,14 +136,14 @@ fun TutorialScreen(
                                         R.drawable.visit
                                     )
                                     val contentDesc = listOf(
-                                        R.string.picture_label,
+                                        R.string.painting_label,
                                         R.string.sculpture_label,
                                         R.string.user_label,
                                         R.string.starred_artwork_label,
                                         R.string.visited_artwork_label
                                     )
                                     val iconsDesc = listOf(
-                                        R.string.picture_desc_label,
+                                        R.string.painting_desc_label,
                                         R.string.sculpture_desc_label,
                                         R.string.user_desc_label,
                                         R.string.starred_artwork_desc_label,
