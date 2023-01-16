@@ -102,8 +102,9 @@ fun MuseumMapScreen(
 
                         if (res == SnackbarResult.ActionPerformed) {
                             viewModel.onEvent(MuseumMapEvent.PauseTour)
+
                             navController.navigate(
-                                Screen.ArtworkScreen.route + "?artId=${event.uuid}&url=${viewModel.baseUrl!!}"
+                                route = Screen.ArtworkScreen.route + "?artId=${event.uuid}&url=${viewModel.baseUrl!!}"
                             )
                         }
                     }

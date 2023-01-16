@@ -1,7 +1,6 @@
 package it.afm.artworkstracker.featureArtwork.presentation.components
 
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
@@ -55,15 +54,14 @@ fun ArtworkScreen(
                 val isMapShownBehind =
                     navController.previousBackStackEntry?.destination?.route == Screen.MuseumMapScreen.route
 
-                Log.i("...", navController.previousBackStackEntry?.destination?.route ?: "null")
-
                 tts?.stop()
 
                 if (isMapShownBehind)
                     onDialogClosed()
 
                 navController.navigateUp()
-            }) {
+            }
+        ) {
             Box(
                 Modifier
                     .fillMaxSize(0.85f)
@@ -119,8 +117,13 @@ fun ArtworkScreen(
                                 CloseButton(
                                     navController = navController,
                                     onClick = {
+                                        val isMapShownBehind =
+                                            navController.previousBackStackEntry?.destination?.route == Screen.MuseumMapScreen.route
+
                                         tts?.stop()
-                                        onDialogClosed()
+
+                                        if (isMapShownBehind)
+                                            onDialogClosed()
                                     }
                                 )
                             } else {

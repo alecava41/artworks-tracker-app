@@ -22,12 +22,16 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import it.afm.artworkstracker.R
+import it.afm.artworkstracker.util.Screen
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun TutorialScreen(
-    navController: NavController
+    navController: NavController,
+    onEnter: () -> Unit,
+    onExit: () -> Unit
 ) {
+    onEnter()
 
     val scrollState = rememberScrollState()
     val transitionState = remember {
@@ -46,6 +50,12 @@ fun TutorialScreen(
                 usePlatformDefaultWidth = false,
             ),
             onDismissRequest = {
+                val isMapShownBehind =
+                    navController.previousBackStackEntry?.destination?.route == Screen.MuseumMapScreen.route
+
+                if (isMapShownBehind)
+                    onExit()
+
                 navController.navigateUp()
             }
         ) {
@@ -181,7 +191,13 @@ fun TutorialScreen(
                             }
                             CloseButton(
                                 navController = navController,
-                                onClick = {}
+                                onClick = {
+                                    val isMapShownBehind =
+                                        navController.previousBackStackEntry?.destination?.route == Screen.MuseumMapScreen.route
+
+                                    if (isMapShownBehind)
+                                        onExit()
+                                }
                             )
                         }
                     }

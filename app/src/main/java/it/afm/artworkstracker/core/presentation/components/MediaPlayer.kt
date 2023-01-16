@@ -2,6 +2,7 @@ package it.afm.artworkstracker.core.presentation.components
 
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -31,6 +32,8 @@ fun MediaPlayer(
     @StringRes stopLabel: Int,
     tts: TextToSpeech?,
 ) {
+    Log.i("MediaPlayer", "isAudioEnabled = $isAudioEnabled")
+
     tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
         override fun onStart(utteranceId: String) {
             onSpeechStarted()
@@ -53,7 +56,6 @@ fun MediaPlayer(
         override fun onError(utteranceId: String, error: Int) {
             onSpeechFinished()
         }
-
     })
 
     Column(

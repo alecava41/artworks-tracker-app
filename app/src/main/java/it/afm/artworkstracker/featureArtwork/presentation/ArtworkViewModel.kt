@@ -1,7 +1,6 @@
 package it.afm.artworkstracker.featureArtwork.presentation
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -39,8 +38,6 @@ class ArtworkViewModel @Inject constructor(
         savedStateHandle.get<String>("artId")?.let { artworkId ->
             savedStateHandle.get<String>("url")?.let { url ->
                 this.url = url
-
-                Log.i("Daai", lan)
 
                 viewModelScope.launch {
                     getArtworkUseCase(

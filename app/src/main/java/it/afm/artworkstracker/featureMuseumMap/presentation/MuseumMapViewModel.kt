@@ -131,12 +131,20 @@ class MuseumMapViewModel @Inject constructor(
                 onEvent(MuseumMapEvent.ResumeTour)
             }
             is MuseumMapEvent.ResumeTour -> {
-
                 if (_environmentState.value.isTourStarted) {
                     if (!isScanning) {
                         getCloserBeaconsUseCase.startListeningForBeacons()
                         isScanning = true
                     }
+
+                    // Ugly workaround to get the MediaPlayer working again after seeing an artwork!
+                    _museumMapState.value = _museumMapState.value.copy(
+                        isAudioEnabled = !_museumMapState.value.isAudioEnabled
+                    )
+
+                    _museumMapState.value = _museumMapState.value.copy(
+                        isAudioEnabled = !_museumMapState.value.isAudioEnabled
+                    )
                 }
             }
             is MuseumMapEvent.PauseTour -> {

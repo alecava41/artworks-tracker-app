@@ -226,8 +226,6 @@ class MainActivity : ComponentActivity() {
                                     route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
                                     dialogProperties = DialogProperties(
                                         usePlatformDefaultWidth = false,
-                                        dismissOnBackPress = true,
-                                        dismissOnClickOutside = true
                                     ),
                                     arguments = listOf(
                                         navArgument(
@@ -253,24 +251,23 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                                 composable(route = Screen.VisitedArtworksListScreen.route) {
-                                    tts?.stop()
                                     VisitedArtworksList(
                                         viewModel = hiltViewModel(),
                                         navController = navController
                                     )
                                 }
                                 composable(route = Screen.SettingsScreen.route) {
-                                    tts?.stop()
                                     SettingsScreen(
                                         viewModel = hiltViewModel(),
                                         onTourDestroyed = { museumMapViewModel.onEvent(MuseumMapEvent.DestroyTour)}
-
                                     )
                                 }
                                 dialog(route = Screen.TutorialScreen.route) {
                                     tts?.stop()
                                     TutorialScreen(
                                         navController = navController,
+                                        onEnter = { museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)},
+                                        onExit = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)}
                                      )
                                 }
                             }
