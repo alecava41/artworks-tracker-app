@@ -76,11 +76,7 @@ fun ArtworkScreen(
                         )
                         .fillMaxSize()
                 ) {
-                    ElevatedCard(
-                        colors = CardDefaults.elevatedCardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        )
-                    ) {
+                    ElevatedCard {
                         Column {
                             if (vmState.artwork != null) {
                                 Column(

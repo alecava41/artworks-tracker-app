@@ -172,8 +172,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ArtworksTrackerTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize()
                 ) {
 
                     val navController = rememberNavController()

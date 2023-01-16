@@ -24,7 +24,8 @@ fun StartTourScreen(
     ) {
         Text(
             text = stringResource(id = R.string.start_tour_title),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(50.dp))
         Icon(

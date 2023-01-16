@@ -25,7 +25,8 @@ fun LocationNotAvailableScreen(
     ) {
         Text(
             text = stringResource(id = R.string.location_not_enabled_title),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(50.dp))
         Icon(

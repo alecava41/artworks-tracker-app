@@ -23,6 +23,9 @@ fun TopBar(navController: NavController) {
                 Text(text = "Artworks Tracker")
             }
         },
+        colors = TopAppBarDefaults.smallTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
         actions = {
             IconButton(onClick = { navController.navigate(Screen.TutorialScreen.route) }) {
                 Icon(
@@ -30,9 +33,6 @@ fun TopBar(navController: NavController) {
                     contentDescription = stringResource(R.string.help_label)
                 )
             }
-        },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant // TODO: same color as bottom bar
-        )
+        }
     )
 }

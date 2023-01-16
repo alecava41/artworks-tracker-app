@@ -42,8 +42,8 @@ fun MuseumMapScreen(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        if (environmentState.isTourStarted) {
-            if (permissionsState.allPermissionsGranted) {
+        if (permissionsState.allPermissionsGranted) {
+            if (environmentState.isTourStarted) {
                 if (environmentState.isWifiEnabled) {
                     if (environmentState.isLocationEnabled) {
                         if (environmentState.isBluetoothEnabled) {
@@ -73,11 +73,11 @@ fun MuseumMapScreen(
                     onRequestPermissionButtonClick = { permissionsState.launchMultiplePermissionRequest() }
                 )
             } else
-                PermissionsNotGiven()
+                StartTourScreen(
+                    onTourStarted = onTourStarted
+                )
         } else {
-            StartTourScreen(
-                onTourStarted = onTourStarted
-            )
+            PermissionsNotGiven()
         }
     }
 

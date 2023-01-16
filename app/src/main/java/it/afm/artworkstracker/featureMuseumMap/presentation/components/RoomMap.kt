@@ -55,6 +55,9 @@ fun RoomMap(
         scale.value = newScale
     }
 
+    val borderColor = MaterialTheme.colorScheme.onSurface
+    val groundColor = MaterialTheme.colorScheme.surfaceVariant
+
     val pictureImageVector = ImageVector.vectorResource(id = R.drawable.picture)
     val picturePainter = rememberVectorPainter(
         defaultWidth = pictureImageVector.defaultWidth,
@@ -62,7 +65,7 @@ fun RoomMap(
         viewportWidth = pictureImageVector.viewportWidth,
         viewportHeight = pictureImageVector.viewportHeight,
         name = RootGroupName,
-        tintColor = MaterialTheme.colorScheme.primaryContainer,
+        tintColor = MaterialTheme.colorScheme.onSurfaceVariant,
         tintBlendMode = pictureImageVector.tintBlendMode,
         autoMirror = false,
     ) { _, _ ->
@@ -76,7 +79,7 @@ fun RoomMap(
         viewportWidth = sculptureImageVector.viewportWidth,
         viewportHeight = sculptureImageVector.viewportHeight,
         name = RootGroupName,
-        tintColor = MaterialTheme.colorScheme.primaryContainer,
+        tintColor = MaterialTheme.colorScheme.onSurfaceVariant,
         tintBlendMode = sculptureImageVector.tintBlendMode,
         autoMirror = false,
     ) { _, _ ->
@@ -90,7 +93,7 @@ fun RoomMap(
         viewportWidth = userImageVector.viewportWidth,
         viewportHeight = userImageVector.viewportHeight,
         name = RootGroupName,
-        tintColor = MaterialTheme.colorScheme.onPrimary,
+        tintColor = MaterialTheme.colorScheme.inverseSurface,
         tintBlendMode = userImageVector.tintBlendMode,
         autoMirror = false,
     ) { _, _ ->
@@ -163,12 +166,12 @@ fun RoomMap(
 
             drawPath(
                 path = groundPath,
-                color = Color.Gray
+                color = groundColor
             )
 
             drawPath(
                 path = path,
-                color = Color.Black,
+                color = borderColor,
                 style = Stroke(10.dp.toPx()),
             )
 

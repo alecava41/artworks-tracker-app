@@ -1,7 +1,6 @@
 package it.afm.artworkstracker.featureArtwork.presentation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -36,11 +35,7 @@ fun CloseButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(13.dp))
-                .border(
-                    width = 2.dp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(MaterialTheme.colorScheme.secondary)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -48,11 +43,13 @@ fun CloseButton(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.close_button),
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
                 Text(
                     text = stringResource(id = R.string.close_label),
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
             }
         }

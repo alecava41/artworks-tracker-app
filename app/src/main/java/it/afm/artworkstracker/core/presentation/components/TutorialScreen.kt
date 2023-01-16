@@ -63,11 +63,7 @@ fun TutorialScreen(
                         )
                         .fillMaxSize()
                 ) {
-                    ElevatedCard(
-                        colors = CardDefaults.elevatedCardColors(
-                            containerColor = MaterialTheme.colorScheme.surface
-                        )
-                    ) {
+                    ElevatedCard {
                         Column {
                             Text(
                                 text = stringResource(id = R.string.help_tutorial_label),

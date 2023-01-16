@@ -24,7 +24,8 @@ fun PermissionsNotGiven() {
     ) {
         Text(
             text = stringResource(id = R.string.permissions_not_given_title),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(50.dp))
         Icon(

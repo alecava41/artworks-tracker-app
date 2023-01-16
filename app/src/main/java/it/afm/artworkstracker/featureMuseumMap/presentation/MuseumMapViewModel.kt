@@ -55,12 +55,6 @@ class MuseumMapViewModel @Inject constructor(
     }
 
     init {
-        // TODO: add "Top App Bar" (equal to bottomAppBar (color)))
-
-        // TODO: redefine "error" screens (only view side)
-        // TODO: refine visited list view (padding, bold title, ...)
-        // TODO: colors
-
         getCloserBeaconsUseCase().onEach {
             if (!baseUrl.isNullOrBlank()) {
                 val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)

@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import it.afm.artworkstracker.R
@@ -24,7 +25,8 @@ fun PermissionsRequestScreen(
     ) {
         Text(
             text = stringResource(id = R.string.permissions_require_title),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(50.dp))
