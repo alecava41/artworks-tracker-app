@@ -47,7 +47,7 @@ private val LightColorScheme = lightColorScheme(
     primary = Blue,
     secondary = Blue,
     tertiary = Blue,
-    background = Blue,
+    background = White,
     surface = Blue,
 
 
@@ -55,8 +55,8 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Black,
     onSecondary = Blue,
     onTertiary = Blue,
-    onBackground = Blue,
-    onSurface = Blue,
+    onBackground = Black,
+    onSurface = Black,
 
     onPrimaryContainer = Blue,
     // Inverse Colors
@@ -64,7 +64,6 @@ private val LightColorScheme = lightColorScheme(
 
     // Boundaries
     outline = Blue
-
 )
 
 @Composable

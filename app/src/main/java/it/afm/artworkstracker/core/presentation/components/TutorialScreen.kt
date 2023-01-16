@@ -65,7 +65,7 @@ fun TutorialScreen(
                 ) {
                     ElevatedCard(
                         colors = CardDefaults.elevatedCardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                            containerColor = MaterialTheme.colorScheme.surface
                         )
                     ) {
                         Column {
