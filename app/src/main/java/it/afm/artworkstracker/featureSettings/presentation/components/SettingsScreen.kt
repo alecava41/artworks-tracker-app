@@ -15,7 +15,8 @@ import it.afm.artworkstracker.featureSettings.presentation.SettingsViewModel
 
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel,
+    onTourDestroyed: () -> Unit,
 ) {
     val state = viewModel.uiState.value
 
@@ -33,7 +34,10 @@ fun SettingsScreen(
         Column(modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 0.dp)) {
             Button(
                 enabled = state.isEndVisitEnabled,
-                onClick = { viewModel.onEvent(SettingsEvent.DeleteArtworks) },
+                onClick = {
+                    viewModel.onEvent(SettingsEvent.DeleteArtworks)
+                    onTourDestroyed()
+                },
                 content = {
                     Column {
                         Text(

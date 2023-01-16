@@ -6,6 +6,7 @@ sealed class MuseumMapEvent {
     object StartTour: MuseumMapEvent()
     object PauseTour: MuseumMapEvent()
     object ResumeTour: MuseumMapEvent()
+    object DestroyTour: MuseumMapEvent()
 
     data class SpeechStatus(val isSpeaking: Boolean): MuseumMapEvent()
 

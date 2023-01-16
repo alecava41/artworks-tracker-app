@@ -1,6 +1,7 @@
 package it.afm.artworkstracker.featureArtwork.presentation
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -27,7 +28,7 @@ class ArtworkViewModel @Inject constructor(
     lateinit var url: String
         private set
 
-    private val lan = String().apply {
+    private val lan = String().let {
         val firstLan = getApplication<Application>().applicationContext.resources.configuration.locales[0]
 
         if (LanguageUtil.supportedLanguages.contains(firstLan.language)) firstLan.language
@@ -38,6 +39,9 @@ class ArtworkViewModel @Inject constructor(
         savedStateHandle.get<String>("artId")?.let { artworkId ->
             savedStateHandle.get<String>("url")?.let { url ->
                 this.url = url
+
+                Log.i("Daai", lan)
+
                 viewModelScope.launch {
                     getArtworkUseCase(
                         id = UUID.fromString(artworkId),

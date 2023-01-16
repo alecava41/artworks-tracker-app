@@ -260,13 +260,15 @@ class MainActivity : ComponentActivity() {
                                 }
                                 composable(route = Screen.SettingsScreen.route) {
                                     SettingsScreen(
-                                        viewModel = hiltViewModel()
+                                        viewModel = hiltViewModel(),
+                                        onTourDestroyed = { museumMapViewModel.onEvent(MuseumMapEvent.DestroyTour)}
+
                                     )
                                 }
                                 dialog(route = Screen.TutorialScreen.route) {
-                                    TutorialScreen(navController = navController,
-                                        tts = tts,
-                                        onDialogClosed = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour) })
+                                    TutorialScreen(
+                                        navController = navController,
+                                     )
                                 }
                             }
                         }

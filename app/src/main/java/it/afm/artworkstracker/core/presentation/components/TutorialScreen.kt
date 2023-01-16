@@ -1,7 +1,5 @@
 package it.afm.artworkstracker.core.presentation.components
 
-import android.speech.tts.TextToSpeech
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
@@ -23,16 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
-import it.afm.artworkstracker.util.Screen
 import it.afm.artworkstracker.R
 import it.afm.artworkstracker.featureArtwork.presentation.components.CloseButton
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun TutorialScreen(
-    navController: NavController,
-    tts: TextToSpeech?,
-    onDialogClosed: () -> Unit
+    navController: NavController
 ) {
 
     val scrollState = rememberScrollState()
@@ -52,18 +47,9 @@ fun TutorialScreen(
                 usePlatformDefaultWidth = false,
             ),
             onDismissRequest = {
-                val isMapShownBehind =
-                    navController.previousBackStackEntry?.destination?.route == Screen.MuseumMapScreen.route
-
-                Log.i("...", navController.previousBackStackEntry?.destination?.route ?: "null")
-
-                tts?.stop()
-
-                if (isMapShownBehind)
-                    onDialogClosed()
-
                 navController.navigateUp()
-            }) {
+            }
+        ) {
             Box(
                 Modifier
                     .fillMaxSize(0.85f) // TODO: (side effect) if the dialog is smaller than that, then clicking on empty spots will not close it
@@ -200,10 +186,7 @@ fun TutorialScreen(
                             }
                             CloseButton(
                                 navController = navController,
-                                onClick = {
-                                    tts?.stop()
-                                    onDialogClosed()
-                                }
+                                onClick = {}
                             )
                         }
                     }

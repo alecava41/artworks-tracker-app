@@ -46,10 +46,7 @@ fun RoomMap(
     onArtworkClicked: (UUID) -> Unit
 ) {
     val animX = remember(key1 = room) { Animatable(initialValue = 0f) }
-
     val animY = remember(key1 = room) { Animatable(initialValue = 0f) }
-
-    val artworkPositions = remember { arrayListOf<Triple<UUID, Rect, Offset>>() }
 
     val state = rememberTransformableState { zoomChange, _, _ ->
         var newScale = scale.value * zoomChange
@@ -105,6 +102,8 @@ fun RoomMap(
 
     val hScrollState = rememberScrollState()
     val vScrollState = rememberScrollState()
+
+    val artworkPositions = remember { arrayListOf<Triple<UUID, Rect, Offset>>() }
 
     Box(
         modifier = Modifier

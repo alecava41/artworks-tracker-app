@@ -52,7 +52,7 @@ class MuseumMapViewModel @Inject constructor(
 
     private var knownArtworks = listOf<UUID>()
 
-    private val lan = String().apply {
+    private val lan = String().let {
         val firstLan = getApplication<Application>().applicationContext.resources.configuration.locales[0]
 
         if (LanguageUtil.supportedLanguages.contains(firstLan.language)) firstLan.language
@@ -67,48 +67,51 @@ class MuseumMapViewModel @Inject constructor(
         // TODO: colors
 
         getCloserBeaconsUseCase().onEach {
-            val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
+            if (!baseUrl.isNullOrBlank()) {
+                val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
 
-            if (!baseUrl.isNullOrBlank() && isNewClosestBeacon) {
-                currentClosestBeacon = it
-                val isBeaconInCurrentRoom = _museumMapState.value.room?.artworks?.find { artwork ->
-                    artwork.beacon == it!!.id
-                } != null
+                if (isNewClosestBeacon) {
+                    currentClosestBeacon = it
+                    val isBeaconInCurrentRoom = _museumMapState.value.room?.artworks?.find { artwork ->
+                        artwork.beacon == it!!.id
+                    } != null
 
-                if (!isBeaconInCurrentRoom) {
-                    val room = getRoomUseCase(it!!.id, baseUrl!!, lan)
+                    if (!isBeaconInCurrentRoom) {
+                        val room = getRoomUseCase(it!!.id, baseUrl!!, lan)
 
-                    if (room != null && room != _museumMapState.value.room) {
-                        room.artworks.forEach { artwork ->
-                            artwork.visited = knownArtworks.contains(artwork.beacon)
+                        if (room != null && room != _museumMapState.value.room) {
+                            room.artworks.forEach { artwork ->
+                                artwork.visited = knownArtworks.contains(artwork.beacon)
+                            }
+
+                            Log.i(TAG, "room = $room")
+
+                            _museumMapState.value = _museumMapState.value.copy(
+                                room = room,
+                            )
+                        } else {
+                            _museumMapState.value = _museumMapState.value.copy(
+                                room = null,
+                            )
                         }
-
-                        Log.i(TAG, "room = $room")
-
-                        _museumMapState.value = _museumMapState.value.copy(
-                            room = room,
-                        )
-                    } else {
-                        _museumMapState.value = _museumMapState.value.copy(
-                            room = null,
-                        )
                     }
+                    val newClosestArtworkItem = ArtworkBeacon(
+                        id = it!!.id,
+                        direction = _museumMapState.value.room?.artworks?.find { artwork -> artwork.beacon == it.id }?.direction
+                            ?: ""
+                    )
+
+                    _museumMapState.value = _museumMapState.value.copy(
+                        currentArtwork = newClosestArtworkItem,
+                        lastArtwork = _museumMapState.value.currentArtwork
+                    )
+
+                    val isArtworkAlreadyVisited =
+                        _museumMapState.value.room?.artworks?.find { artwork -> artwork.beacon == it.id }?.visited ?: false
+
+                    if (isArtworkAlreadyVisited) _eventFlow.emit(UiEvent.NewCloserBeaconAlreadyVisited(uuid = it.id))
+                    else _eventFlow.emit(UiEvent.NewCloserBeacon(uuid = it.id))
                 }
-                val newClosestArtworkItem = ArtworkBeacon(
-                    id = it!!.id,
-                    direction = _museumMapState.value.room?.artworks?.find { artwork -> artwork.beacon == it.id }?.direction ?: ""
-                )
-
-                _museumMapState.value = _museumMapState.value.copy(
-                    currentArtwork = newClosestArtworkItem,
-                    lastArtwork = _museumMapState.value.currentArtwork
-                )
-
-                val isArtworkAlreadyVisited =
-                    _museumMapState.value.room?.artworks?.find { artwork -> artwork.beacon == it.id }?.visited ?: false
-
-                if (isArtworkAlreadyVisited) _eventFlow.emit(UiEvent.NewCloserBeaconAlreadyVisited(uuid = it.id))
-                else _eventFlow.emit(UiEvent.NewCloserBeacon(uuid = it.id))
             }
         }.launchIn(viewModelScope)
 
@@ -123,6 +126,9 @@ class MuseumMapViewModel @Inject constructor(
                 isTourStarted = it.isNotEmpty()
             )
 
+            if (it.isNotEmpty()) {
+                onEvent(MuseumMapEvent.StartTour)
+            }
         }.launchIn(viewModelScope)
     }
 
@@ -136,9 +142,12 @@ class MuseumMapViewModel @Inject constructor(
                 onEvent(MuseumMapEvent.ResumeTour)
             }
             is MuseumMapEvent.ResumeTour -> {
-                if (!isScanning) {
-                    getCloserBeaconsUseCase.startListeningForBeacons()
-                    isScanning = true
+
+                if (_environmentState.value.isTourStarted) {
+                    if (!isScanning) {
+                        getCloserBeaconsUseCase.startListeningForBeacons()
+                        isScanning = true
+                    }
                 }
             }
             is MuseumMapEvent.PauseTour -> {
@@ -146,6 +155,14 @@ class MuseumMapViewModel @Inject constructor(
                     getCloserBeaconsUseCase.stopListeningForBeacons()
                     isScanning = false
                 }
+
+                _museumMapState.value = _museumMapState.value.copy(
+                    lastArtwork = _museumMapState.value.currentArtwork
+                )
+            }
+            is MuseumMapEvent.DestroyTour -> {
+                _museumMapState.value = MuseumMapState()
+                currentClosestBeacon = null
             }
             is MuseumMapEvent.SpeechStatus -> {
                 _museumMapState.value = _museumMapState.value.copy(
