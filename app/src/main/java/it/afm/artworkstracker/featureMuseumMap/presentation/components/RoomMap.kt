@@ -7,17 +7,11 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -45,21 +39,21 @@ import java.util.*
 
 @Composable
 fun RoomMap(
+    scale: MutableState<Float>,
     room: Room,
     currentArtwork: ArtworkBeacon? = null,
     lastArtwork: ArtworkBeacon? = null,
     onArtworkClicked: (UUID) -> Unit
 ) {
-    // Zoom will remain the same even on room change
-    val scale = remember(key1 = true) { mutableStateOf(1f) }
-
     val animX = remember(key1 = room) { Animatable(initialValue = 0f) }
 
     val animY = remember(key1 = room) { Animatable(initialValue = 0f) }
 
+    val artworkPositions = remember { arrayListOf<Triple<UUID, Rect, Offset>>() }
+
     val state = rememberTransformableState { zoomChange, _, _ ->
         var newScale = scale.value * zoomChange
-        newScale = if (newScale > 1f) 1f else newScale
+        newScale = if (newScale > maxScale) maxScale else if (newScale < minScale) minScale else newScale
 
         scale.value = newScale
     }
@@ -109,8 +103,6 @@ fun RoomMap(
     val starredPainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.star))
     val visitedPainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.visit))
 
-    val artworkPositions = remember { arrayListOf<Triple<UUID, Rect, Offset>>() }
-
     val hScrollState = rememberScrollState()
     val vScrollState = rememberScrollState()
 
@@ -123,7 +115,15 @@ fun RoomMap(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
-                        val art = artworkPositions.find { pos -> pos.second.contains(it) }
+                        val centerX = mapSize.toPx() / 2
+                        val centerY = mapSize.toPx() / 2
+
+                        val x = ((it.x - centerX) / scale.value) + centerX
+                        val y = ((it.y - centerY) / scale.value) + centerY
+
+                        val originalOffset = Offset(x = x, y = y)
+
+                        val art = artworkPositions.find { pos -> pos.second.contains(originalOffset) }
                         if (art != null) {
                             onArtworkClicked(art.first)
                         }
@@ -133,7 +133,7 @@ fun RoomMap(
     ) {
         Canvas(
             modifier = Modifier
-                .size(1000.dp, 1000.dp)
+                .requiredSize(mapSize, mapSize)
                 .graphicsLayer(
                     scaleX = scale.value,
                     scaleY = scale.value,
@@ -311,6 +311,9 @@ fun RoomMap(
     }
 }
 
+const val maxScale = 1f
+const val minScale = 0.35f
+
 val artworkSize = 50.dp
 
 val starredSize = 20.dp
@@ -323,6 +326,8 @@ val visitedDistanceLeft = 15.dp
 
 val userSize = 30.dp
 val userDistanceFromArtwork = 5.dp
+
+val mapSize = 1000.dp
 
 
 

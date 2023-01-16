@@ -7,7 +7,7 @@ import java.util.UUID
 class GetRoomUseCase(
     private val repository: RoomRepository
 ) {
-    suspend operator fun invoke(beacon: UUID, baseUrl: String): Room? {
-        return repository.getRoom("$baseUrl/api/rooms/?beacon=$beacon")
+    suspend operator fun invoke(beacon: UUID, baseUrl: String, lan: String): Room? {
+        return repository.getRoom("$baseUrl/api/rooms/?beacon=$beacon&lan=$lan")
     }
 }

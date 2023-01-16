@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -57,6 +58,8 @@ import java.util.*
 class MainActivity : ComponentActivity() {
     private val museumMapViewModel: MuseumMapViewModel by viewModels()
     private var tts: TextToSpeech? = null
+
+    private val scaleFactor = mutableStateOf(1f)
 
     private lateinit var nsdManager: NsdManager
 
@@ -207,6 +210,7 @@ class MainActivity : ComponentActivity() {
                                         snackbarHostState = snackbarHostState,
                                         viewModel = museumMapViewModel,
                                         tts = tts,
+                                        scale = scaleFactor,
                                         onBluetoothEnableRequest = {
                                             bluetoothEnablerLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
                                         },

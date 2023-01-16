@@ -8,8 +8,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.afm.artworkstracker.featureArtwork.domain.useCase.GetArtworkUseCase
+import it.afm.artworkstracker.util.LanguageUtil
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +27,12 @@ class ArtworkViewModel @Inject constructor(
     lateinit var url: String
         private set
 
-    private val lan: String = getApplication<Application>().applicationContext.resources.configuration.locales[0].language
+    private val lan = String().apply {
+        val firstLan = getApplication<Application>().applicationContext.resources.configuration.locales[0]
+
+        if (LanguageUtil.supportedLanguages.contains(firstLan.language)) firstLan.language
+        else Locale.ENGLISH.language
+    }
 
     init {
         savedStateHandle.get<String>("artId")?.let { artworkId ->

@@ -1,9 +1,10 @@
 package it.afm.artworkstracker.featureMuseumMap.presentation
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.afm.artworkstracker.featureMuseumMap.domain.model.ArtworkBeacon
@@ -16,6 +17,7 @@ import it.afm.artworkstracker.featureMuseumMap.domain.useCase.GetRoomUseCase
 import it.afm.artworkstracker.featureMuseumMap.domain.util.ArtworkType
 import it.afm.artworkstracker.featureMuseumMap.domain.util.PerimeterEntity
 import it.afm.artworkstracker.featureMuseumMap.domain.util.Side
+import it.afm.artworkstracker.util.LanguageUtil
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -28,8 +30,9 @@ import javax.inject.Inject
 class MuseumMapViewModel @Inject constructor(
     private val getCloserBeaconsUseCase: GetCloserBeaconsUseCase,
     private val getRoomUseCase: GetRoomUseCase,
-    getArtworksIdsUseCase: GetArtworksIdsUseCase
-) : ViewModel() {
+    getArtworksIdsUseCase: GetArtworksIdsUseCase,
+    app: Application
+) : AndroidViewModel(app) {
 
     var baseUrl: String? = null
         private set
@@ -49,17 +52,19 @@ class MuseumMapViewModel @Inject constructor(
 
     private var knownArtworks = listOf<UUID>()
 
+    private val lan = String().apply {
+        val firstLan = getApplication<Application>().applicationContext.resources.configuration.locales[0]
+
+        if (LanguageUtil.supportedLanguages.contains(firstLan.language)) firstLan.language
+        else Locale.ENGLISH.language
+    }
+
     init {
-        // TODO: add "Top App Bar" (equal to bottomAppBar (color)) (action_button (info-tutorial)) (PIPPO)
+        // TODO: add "Top App Bar" (equal to bottomAppBar (color)))
 
-        // TODO: redefine "error" screens (only view side) (BOTH)
-        // TODO: refine visited list view (padding, bold title, ...) (PIPPO)
-        // TODO: colors (BOTH)
-
-        // TODO: check if ArtworkScreen animation can be executed only once (so only in composition, not in recomposition) (PIPPO)
-
-        // TODO: check behaviour of user movements and artworks click (on map) with zoom (ALE)
-
+        // TODO: redefine "error" screens (only view side)
+        // TODO: refine visited list view (padding, bold title, ...)
+        // TODO: colors
 
         getCloserBeaconsUseCase().onEach {
             val isNewClosestBeacon = it != null && (currentClosestBeacon == null || currentClosestBeacon!!.id != it.id)
@@ -71,7 +76,7 @@ class MuseumMapViewModel @Inject constructor(
                 } != null
 
                 if (!isBeaconInCurrentRoom) {
-                    val room = getRoomUseCase(it!!.id, baseUrl!!)
+                    val room = getRoomUseCase(it!!.id, baseUrl!!, lan)
 
                     if (room != null && room != _museumMapState.value.room) {
                         room.artworks.forEach { artwork ->
