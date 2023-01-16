@@ -63,16 +63,15 @@ fun PermissionsRequestScreen(
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        IconButton(
+        Button(
             onClick = onRequestPermissionButtonClick,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(id = R.string.permissions_require_button),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
+            content = {
+                Text(
+                    text = stringResource(id = R.string.permissions_require_button),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+        )
     }
 }
 

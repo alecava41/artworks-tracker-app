@@ -1,10 +1,7 @@
 package it.afm.artworkstracker.core.presentation.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,15 +39,14 @@ fun StartTourScreen(
             style = MaterialTheme.typography.bodyLarge
         )
         Spacer(modifier = Modifier.height(50.dp))
-        IconButton(
+        Button(
             onClick = onTourStarted,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(id = R.string.start_tour_button),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
+            content = {
+                Text(
+                    text = stringResource(id = R.string.start_tour_button),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+        )
     }
 }

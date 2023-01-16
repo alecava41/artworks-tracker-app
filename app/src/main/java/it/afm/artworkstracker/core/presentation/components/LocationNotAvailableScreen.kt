@@ -1,15 +1,13 @@
 package it.afm.artworkstracker.core.presentation.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import it.afm.artworkstracker.R
 
@@ -42,15 +40,20 @@ fun LocationNotAvailableScreen(
             style = MaterialTheme.typography.bodyLarge
         )
         Spacer(modifier = Modifier.height(50.dp))
-        IconButton(
+        Button(
             onClick = onLocationEnablingRequest,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(id = R.string.location_not_enabled_button),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
+            content = {
+                Text(
+                    text = stringResource(id = R.string.location_not_enabled_button),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+        )
     }
+}
+
+@Preview
+@Composable
+fun Preview(){
+    LocationNotAvailableScreen {}
 }
