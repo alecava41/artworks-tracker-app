@@ -20,8 +20,6 @@ fun SettingsScreen(
 ) {
     val state = viewModel.uiState.value
 
-    // TODO: fix view (not really nice) (colors, button size, ...)
-
     Column(
         modifier = Modifier.fillMaxSize()
     ) {

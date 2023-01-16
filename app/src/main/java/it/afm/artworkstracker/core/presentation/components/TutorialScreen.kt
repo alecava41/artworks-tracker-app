@@ -51,7 +51,7 @@ fun TutorialScreen(
         ) {
             Box(
                 Modifier
-                    .fillMaxSize(0.85f) // TODO: (side effect) if the dialog is smaller than that, then clicking on empty spots will not close it
+                    .fillMaxSize(0.85f)
             ) {
                 Box(
                     Modifier
