@@ -244,6 +244,7 @@ class MainActivity : ComponentActivity() {
                                         }
                                     )
                                 ) {
+                                    tts?.stop()
                                     ArtworkScreen(
                                         navController = navController,
                                         viewModel = hiltViewModel(),
@@ -252,12 +253,14 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                                 composable(route = Screen.VisitedArtworksListScreen.route) {
+                                    tts?.stop()
                                     VisitedArtworksList(
                                         viewModel = hiltViewModel(),
                                         navController = navController
                                     )
                                 }
                                 composable(route = Screen.SettingsScreen.route) {
+                                    tts?.stop()
                                     SettingsScreen(
                                         viewModel = hiltViewModel(),
                                         onTourDestroyed = { museumMapViewModel.onEvent(MuseumMapEvent.DestroyTour)}
@@ -265,6 +268,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                                 dialog(route = Screen.TutorialScreen.route) {
+                                    tts?.stop()
                                     TutorialScreen(
                                         navController = navController,
                                      )

@@ -65,7 +65,7 @@ fun RoomMap(
         viewportWidth = pictureImageVector.viewportWidth,
         viewportHeight = pictureImageVector.viewportHeight,
         name = RootGroupName,
-        tintColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        tintColor = MaterialTheme.colorScheme.onSurface,
         tintBlendMode = pictureImageVector.tintBlendMode,
         autoMirror = false,
     ) { _, _ ->
@@ -79,7 +79,7 @@ fun RoomMap(
         viewportWidth = sculptureImageVector.viewportWidth,
         viewportHeight = sculptureImageVector.viewportHeight,
         name = RootGroupName,
-        tintColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        tintColor = MaterialTheme.colorScheme.onSurface,
         tintBlendMode = sculptureImageVector.tintBlendMode,
         autoMirror = false,
     ) { _, _ ->

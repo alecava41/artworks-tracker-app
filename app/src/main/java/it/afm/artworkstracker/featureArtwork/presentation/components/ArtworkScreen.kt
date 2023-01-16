@@ -104,8 +104,8 @@ fun ArtworkScreen(
                                             isAudioEnabled = vmState.isAudioEnabled,
                                             description = vmState.artwork.description,
                                             tts = tts,
-                                            startLabel = R.string.artwork_stop_label,
-                                            stopLabel = R.string.artwork_play_label,
+                                            startLabel = R.string.artwork_play_label,
+                                            stopLabel = R.string.artwork_stop_label,
                                             onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = false)) },
                                             onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = true)) }
                                         )
