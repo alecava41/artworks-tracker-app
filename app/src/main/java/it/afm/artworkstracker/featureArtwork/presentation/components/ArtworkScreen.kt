@@ -20,6 +20,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import it.afm.artworkstracker.R
+import it.afm.artworkstracker.core.presentation.components.CloseButton
 import it.afm.artworkstracker.core.presentation.components.MediaPlayer
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkEvent
 import it.afm.artworkstracker.featureArtwork.presentation.ArtworkViewModel

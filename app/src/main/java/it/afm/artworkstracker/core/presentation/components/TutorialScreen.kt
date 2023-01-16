@@ -22,7 +22,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import it.afm.artworkstracker.R
-import it.afm.artworkstracker.featureArtwork.presentation.components.CloseButton
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable

@@ -101,15 +101,19 @@ fun MediaPlayer(
                 onClick = {
                     tts?.stop()
                 },
-                modifier = Modifier.border(
-                    width = 2.dp,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    shape = RoundedCornerShape(30.dp)
-                ),
+                modifier = Modifier
+                    .border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        shape = RoundedCornerShape(30.dp)
+                    )
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(MaterialTheme.colorScheme.onSurface),
                 enabled = tts != null
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.stop),
+                    tint = MaterialTheme.colorScheme.surface,
                     contentDescription = stringResource(id = stopLabel),
                     modifier = Modifier.size(35.dp)
                 )

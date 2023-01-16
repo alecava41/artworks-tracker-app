@@ -30,7 +30,7 @@ fun ArtworkScreenNotAvailable() {
             modifier = Modifier
                 .size(120.dp)
                 .align(Alignment.CenterHorizontally),
-            painter = painterResource(id = R.drawable.artwork_not_available),
+            painter = painterResource(id = R.drawable.artwork_not_available_light_screen),
             contentDescription = null
         )
         Spacer(modifier = Modifier.height(50.dp))

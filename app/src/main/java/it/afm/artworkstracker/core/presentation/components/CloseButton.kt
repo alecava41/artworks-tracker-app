@@ -1,4 +1,4 @@
-package it.afm.artworkstracker.featureArtwork.presentation.components
+package it.afm.artworkstracker.core.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
