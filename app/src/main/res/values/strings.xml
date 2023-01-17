@@ -59,7 +59,7 @@
     <string name="visited_artworks_list_label">Visited Artworks List</string>
     <string name="visited_artworks_list_desc_label">This list is useful if you like to know all the artworks visited and you like to see one of them again.</string>
     <string name="how_to_end_visit_label">How to end a visit</string>
-    <string name="how_to_end_visit_desc_label">Click on Settings and then on the \"End Visit\" button to finish the visit. This action will erase all data collected during the visit.</string>
+    <string name="how_to_end_visit_desc_label">Click on Settings and then on the \"End tour\" button to finish the visit. This action will erase all data collected during the visit.</string>
     <string name="map_desc_label">Thanks to the map, you can see the room you are visiting. If you want, it\'s possible to zoom out the map to get a higher perspective about the room. The user icon is placed near the last artwork you\'ve visited.</string>
 
     <string name="end_tour_button">END TOUR</string>

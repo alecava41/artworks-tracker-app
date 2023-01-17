@@ -54,7 +54,7 @@
     <string name="visited_artworks_list_label">Elenco delle opere visitate</string>
     <string name="visited_artworks_list_desc_label">Questa lista è utile se vuoi conoscere tutte le opere visitate e vuoi rivederne una.</string>
     <string name="how_to_end_visit_label">Come terminare una visita</string>
-    <string name="how_to_end_visit_desc_label">Fare clic sulle impostazioni e successivamente sul pulsante \"Termina visita\" per terminare una visita. Questa azione cancellerà tutti i dati raccolti durante la visita.</string>
+    <string name="how_to_end_visit_desc_label">Fare clic sulle impostazioni e successivamente sul pulsante \"Fine del tour\" per terminare una visita. Questa azione cancellerà tutti i dati raccolti durante la visita.</string>
     <string name="map_desc_label">Grazie alla mappa, puoi vedere com\'è la stanza che stai visitando. È possibile rimpicciolire la stanza per averne una diversa prospettiva. L\'icona dell\'utente rappresenta l\'ultima opera che hai visitato.</string>
     <string name="end_tour_button">FINE DEL TOUR</string>
     <string name="start_tour_title">Giro del Museo</string>

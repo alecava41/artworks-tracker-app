@@ -54,7 +54,7 @@
     <string name="visited_artworks_list_label">Visited Artworks List</string>
     <string name="visited_artworks_list_desc_label">Cette liste est utile si vous aimez connaître toutes les oeuvres visitées et que vous aimez revoir l\'une d\'entre elles.</string>
     <string name="how_to_end_visit_label">Comment terminer une visite</string>
-    <string name="how_to_end_visit_desc_label">Cliquez sur les paramètres et sur le bouton \"Terminer la visite\" pour terminer une visite.</string>
+    <string name="how_to_end_visit_desc_label">Cliquez sur les paramètres et sur le bouton \"Fin du tour\" pour terminer une visite.</string>
     <string name="map_desc_label">Grâce à la carte, vous pouvez voir comment est la pièce que vous visitez.</string>
     <string name="end_tour_button">FIN DU TOUR</string>
     <string name="start_tour_title">Visite du musée</string>
