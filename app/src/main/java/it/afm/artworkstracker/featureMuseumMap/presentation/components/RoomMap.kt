@@ -186,7 +186,7 @@ fun RoomMap(
 
             drawPath(
                 path = starredPath,
-                color = Color.Green.copy(alpha = 0.2f),
+                color = Color.Magenta.copy(alpha = 0.2f),
                 style = Stroke(30.dp.toPx()),
             )
 

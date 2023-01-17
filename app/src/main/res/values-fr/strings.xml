@@ -2,7 +2,6 @@
     <string name="tts_not_available">Fonction de synthèse vocale non disponible</string>
     <string name="description_label">La description</string>
     <string name="artwork_play_label">Jouer le son</string>
-    <string name="artwork_stop_label">Arrêter le son</string>
     <string name="slide_left_label">Image précédente</string>
     <string name="slide_right_label">Image suivante</string>
     <string name="snackbar_old_artwork_label">Voulez-vous revoir cette œuvre ?</string>
@@ -29,8 +28,7 @@
     <string name="visited_artworks_label">Oeuvres visitées</string>
     <string name="no_room_title">Pas de plan de chambre disponible</string>
     <string name="no_room_body">Pour voir le plan de la pièce dans laquelle vous vous trouvez actuellement, rapprochez-vous d\'une œuvre d\'art et attendez que le plan apparaisse.</string>
-    <string name="path_play_label">Lire l\'audio pour obtenir le chemin vers l\'œuvre suivante</string>
-    <string name="path_stop_label">Arrêtez l\'audio pour obtenir le chemin vers l\'illustration suivante</string>
+    <string name="path_label">Lire l\'audio pour obtenir le chemin vers l\'œuvre suivante</string>
     <string name="empty_list_visited_artworks_label">Il semble que vous n\'ayez encore visité aucune œuvre d\'art. Rapprochez-vous d\'un beacon pour visiter une œuvre.</string>
     <string name="title_empty_list">Aucune oeuvre visitée</string>
     <string name="title_artwork_not_available">Oeuvre non disponible</string>

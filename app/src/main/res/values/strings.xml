@@ -3,12 +3,11 @@
     <string name="tts_not_available">Text to Speech feature not available</string>
     <string name="description_label">Description</string>
     <string name="artwork_play_label">Play the audio</string>
-    <string name="artwork_stop_label">Stop the audio</string>
     <string name="slide_left_label">Previous image</string>
     <string name="slide_right_label">Next image</string>
     <string name="snackbar_old_artwork_label">Do you want to see this artwork again?</string>
     <string name="snackbar_old_artwork_action">YES</string>
-    <string name="snackbar_unseen_artwork_label">Get closer to the artwork to see the details!</string>
+    <string name="snackbar_unseen_artwork_label">Get closer to the artwork to discover the details!</string>
     <string name="close_label">CLOSE</string>
 
     <string name="permissions_require_title">Permissions required</string>
@@ -22,7 +21,7 @@
     <string name="wifi_not_enabled_body">Cannot establish a connection with the museum network. Please be sure to be connected to the museum wifi.</string>
 
     <string name="location_not_enabled_title">Location not enabled</string>
-    <string name="location_not_enabled_body">Looks like the location is off, please turn it in order to find allow the app to scan the artworks.</string>
+    <string name="location_not_enabled_body">Looks like the location is off, please turn it in order to allow the app to scan the artworks.</string>
     <string name="location_not_enabled_button">ENABLE LOCATION</string>
 
     <string name="bluetooth_not_enabled_title">Bluetooth not enabled</string>
@@ -33,9 +32,8 @@
     <string name="visited_list_label">Visited List</string>
     <string name="visited_artworks_label">Visited artworks</string>
     <string name="no_room_title">No room map available</string>
-    <string name="no_room_body">To see the map of the room in which you are currently, just closer to an artwork and wait for the map to appear.</string>
-    <string name="path_play_label">Play audio to get the path to the next artwork</string>
-    <string name="path_stop_label">Stop audio to get the path to the next artwork</string>
+    <string name="no_room_body">To see the map of the room in which you are currently in, just get closer to an artwork and wait for the map to appear.</string>
+    <string name="path_label">Tap to get the path to the next artwork, tap again to stop</string>
     <string name="empty_list_visited_artworks_label">It seems you haven\'t visited any artwork yet. Get closer to a beacon to visit an artwork.</string>
     <string name="title_empty_list">No visited artworks</string>
     <string name="title_artwork_not_available">Artwork not available</string>
@@ -49,20 +47,20 @@
     <string name="painting_desc_label">it represents a painting.</string>
     <string name="sculpture_desc_label">it represents a sculpture.</string>
     <string name="user_desc_label">it represents the visitor.</string>
-    <string name="starred_artwork_desc_label">it represents that the artwork is very important to visit.</string>
+    <string name="starred_artwork_desc_label">it represents a very important artwork visit.</string>
     <string name="visited_artwork_desc_label">it indicates that the artwork is already visited.</string>
     <string name="how_to_begin_visit_label">How to begin a visit</string>
     <string name="legend_label">Legend</string>
     <string name="help_tutorial_label">Help Tutorial</string>
     <string name="how_to_begin_visit_desc_label">Get closer to a beacon to begin your visit.</string>
-    <string name="legend_desc_label">Here there are more details about some icons:</string>
+    <string name="legend_desc_label">Here there are more details about the icons:</string>
     <string name="multimedia_label">Multimedia</string>
-    <string name="multimedia_desc_label">There are many play buttons which have a different meaning depending on their position. If the button is in an artwork card, the audio will read the description. If the button is in the map, the audio will help you to know how to reach the next artwork in the accessible path.</string>
+    <string name="multimedia_desc_label">There are many play buttons which have different meanings depending on where they appear. If you tap the play button in an artwork card, the audio will read the description of the artwork. If you tap the button on the map, the audio will help you to know how to reach the next artwork, following an accessible path.</string>
     <string name="visited_artworks_list_label">Visited Artworks List</string>
     <string name="visited_artworks_list_desc_label">This list is useful if you like to know all the artworks visited and you like to see one of them again.</string>
     <string name="how_to_end_visit_label">How to end a visit</string>
-    <string name="how_to_end_visit_desc_label">Click on settings and on \"End Visit\" button in order to finish a visit.</string>
-    <string name="map_desc_label">Thanks to the map, you can see how is the room you are visiting.</string>
+    <string name="how_to_end_visit_desc_label">Click on Settings and then on the \"End Visit\" button to finish the visit. This action will erase all data collected during the visit.</string>
+    <string name="map_desc_label">Thanks to the map, you can see the room you are visiting. If you want, it\'s possible to zoom out the map to get a higher perspective about the room. The user icon is placed near the last artwork you\'ve visited.</string>
 
     <string name="end_tour_button">END TOUR</string>
 

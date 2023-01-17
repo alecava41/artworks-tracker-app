@@ -28,8 +28,7 @@ fun MediaPlayer(
     onSpeechStarted: () -> Unit,
     onSpeechFinished: () -> Unit,
     description: String,
-    @StringRes startLabel: Int,
-    @StringRes stopLabel: Int,
+    @StringRes label: Int,
     tts: TextToSpeech?,
 ) {
     Log.i("MediaPlayer", "isAudioEnabled = $isAudioEnabled")
@@ -99,33 +98,9 @@ fun MediaPlayer(
             Icon(
                 painter = painterResource(id = iconMediaPlayer),
                 tint = MaterialTheme.colorScheme.surface,
-                contentDescription = stringResource(id = startLabel),
+                contentDescription = stringResource(id = label),
                 modifier = Modifier.size(35.dp)
             )
-            Log.e("isAudioEnabled:", isAudioEnabled.toString())
         }
-        /*} else {
-            IconButton(
-                onClick = {
-                    tts?.stop()
-                },
-                modifier = Modifier
-                    .border(
-                        width = 2.dp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        shape = RoundedCornerShape(30.dp)
-                    )
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(MaterialTheme.colorScheme.onSurface),
-                enabled = tts != null
-            ) {
-                Icon(
-                    painter = painterResource(id = ),
-                    tint = MaterialTheme.colorScheme.surface,
-                    contentDescription = stringResource(id = stopLabel),
-                    modifier = Modifier.size(35.dp)
-                )
-            }
-        }*/
     }
 }

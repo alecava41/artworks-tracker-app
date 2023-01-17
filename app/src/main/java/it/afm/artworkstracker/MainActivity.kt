@@ -179,7 +179,12 @@ class MainActivity : ComponentActivity() {
                     val snackbarHostState = remember { SnackbarHostState() }
 
                     Scaffold(
-                        topBar = { TopBar(navController = navController) },
+                        topBar = {
+                            TopBar(
+                                navController = navController,
+                                onActionButtonClick = { tts?.stop()}
+                            )
+                        },
                         bottomBar = {
                             BottomBar(
                                 navController = navController,
@@ -221,7 +226,6 @@ class MainActivity : ComponentActivity() {
                                         }
                                     )
                                 }
-
                                 dialog(
                                     route = Screen.ArtworkScreen.route + "?artId={artId}&url={url}",
                                     dialogProperties = DialogProperties(
@@ -242,7 +246,6 @@ class MainActivity : ComponentActivity() {
                                         }
                                     )
                                 ) {
-                                    tts?.stop()
                                     ArtworkScreen(
                                         navController = navController,
                                         viewModel = hiltViewModel(),
@@ -259,16 +262,15 @@ class MainActivity : ComponentActivity() {
                                 composable(route = Screen.SettingsScreen.route) {
                                     SettingsScreen(
                                         viewModel = hiltViewModel(),
-                                        onTourDestroyed = { museumMapViewModel.onEvent(MuseumMapEvent.DestroyTour)}
+                                        onTourDestroyed = { museumMapViewModel.onEvent(MuseumMapEvent.DestroyTour) }
                                     )
                                 }
                                 dialog(route = Screen.TutorialScreen.route) {
-                                    tts?.stop()
                                     TutorialScreen(
                                         navController = navController,
-                                        onEnter = { museumMapViewModel.onEvent(MuseumMapEvent.PauseTour)},
-                                        onExit = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour)}
-                                     )
+                                        onEnter = { museumMapViewModel.onEvent(MuseumMapEvent.PauseTour) },
+                                        onExit = { museumMapViewModel.onEvent(MuseumMapEvent.ResumeTour) }
+                                    )
                                 }
                             }
                         }

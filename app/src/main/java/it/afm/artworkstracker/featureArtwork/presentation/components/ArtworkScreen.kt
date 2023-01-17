@@ -13,6 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -98,15 +100,20 @@ fun ArtworkScreen(
                                             ArtworkName(str = vmState.artwork.title)
                                             ArtworkAuthor(str = vmState.artwork.author)
                                         }
-                                        MediaPlayer(
-                                            isAudioEnabled = vmState.isAudioEnabled,
-                                            description = vmState.artwork.description,
-                                            tts = tts,
-                                            startLabel = R.string.artwork_play_label,
-                                            stopLabel = R.string.artwork_stop_label,
-                                            onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = false)) },
-                                            onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = true)) }
-                                        )
+                                        Box(
+                                            modifier = Modifier.clearAndSetSemantics {
+                                                invisibleToUser()
+                                            }
+                                        ) {
+                                            MediaPlayer(
+                                                isAudioEnabled = vmState.isAudioEnabled,
+                                                description = vmState.artwork.description,
+                                                tts = tts,
+                                                label = R.string.artwork_play_label,
+                                                onSpeechFinished = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = false)) },
+                                                onSpeechStarted = { viewModel.onEvent(ArtworkEvent.SpeechStatus(isSpeaking = true)) }
+                                            )
+                                        }
                                     }
                                     SlideShow(
                                         url = viewModel.url,

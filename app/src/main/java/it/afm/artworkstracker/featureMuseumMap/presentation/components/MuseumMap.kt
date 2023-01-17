@@ -55,8 +55,7 @@ fun MuseumMap(
                     isAudioEnabled = isAudioEnabled,
                     description = currentArtwork?.direction ?: "",
                     tts = tts,
-                    startLabel = R.string.path_play_label,
-                    stopLabel = R.string.path_stop_label,
+                    label = R.string.path_label,
                     onSpeechFinished = onSpeechFinished,
                     onSpeechStarted = onSpeechStarted
                 )

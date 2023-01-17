@@ -13,7 +13,10 @@ import it.afm.artworkstracker.util.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController) {
+fun TopBar(
+    navController: NavController,
+    onActionButtonClick: () -> Unit
+) {
     TopAppBar(
         title = @Composable {
             Column(
@@ -27,7 +30,10 @@ fun TopBar(navController: NavController) {
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
         actions = {
-            IconButton(onClick = { navController.navigate(Screen.TutorialScreen.route) }) {
+            IconButton(onClick = {
+                onActionButtonClick()
+                navController.navigate(Screen.TutorialScreen.route)
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.question_mark),
                     contentDescription = stringResource(R.string.help_label)

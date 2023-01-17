@@ -2,7 +2,6 @@
     <string name="tts_not_available">Text-to-Speech-Funktion nicht verfügbar</string>
     <string name="description_label">Bezeichnung</string>
     <string name="artwork_play_label">Spielen Sie den Ton ab</string>
-    <string name="artwork_stop_label">"Stoppen Sie den Ton "</string>
     <string name="slide_left_label">"Vorheriges Bild "</string>
     <string name="slide_right_label">"Nächstes Bild "</string>
     <string name="snackbar_old_artwork_label">Möchten Sie dieses Kunstwerk noch einmal sehen?</string>
@@ -29,8 +28,7 @@
     <string name="visited_artworks_label">Besichtigte Kunstwerke</string>
     <string name="no_room_title">Keine Zimmerkarte verfügbar</string>
     <string name="no_room_body">Um die Karte des Raums zu sehen, in dem Sie sich gerade befinden, nähern Sie sich einfach einem Kunstwerk und warten Sie, bis die Karte erscheint.</string>
-    <string name="path_play_label">Spielen Sie Audio ab, um den Pfad zum nächsten Kunstwerk zu erhalten</string>
-    <string name="path_stop_label">Stoppen Sie den Ton, um den Pfad zum nächsten Kunstwerk zu erhalten</string>
+    <string name="path_label">Spielen Sie Audio ab, um den Pfad zum nächsten Kunstwerk zu erhalten</string>
     <string name="empty_list_visited_artworks_label">Anscheinend haben Sie noch kein Kunstwerk besucht. Nähern Sie sich einem Beaconer, um ein Kunstwerk zu besichtigen.</string>
     <string name="title_empty_list">Keine besuchten Kunstwerke</string>
     <string name="title_artwork_not_available">Kunstwerk nicht verfügbar</string>
