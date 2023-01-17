@@ -67,10 +67,11 @@ fun MediaPlayer(
     ) {
         val ctx = LocalContext.current
 
-        if (!isAudioEnabled) {
-            IconButton(
-                onClick = {
-                    if (tts != null) {
+        //if (!isAudioEnabled) {
+        IconButton(
+            onClick = {
+                if (tts != null) {
+                    if (!isAudioEnabled) {
                         tts.speak(
                             description,
                             TextToSpeech.QUEUE_FLUSH,
@@ -78,27 +79,32 @@ fun MediaPlayer(
                             "..."
                         )
                     } else {
-                        Toast.makeText(ctx, R.string.tts_not_available, Toast.LENGTH_LONG).show()
+                        tts.stop()
                     }
-                },
-                modifier = Modifier
-                    .border(
-                        width = 2.dp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        shape = RoundedCornerShape(30.dp)
-                    )
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(MaterialTheme.colorScheme.onSurface),
-                enabled = tts != null
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.play),
-                    tint = MaterialTheme.colorScheme.surface,
-                    contentDescription = stringResource(id = startLabel),
-                    modifier = Modifier.size(35.dp)
+                } else {
+                    Toast.makeText(ctx, R.string.tts_not_available, Toast.LENGTH_LONG).show()
+                }
+            },
+            modifier = Modifier
+                .border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    shape = RoundedCornerShape(30.dp)
                 )
-            }
-        } else {
+                .clip(RoundedCornerShape(30.dp))
+                .background(MaterialTheme.colorScheme.onSurface),
+            enabled = tts != null
+        ) {
+            val iconMediaPlayer = if (!isAudioEnabled) R.drawable.play else R.drawable.stop
+            Icon(
+                painter = painterResource(id = iconMediaPlayer),
+                tint = MaterialTheme.colorScheme.surface,
+                contentDescription = stringResource(id = startLabel),
+                modifier = Modifier.size(35.dp)
+            )
+            Log.e("isAudioEnabled:", isAudioEnabled.toString())
+        }
+        /*} else {
             IconButton(
                 onClick = {
                     tts?.stop()
@@ -114,12 +120,12 @@ fun MediaPlayer(
                 enabled = tts != null
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.stop),
+                    painter = painterResource(id = ),
                     tint = MaterialTheme.colorScheme.surface,
                     contentDescription = stringResource(id = stopLabel),
                     modifier = Modifier.size(35.dp)
                 )
             }
-        }
+        }*/
     }
 }

@@ -40,13 +40,12 @@ class ArtworkViewModel @Inject constructor(
                 this.url = url
 
                 viewModelScope.launch {
-                    getArtworkUseCase(
+                    val artwork = getArtworkUseCase(
                         id = UUID.fromString(artworkId),
                         baseURL = url,
                         language = lan
-                    )?.also { artwork ->
-                        _uiState.value = uiState.value.copy(artwork = artwork)
-                    }
+                    )
+                    _uiState.value = _uiState.value.copy(artwork = artwork)
                 }
             }
         }

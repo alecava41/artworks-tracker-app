@@ -97,7 +97,7 @@ fun MuseumMapScreen(
                             message = ctx.getString(R.string.snackbar_old_artwork_label),
                             actionLabel = ctx.getString(R.string.snackbar_old_artwork_action),
                             withDismissAction = true,
-                            duration = SnackbarDuration.Indefinite
+                            duration = SnackbarDuration.Short
                         )
 
                         if (res == SnackbarResult.ActionPerformed) {

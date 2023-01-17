@@ -127,7 +127,10 @@ fun ArtworkScreen(
                                     }
                                 )
                             } else {
-                                ArtworkScreenNotAvailable()
+                                ArtworkScreenNotAvailable(
+                                    navController = navController,
+                                    onDialogClosed = onDialogClosed
+                                )
                             }
                         }
                     }
