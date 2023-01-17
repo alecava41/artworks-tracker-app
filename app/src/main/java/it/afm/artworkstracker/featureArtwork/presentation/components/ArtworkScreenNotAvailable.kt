@@ -26,7 +26,7 @@ fun ArtworkScreenNotAvailable(
             .fillMaxSize()
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
             text = stringResource(id = R.string.title_artwork_not_available),
