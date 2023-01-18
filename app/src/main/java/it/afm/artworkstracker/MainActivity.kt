@@ -178,11 +178,12 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val snackbarHostState = remember { SnackbarHostState() }
 
+
                     Scaffold(
                         topBar = {
                             TopBar(
                                 navController = navController,
-                                onActionButtonClick = { tts?.stop()}
+                                onActionButtonClick = { tts?.stop() }
                             )
                         },
                         bottomBar = {

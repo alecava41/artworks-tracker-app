@@ -29,10 +29,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ArtworksTracker"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ArtworksTracker">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ArtworksTracker"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
