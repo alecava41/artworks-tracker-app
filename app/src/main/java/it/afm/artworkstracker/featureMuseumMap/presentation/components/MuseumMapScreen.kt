@@ -68,14 +68,14 @@ fun MuseumMapScreen(
                         }
                 } else
                     BackendServerNotAvailableScreen()
-            } else if (permissionsState.shouldShowRationale) {
-                PermissionsRequestScreen(
-                    onRequestPermissionButtonClick = { permissionsState.launchMultiplePermissionRequest() }
-                )
             } else
                 StartTourScreen(
                     onTourStarted = onTourStarted
                 )
+        } else if (permissionsState.shouldShowRationale) {
+            PermissionsRequestScreen(
+                onRequestPermissionButtonClick = { permissionsState.launchMultiplePermissionRequest() }
+            )
         } else {
             PermissionsNotGiven()
         }
