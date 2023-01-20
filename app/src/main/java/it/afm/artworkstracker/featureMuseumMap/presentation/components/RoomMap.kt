@@ -145,6 +145,8 @@ fun RoomMap(
             // Draw the room's perimeter
             val groundPath = Path()
 
+            var isFirstMove = true
+
             val path = Path().apply {
                 room.perimeter.forEach {
                     when (it.first) {
@@ -152,7 +154,14 @@ fun RoomMap(
                             groundPath.lineTo(it.second.dp.toPx(), it.third.dp.toPx())
                             lineTo(it.second.dp.toPx(), it.third.dp.toPx())
                         }
-                        PerimeterEntity.MOVE -> moveTo(it.second.dp.toPx(), it.third.dp.toPx())
+                        PerimeterEntity.MOVE -> {
+                            if (isFirstMove) {
+                                groundPath.moveTo(it.second.dp.toPx(), it.third.dp.toPx())
+                                isFirstMove = false
+                            }
+
+                            moveTo(it.second.dp.toPx(), it.third.dp.toPx())
+                        }
                     }
                 }
 
@@ -280,7 +289,8 @@ fun RoomMap(
 
 
         LaunchedEffect(
-            key1 = currentArtwork
+            key1 = currentArtwork,
+            key2 = lastArtwork
         ) {
             if (lastArtwork != null) {
                 val offset = artworkPositions.find { it.first == lastArtwork.id }!!.third

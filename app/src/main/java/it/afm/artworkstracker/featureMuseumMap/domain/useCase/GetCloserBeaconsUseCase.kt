@@ -82,7 +82,7 @@ class GetCloserBeaconsUseCase(
     companion object {
         const val TAG = "GetCloserBeaconsUseCase"
 
-        const val MIN_BEACON_DISTANCE = 0.5
+        const val MIN_BEACON_DISTANCE = 0.75
         const val MAX_BEACON_LIFE_IN_RANGE = 10
 
         const val BEACONS_CLEANER_INITIAL_DELAY = 10000L

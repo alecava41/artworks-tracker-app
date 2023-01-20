@@ -77,13 +77,18 @@ class MuseumMapViewModel @Inject constructor(
 
                             _museumMapState.value = _museumMapState.value.copy(
                                 room = room,
+                                lastArtwork = null,
+                                currentArtwork = null
                             )
                         } else {
                             _museumMapState.value = _museumMapState.value.copy(
                                 room = null,
+                                lastArtwork = null,
+                                currentArtwork = null
                             )
                         }
                     }
+
                     val newClosestArtworkItem = ArtworkBeacon(
                         id = it!!.id,
                         direction = _museumMapState.value.room?.artworks?.find { artwork -> artwork.beacon == it.id }?.direction
